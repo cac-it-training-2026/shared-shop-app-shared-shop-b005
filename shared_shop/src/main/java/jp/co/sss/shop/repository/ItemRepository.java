@@ -49,8 +49,10 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 
 	List<Item> findByCategoryIdAndDeleteFlagOrderByInsertDateDesc(Integer categoryid, int deleteFlag);
 
+	@Query("SELECT i FROM Item i")
 	List<Item> findHotItems();
 
+	@Query("SELECT i FROM Item i")
 	List<Item> findHotItemsByCategory(Integer categoryId);
 
 	@Override
