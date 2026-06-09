@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import jp.co.sss.shop.bean.ItemBean;
 import jp.co.sss.shop.entity.Item;
@@ -81,6 +82,24 @@ public class ClientItemShowController {
 		model.addAttribute("item", itemBean);
 
 		return "client/item/detail";
+	}
+
+	//新着順メソッド
+	@RequestMapping(path = "/client/item/list/{sortType}", method = RequestMethod.GET)
+	public String showSortList(Model model, @RequestParam(required = false) Integer categoryId,
+			@PathVariable Integer sortType) {
+
+		List<Item> itemList = null;
+
+		if (sortType == 1) {
+			itemList = itemRepository.findByDeleteFlagOrderByInsertDateDesc(0);
+		}
+
+		model.addAttribute("items", itemList);
+		model.addAttribute("sortType", sortType);
+		model.addAttribute("categoryId", categoryId);
+
+		return "client/item/list";
 	}
 
 }
