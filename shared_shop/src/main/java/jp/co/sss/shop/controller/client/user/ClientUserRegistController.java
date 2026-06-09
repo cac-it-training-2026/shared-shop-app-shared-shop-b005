@@ -21,8 +21,10 @@ public class ClientUserRegistController {
 
 	@RequestMapping(path = "/client/user/regist/input/init", method = RequestMethod.GET)
 	public String ClientInput() {
+
 		//セッションに保存されているuserFormを取得
 		UserForm userform = (UserForm) session.getAttribute("userForm");
+
 		//userformが空の場合
 		if (userform == null) {
 			//UserFormを新規作成
@@ -38,6 +40,21 @@ public class ClientUserRegistController {
 
 	@RequestMapping(path = "/client/user/regist/input", method = RequestMethod.POST)
 	public String ClientnewInput() {
+
+		//セッションに保存されているuserFormを取得
+		UserForm userform = (UserForm) session.getAttribute("userForm");
+
+		//userformが空の場合
+		if (userform == null) {
+			//UserFormを新規作成
+			userform = new UserForm();
+			//権限をコピー
+			userform.setAuthority(((UserBean) session.getAttribute("user")).getAuthority());
+
+			//セッションに保存
+			session.setAttribute("userForm", userform);
+		}
 		return "redirect:/client/user/regist/input";
 	}
+
 }
