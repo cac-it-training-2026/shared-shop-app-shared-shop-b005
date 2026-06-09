@@ -58,7 +58,7 @@ public class ClientOrderShowController {
 
 	/**
 	 * 一覧取得、一覧画面表示　処理
-	 *
+	 * @author 勝山 幸祐
 	 * @param model Viewとの値受渡し
 	 * @param pageable ページング情報
 	 * @return "admin/order/list" 注文情報 一覧画面へ
@@ -69,20 +69,23 @@ public class ClientOrderShowController {
 		UserBean userBean = (UserBean) session.getAttribute("user");
 
 		// すべての注文情報を取得(注文日降順)
-		//表示画面でページングが必要なため、ページ情報付きの検索を行う
+		// 表示画面でページングが必要なため、ページ情報付きの検索を行う
 		Page<Order> orderList = orderRepository.findByUserIdOrderByInsertDateDescIdDesc(userBean.getId(), pageable);
 
 		// 注文情報リストを生成
 		List<OrderBean> orderBeanList = new ArrayList<OrderBean>();
 		for (Order order : orderList) {
+
 			// BeanToolsクラスのcopyEntityToOrderBeanメソッドを使用して表示する注文情報を生成
 			OrderBean orderBean = beanTools.copyEntityToOrderBean(order);
-			//orderレコードから紐づくOrderItemのListを取り出す
+
+			// orderレコードから紐づくOrderItemのListを取り出す
 			List<OrderItem> orderItemList = order.getOrderItemsList();
-			//PriceCalcクラスのorderItemPriceTotalメソッドを使用して合計金額を算出
+
+			// PriceCalcクラスのorderItemPriceTotalメソッドを使用して合計金額を算出
 			int total = priceCalc.orderItemPriceTotal(orderItemList);
 
-			//合計金額のセット
+			// 合計金額のセット
 			orderBean.setTotal(total);
 
 			orderBeanList.add(orderBean);
