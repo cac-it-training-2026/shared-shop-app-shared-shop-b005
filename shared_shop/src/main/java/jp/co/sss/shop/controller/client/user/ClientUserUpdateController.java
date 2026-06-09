@@ -38,7 +38,7 @@ class ClientUserUpdateController {
 		return "redirect:/client/user/update/check";
 	}
 
-	@RequestMapping(path = "")
+	@RequestMapping(path = "/client/user/update/check", method = RequestMethod.POST)
 	public String updateCheck(Model model) {
 		return "client/user/update_check";
 	}
