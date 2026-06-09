@@ -84,20 +84,42 @@ public class ClientItemShowController {
 		return "client/item/detail";
 	}
 
-	//新着順メソッド
+	/**
+	 * 商品一覧画面
+	 * @author 児島涼音
+	 * @param model  モデルスコープ格納用
+	 * @param categoryId  商品のカテゴライズID
+	 * @param sortType  並び替えする番号
+	 * @return   "client/item/list"商品一覧画面
+	 */
 	@RequestMapping(path = "/client/item/list/{sortType}", method = RequestMethod.GET)
-	public String showSortList(Model model, @RequestParam(required = false) Integer categoryId,
+	public String showSortList(Model model,
+			// categoryId(カテゴリ別の商品)を取得
+			@RequestParam(required = false) Integer categoryId,
+			// sortType(新着or売れ筋)を取得
 			@PathVariable Integer sortType) {
 
+		// 商品一覧を入れるItem型のリスト変数を用意する。初期値はnull
 		List<Item> itemList = null;
 
+		// もしsortType == 1(新着順)の場合
 		if (sortType == 1) {
+			// itemListにメソッドで並び替えた（新着順）itemRepositoryを格納する。
 			itemList = itemRepository.findByDeleteFlagOrderByInsertDateDesc(0);
+
+			// もしsortType == 2(売れ筋順)の場合
+		} else if (sortType == 2) {
+			// itemListにメソッドで並び替えた（売れ筋順）itemRepositoryを格納する。
+			itemList = itemRepository.findHotItems();
 		}
 
-		model.addAttribute("items", itemList);
+		// itemListのRepositoryデータをEntityからBean形式リストへコピー
+		List<ItemBean> itemBeanList = beanTools.copyEntityListToItemBeanList(itemList);
+
+		// HTMLへの一覧表示ようにモデルスコープへ格納
+		model.addAttribute("items", itemBeanList);
+		// 選択したsortTypeをHTMLへ渡す。
 		model.addAttribute("sortType", sortType);
-		model.addAttribute("categoryId", categoryId);
 
 		return "client/item/list";
 	}
