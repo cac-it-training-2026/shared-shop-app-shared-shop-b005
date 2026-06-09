@@ -53,4 +53,7 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 
 	List<Item> findHotItemsByCategory(Integer categoryId);
 
+	@Override
+	Item getReferenceById(Integer id);
+
 }
