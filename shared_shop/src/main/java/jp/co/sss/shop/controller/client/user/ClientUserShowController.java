@@ -34,13 +34,36 @@ public class ClientUserShowController {
 	HttpSession session;
 
 	/**
-	 * 会員詳細表示処理
+	 * 会員詳細表示処理(GET)
 	 *
 	 * @param model Viewとの値受渡し
 	 * @return "client/user/detail" 会員詳細画面
 	 */
-	@RequestMapping(path = "/client/user/detail", method = { RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(path = "/client/user/detail", method = RequestMethod.GET)
 	public String showUser(Model model) {
+
+		return showUserDetail(model);
+	}
+
+	/**
+	 * 会員詳細表示処理(POST)
+	 *
+	 * @param model Viewとの値受渡し
+	 * @return "client/user/detail" 会員詳細画面
+	 */
+	@RequestMapping(path = "/client/user/detail", method = RequestMethod.POST)
+	public String showUserByPost(Model model) {
+
+		return showUserDetail(model);
+	}
+
+	/**
+	 * 会員詳細画面表示共通処理
+	 *
+	 * @param model Viewとの値受渡し
+	 * @return "client/user/detail" 会員詳細画面
+	 */
+	private String showUserDetail(Model model) {
 
 		// セッションからログイン中の会員情報を取得
 		UserBean loginUser = (UserBean) session.getAttribute("user");
