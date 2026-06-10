@@ -23,11 +23,10 @@ import jp.co.sss.shop.service.BeanTools;
 import jp.co.sss.shop.service.PriceCalc;
 
 /**
- * 注文管理 一覧表示機能(運用管理者用)のコントローラクラス
- *
- * @author SystemShared
+ * 注文管理 一覧表示機能のコントローラクラス
+ *  
+ * @author 勝山 幸祐
  * 
- * TIPS: 一般会員向けの注文一覧と注文詳細に類似した処理です。
  */
 @Controller
 public class ClientOrderShowController {
@@ -61,7 +60,7 @@ public class ClientOrderShowController {
 	 * @author 勝山 幸祐
 	 * @param model Viewとの値受渡し
 	 * @param pageable ページング情報
-	 * @return "admin/order/list" 注文情報 一覧画面へ
+	 * @return "client/order/list" 注文情報 一覧画面へ
 	 */
 	@RequestMapping(path = "/client/order/list", method = { RequestMethod.GET, RequestMethod.POST })
 	public String showOrderList(Model model, Pageable pageable) {
@@ -102,10 +101,11 @@ public class ClientOrderShowController {
 
 	/**
 	 * 詳細表示処理
-	 *
+	 * 
+	 * @author 勝山 幸祐
 	 * @param id 詳細表示対象ID
 	 * @param model Viewとの値受渡し
-	 * @return "admin/order/detail" 詳細画面　表示
+	 * @return "client/order/detail" 詳細画面　表示
 	 */
 	@RequestMapping(path = "/client/order/detail/{id}")
 	public String showOrder(@PathVariable int id, Model model) {
