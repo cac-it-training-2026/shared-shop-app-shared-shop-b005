@@ -17,6 +17,9 @@ import jp.co.sss.shop.form.UserForm;
 import jp.co.sss.shop.repository.UserRepository;
 import jp.co.sss.shop.util.Constant;
 
+/**
+ * @author 犬丸 晴斗
+ */
 @Controller
 public class ClientUserUpdateController {
 
@@ -34,7 +37,7 @@ public class ClientUserUpdateController {
 
 	/**
 	 * 入力画面初期表示処理(POST)
-	 * @param id
+	 * @param id 変更対象ID
 	 * @return
 	 */
 	@RequestMapping(path = "/client/user/update/input/{id}", method = RequestMethod.POST)
@@ -45,7 +48,7 @@ public class ClientUserUpdateController {
 
 		if (userForm == null) {
 
-			//取得したidからユーザ情報を取得
+			// 取得したidからユーザ情報を取得
 			User user = userRepository.findByIdAndDeleteFlag(id, Constant.NOT_DELETED);
 
 			if (user == null) {
@@ -68,25 +71,32 @@ public class ClientUserUpdateController {
 	/**
 	 * 入力画面　表示処理
 	 * @param model
-	 * @return
+	 * @return "client/user/update_input" 変更入力画面 表示
 	 */
 	@RequestMapping(path = "/client/user/update/input", method = RequestMethod.GET)
 	public String updateInput(Model model) {
 
-		//セッションから入力フォーム取得
+		// セッションから入力フォーム取得
 		UserForm userForm = (UserForm) session.getAttribute("userForm");
 		if (userForm == null) {
 
 			return "redirect:/syserror";
 		}
+
+		// 入力フォーム情報をリクエストスコープに設定
 		model.addAttribute("userForm", userForm);
 
+		// セッションスコープから入力エラー情報を取得
 		BindingResult result = (BindingResult) session.getAttribute("result");
 		if (result != null) {
 
+			// 入力エラー情報をリクエストスコープに設定
 			model.addAttribute("org.springframework.validation.BindingResult.userForm", result);
+
+			// セッションスコープから入力エラー情報を削除
 			session.removeAttribute("result");
 		}
+
 		// 変更入力画面表示
 		return "client/user/update_input";
 	}
@@ -94,9 +104,11 @@ public class ClientUserUpdateController {
 	/**
 	 * 変更確認処理
 	 * 
-	 * @param form
-	 * @param result
+	 * @param form 入力フォーム
+	 * @param result 入力チェック結果
 	 * @return
+	 *入力エラーあり: "redirect:/client/user/update/input"
+	 *入力エラーなし: "redirect:/client/user/update/check"
 	 */
 	@RequestMapping(path = "/client/user/update/check", method = RequestMethod.POST)
 	public String updateInputCheck(@Valid @ModelAttribute UserForm form, BindingResult result) {
@@ -105,15 +117,15 @@ public class ClientUserUpdateController {
 		if (lastUserForm == null) {
 			return "redirect:/syserror";
 		}
+
 		// 入力フォーム情報をセッションに保持
 		session.setAttribute("userForm", form);
 
 		// 入力値にエラーがあった場合、入力画面に戻る
 		if (result.hasErrors()) {
-
 			session.setAttribute("result", result);
 
-			//変更入力画面　表示処理
+			// 変更入力画面　表示処理
 			return "redirect:/client/user/update/input";
 		}
 		return "redirect:/client/user/update/check";
@@ -127,9 +139,11 @@ public class ClientUserUpdateController {
 	 */
 	@RequestMapping(path = "/client/user/update/check", method = RequestMethod.GET)
 	public String updateCheck(Model model) {
+
 		// セッションから入力フォーム情報取得
 		UserForm userForm = (UserForm) session.getAttribute("userForm");
 		if (userForm == null) {
+
 			// セッション情報がない場合、エラー
 			return "redirect:/syserror";
 		}
@@ -143,6 +157,33 @@ public class ClientUserUpdateController {
 	 */
 	@RequestMapping(path = "/client/user/update/complete", method = RequestMethod.POST)
 	public String updateComplete() {
+
+		// セッションスコープから入力フォーム情報取得
+		UserForm userForm = (UserForm) session.getAttribute("userForm");
+
+		// セッション情報がない場合エラー
+		if (userForm == null) {
+			return "redirect:/syserror";
+		}
+
+		// 入力フォームのidをもとに、DBから変更対象の会員情報を取得
+		User user = userRepository.findByIdAndDeleteFlag(userForm.getId(), Constant.NOT_DELETED);
+
+		// 変更対象の会員情報が存在しない場合、エラー画面へ
+		if (user == null) {
+			return "redirect:/syserror";
+		}
+
+		// 入力フォームの内容を会員情報エンティティにコピー
+		BeanUtils.copyProperties(userForm, user);
+		user.setDeleteFlag(Constant.NOT_DELETED);
+
+		// 変更後の会員情報をDBに保存
+		userRepository.save(user);
+
+		// 変更用の入力フォーム情報をセッションから削除
+		session.removeAttribute("userForm");
+
 		return "redirect:/client/user/update/complete";
 	}
 
