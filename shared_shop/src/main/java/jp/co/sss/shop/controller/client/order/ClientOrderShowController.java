@@ -66,6 +66,7 @@ public class ClientOrderShowController {
 	@RequestMapping(path = "/client/order/list", method = { RequestMethod.GET, RequestMethod.POST })
 	public String showOrderList(Model model, Pageable pageable) {
 
+		//ログイン中のユーザーを取得
 		UserBean userBean = (UserBean) session.getAttribute("user");
 
 		// すべての注文情報を取得(注文日降順)
