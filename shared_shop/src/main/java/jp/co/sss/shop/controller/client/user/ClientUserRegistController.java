@@ -4,10 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.form.UserForm;
 import jp.co.sss.shop.repository.UserRepository;
@@ -31,8 +33,6 @@ public class ClientUserRegistController {
 		if (userform == null) {
 			//UserFormを新規作成
 			userform = new UserForm();
-			//権限をコピー
-			//userform.setAuthority(((UserBean) session.getAttribute("user")).getAuthority());
 
 			//セッションに保存
 			session.setAttribute("userForm", userform);
@@ -82,6 +82,35 @@ public class ClientUserRegistController {
 		model.addAttribute("userForm", userform);
 
 		return "client/user/regist_input";
+	}
+
+	@RequestMapping(path = "/client/user/regist/check", method = RequestMethod.POST)
+	public String ClientInputCheck(@Valid @ModelAttribute UserForm form, BindingResult result) {
+
+		//直前のセッション情報を取得
+		UserForm inputUserForm = (UserForm) session.getAttribute("userForm");
+		if (inputUserForm == null) {
+			//セッション情報がない場合エラー
+			return "redirect:/syserror";
+		}
+
+		//権限情報がない場合、セッション情報から値をセット
+		if (form.getAuthority() == null) {
+			form.setAuthority(inputUserForm.getAuthority());
+		}
+
+		//入力フォーム情報をセッションにセット
+		session.setAttribute("userForm", form);
+
+		if (result.hasErrors()) {
+			// 入力値にエラーがあった場合、エラー情報をセッションに保持
+			session.setAttribute("result", result);
+			// 登録入力画面　表示処理
+			return "redirect:/client/user/regist/input";
+		}
+
+		// 登録確認画面　表示処理 
+		return "redirect:/client/user/regist/check";
 	}
 
 }
