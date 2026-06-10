@@ -108,7 +108,7 @@ public class ClientUserUpdateController {
 	 * @param result 入力チェック結果
 	 * @return
 	 *入力エラーあり: "redirect:/client/user/update/input"
-	 *入力エラーなし: "redirect:/client/user/update/check"
+	 *入力エラーなし: "redirect:/client/user/update/check"確認画面へ
 	 */
 	@RequestMapping(path = "/client/user/update/check", method = RequestMethod.POST)
 	public String updateInputCheck(@Valid @ModelAttribute UserForm form, BindingResult result) {
@@ -136,6 +136,8 @@ public class ClientUserUpdateController {
 	 * 
 	 * @param model
 	 * @return
+	 * 入力エラーあり: "redirect:/syserror"
+	 * 入力エラーなし: "client/user/update_check" 確認画面 表示
 	 */
 	@RequestMapping(path = "/client/user/update/check", method = RequestMethod.GET)
 	public String updateCheck(Model model) {
@@ -154,6 +156,8 @@ public class ClientUserUpdateController {
 
 	/**
 	 * @return
+	 * 入力エラーあり: "redirect:/syserror" エラー処理
+	 * 入力エラーなし: "redirect:/client/user/update/complete" updateCompleteFinishのメソッドへ
 	 */
 	@RequestMapping(path = "/client/user/update/complete", method = RequestMethod.POST)
 	public String updateComplete() {
@@ -189,6 +193,7 @@ public class ClientUserUpdateController {
 
 	/**
 	 * @return
+	 * "client/user/update_complete"変更完了画面 表示
 	 */
 	@RequestMapping(path = "/client/user/update/complete", method = RequestMethod.GET)
 	public String updateCompleteFinish() {
