@@ -98,8 +98,10 @@ public class ClientItemShowController {
 	 */
 	@RequestMapping(path = "/client/item/list/{sortType}", method = RequestMethod.GET)
 	public String showSortList(Model model,
+
 			// categoryId(カテゴリ別の商品)を取得
 			@RequestParam(required = false) Integer categoryId,
+
 			// sortType(新着or売れ筋)を取得
 			@PathVariable Integer sortType) {
 
@@ -108,13 +110,33 @@ public class ClientItemShowController {
 
 		// もしsortType == 1(新着順)の場合
 		if (sortType == 1) {
-			// itemListにメソッドで並び替えた（新着順）itemRepositoryを格納する。
-			itemList = itemRepository.findByDeleteFlagOrderByInsertDateDesc(0);
+
+			// categoryId未指定の場合は全商品の新着順を取得
+			if (categoryId == null || categoryId == 0) {
+
+				// itemListにメソッドで並び替えた（新着順）itemRepositoryを格納する。
+				itemList = itemRepository.findByDeleteFlagOrderByInsertDateDesc(0);
+
+			} else {
+
+				// itemListにカテゴリ別の新着順商品を格納する。
+				itemList = itemRepository.findByCategoryIdAndDeleteFlagOrderByInsertDateDesc(categoryId, 0);
+			}
 
 			// もしsortType == 2(売れ筋順)の場合
 		} else if (sortType == 2) {
-			// itemListにメソッドで並び替えた（売れ筋順）itemRepositoryを格納する。
-			itemList = itemRepository.findHotItems();
+
+			// categoryId未指定の場合は全商品の売れ筋順を取得
+			if (categoryId == null || categoryId == 0) {
+
+				// itemListにメソッドで並び替えた（売れ筋順）itemRepositoryを格納する。
+				itemList = itemRepository.findHotItems();
+
+			} else {
+
+				// itemListにカテゴリ別の売れ筋順商品を格納する。
+				itemList = itemRepository.findHotItemsByCategory(categoryId);
+			}
 		}
 
 		// itemListのRepositoryデータをEntityからBean形式リストへコピー
@@ -122,12 +144,17 @@ public class ClientItemShowController {
 
 		// HTMLへの一覧表示ようにモデルスコープへ格納
 		model.addAttribute("items", itemBeanList);
+
 		// 選択したsortTypeをHTMLへ渡す。
 		model.addAttribute("sortType", sortType);
-		//  HTMLのサイドバーにcategoriesを渡す。
-		model.addAttribute("categories", categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0));
+
+		// HTMLのサイドバーにcategoriesを渡す。
+		model.addAttribute("categories",
+				categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0));
+
+		// 選択したカテゴリIDをHTMLへ渡す。
+		model.addAttribute("categoryId", categoryId);
 
 		return "client/item/list";
 	}
-
 }
