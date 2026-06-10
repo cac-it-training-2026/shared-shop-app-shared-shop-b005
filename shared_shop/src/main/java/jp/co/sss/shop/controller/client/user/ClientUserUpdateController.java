@@ -37,22 +37,27 @@ public class ClientUserUpdateController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(path = "/client/user/update/input", method = RequestMethod.POST)
+	@RequestMapping(path = "/client/user/update/input/{id}", method = RequestMethod.POST)
 	public String updateInputInit(@PathVariable Integer id) {
 
 		// セッションスコープより情報を取り出す
 		UserForm userForm = (UserForm) session.getAttribute("userForm");
+
 		if (userForm == null) {
 
+			//取得したidからユーザ情報を取得
 			User user = userRepository.findByIdAndDeleteFlag(id, Constant.NOT_DELETED);
 
 			if (user == null) {
 				return "redirect:/syserror";
 			}
+
 			// 初期表示用情報の生成
 			userForm = new UserForm();
+
 			// 情報をコピー
 			BeanUtils.copyProperties(user, userForm);
+
 			// 変更入力フォームをセッションに保持
 			session.setAttribute("userForm", userForm);
 
@@ -65,7 +70,7 @@ public class ClientUserUpdateController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(path = "client/user/update/input", method = RequestMethod.GET)
+	@RequestMapping(path = "/client/user/update/input", method = RequestMethod.GET)
 	public String updateInput(Model model) {
 
 		//セッションから入力フォーム取得
