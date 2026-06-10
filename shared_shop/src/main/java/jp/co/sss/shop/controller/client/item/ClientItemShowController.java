@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import jp.co.sss.shop.bean.ItemBean;
 import jp.co.sss.shop.entity.Item;
+import jp.co.sss.shop.repository.CategoryRepository;
 import jp.co.sss.shop.repository.ItemRepository;
 import jp.co.sss.shop.service.BeanTools;
 import jp.co.sss.shop.util.Constant;
@@ -34,6 +35,9 @@ public class ClientItemShowController {
 	 */
 	@Autowired
 	BeanTools beanTools;
+
+	@Autowired
+	CategoryRepository categoryRepository;
 
 	/**
 	 * トップ画面 表示処理
@@ -120,6 +124,8 @@ public class ClientItemShowController {
 		model.addAttribute("items", itemBeanList);
 		// 選択したsortTypeをHTMLへ渡す。
 		model.addAttribute("sortType", sortType);
+		//  HTMLのサイドバーにcategoriesを渡す。
+		model.addAttribute("categories", categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0));
 
 		return "client/item/list";
 	}
