@@ -124,8 +124,8 @@ public class ClientUserRegistController {
 	 * @param form 入力フォーム
 	 * @param result 入力値チェックの結果
 	 * @return 
-	 * 	入力値エラーあり："redirect:/client/user/regist/input" 登録入力画面　表示処理
-	 * 	入力値エラーなし："redirect:/client/user/regist/check" 登録確認画面　表示処理
+	 * 	入力値エラーあり："redirect:/client/user/regist/input" 会員登録入力画面　表示処理
+	 * 	入力値エラーなし："redirect:/client/user/regist/check" 会員登録確認画面　表示処理
 	 */
 	@RequestMapping(path = "/client/user/regist/check", method = RequestMethod.POST)
 	public String clientInputCheck(@Valid @ModelAttribute UserForm form, BindingResult result) {
