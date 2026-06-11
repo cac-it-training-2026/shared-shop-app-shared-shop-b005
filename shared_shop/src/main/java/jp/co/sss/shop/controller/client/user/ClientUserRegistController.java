@@ -25,9 +25,15 @@ import jp.co.sss.shop.repository.UserRepository;
 @Controller
 public class ClientUserRegistController {
 
+	/**
+	 * 会員情報　リポジトリ
+	 */
 	@Autowired
 	UserRepository userRepository;
 
+	/**
+	 * セッション
+	 */
 	@Autowired
 	HttpSession session;
 
@@ -40,7 +46,7 @@ public class ClientUserRegistController {
 	@RequestMapping(path = "/client/user/regist/input/init", method = RequestMethod.GET)
 	public String initRegistInput() {
 
-		// セッションに保存されているuserFormを取得
+		// セッションに保存済みのuserFormを取得
 		UserForm userform = (UserForm) session.getAttribute("userForm");
 
 		// userformが空の場合
@@ -87,8 +93,8 @@ public class ClientUserRegistController {
 	 * @param model Viewとの値受渡し
 	 * @return "client/user/regist_input" 入力画面　表示
 	 * 
-	 * 入力値エラーあり："redirect:/syserror" 
-	 * 入力値エラーなし："redirect:/client/user/regist_input" 入力確認画面　表示
+	 * 入力値エラーあり："redirect:/syserror" エラー画面　表示処理
+	 * 入力値エラーなし："redirect:/client/user/regist_input" 入力画面　表示処理
 	 */
 	@RequestMapping(path = "/client/user/regist/input", method = RequestMethod.GET)
 	public String showRegistInput(Model model) {
@@ -115,6 +121,7 @@ public class ClientUserRegistController {
 		// 入力情報をスコープに保存
 		model.addAttribute("userForm", userform);
 
+		// 入力画面 表示
 		return "client/user/regist_input";
 	}
 
@@ -151,11 +158,11 @@ public class ClientUserRegistController {
 			// 入力値にエラーがあった場合、エラー情報をセッションに保持
 			session.setAttribute("result", result);
 
-			// 登録入力画面　表示処理
+			// 登録入力画面 表示処理
 			return "redirect:/client/user/regist/input";
 		}
 
-		// 登録確認画面　表示処理 
+		// 登録確認画面 表示処理 
 		return "redirect:/client/user/regist/check";
 	}
 
@@ -201,6 +208,8 @@ public class ClientUserRegistController {
 		// セッションから入力フォーム情報取得
 		UserForm userform = (UserForm) session.getAttribute("userForm");
 		if (userform == null) {
+
+			// セッション情報がない場合、エラー
 			return "redirect:/syserror";
 		}
 
