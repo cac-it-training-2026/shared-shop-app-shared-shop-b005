@@ -26,6 +26,19 @@ public class ClientBasketController {
 	ItemRepository itemRepository;
 
 	/**
+	 * 買い物かごの商品一覧表示へリダイレクトする
+	 *
+	 * @return "redirect:/client/basket/list" 買い物かごの商品一覧へのリダイレクト
+	 * 
+	 **/
+
+	@RequestMapping(path = "/client/basket/list", method = RequestMethod.POST)
+	public String showBasket() {
+
+		return "redirect:/client/basket/list";
+	}
+
+	/**
 	 * 買い物かごの商品一覧を表示する
 	 * 
 	 * @param model 在庫不足商品リストの受け渡し 

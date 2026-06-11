@@ -18,6 +18,8 @@ import jp.co.sss.shop.bean.BasketBean;
 import jp.co.sss.shop.bean.OrderItemBean;
 import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.Item;
+import jp.co.sss.shop.entity.Order;
+import jp.co.sss.shop.entity.OrderItem;
 import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.form.OrderForm;
 import jp.co.sss.shop.repository.ItemRepository;
@@ -113,17 +115,17 @@ public class ClientOrderRegistController {
 	public String paymentInput(@Valid @ModelAttribute OrderForm orderForm, BindingResult result,
 			HttpSession session) {
 
-		//入力された注文情報をセッションスコープに登録
+		// 入力された注文情報をセッションスコープに登録
 		OrderForm newOrderForm = (OrderForm) session.getAttribute("orderForm");
-		BeanUtils.copyProperties(newOrderForm, orderForm, "payMethod");
+		BeanUtils.copyProperties(orderForm, newOrderForm, "payMethod");
 		session.setAttribute("orderForm", newOrderForm);
 
-		//入力エラーがある場合は注文情報入力画面へリダイレクト
+		// 入力エラーがある場合は注文情報入力画面へリダイレクト
 		if (result.hasErrors()) {
 			session.setAttribute("bindingResult", result);
 			return "redirect:/client/order/address/input";
 
-			//入力エラーがない場合は支払い方法入力ページへリダイレクト
+			// 入力エラーがない場合は支払い方法入力ページへリダイレクト
 		} else {
 			return "redirect:/client/order/payment/input";
 		}
@@ -157,7 +159,7 @@ public class ClientOrderRegistController {
 	@RequestMapping(path = "/client/order/check", method = RequestMethod.POST)
 	public String orderCheck(Integer payMethod, HttpSession session) {
 
-		//セッションスコープから注文情報を取り出し、支払い方法を更新
+		// セッションスコープから注文情報を取り出し、支払い方法を更新
 		OrderForm orderForm = (OrderForm) session.getAttribute("orderForm");
 		orderForm.setPayMethod(payMethod);
 		session.setAttribute("orderForm", orderForm);
@@ -267,58 +269,90 @@ public class ClientOrderRegistController {
 		return "client/order/check";
 	}
 
-	//	@RequestMapping(path = "/client/order/complete", method = RequestMethod.POST)
-	//	public String orderComplete(HttpSession session) {
-	//
-	//		List<OrderItemBean> orderItemBeans = (List<OrderItemBean>) session.getAttribute("orderItemBeans");
-	//
-	//		for (OrderItemBean orderItemBean : orderItemBeans) {
-	//
-	//			Item item = itemRepository.getReferenceById(orderItemBean.getId());
-	//
-	//			if (item.getStock() < orderItemBean.getOrderNum()) {
-	//				return "redirect:/client/order/check";
-	//			}
-	//		}
-	//
-	//		Order order = new Order();
-	//
-	//		OrderForm orderForm = (OrderForm) session.getAttribute("orderForm");
-	//		order.setPostalCode(orderForm.getPostalCode());
-	//		order.setAddress(orderForm.getAddress());
-	//		order.setName(orderForm.getName());
-	//		order.setPhoneNumber(orderForm.getPhoneNumber());
-	//		order.setPayMethod(orderForm.getPayMethod());
-	//
-	//		List<OrderItem> orderItems = new ArrayList<OrderItem>();
-	//
-	//		for (OrderItemBean orderItemBean : orderItemBeans) {
-	//
-	//			Item item = itemRepository.getReferenceById(orderItemBean.getId());
-	//
-	//			OrderItem orderItem = new OrderItem();
-	//			orderItem.setQuantity(orderItemBean.getOrderNum());
-	//			//			orderItem.setOrder(order);
-	//			orderItem.setItem(item);
-	//			orderItem.setPrice(orderItemBean.getPrice());
-	//			orderItemRepository.save(orderItem);
-	//
-	//			orderItems.add(orderItem);
-	//		}
-	//
-	//		order.setOrderItemsList(orderItems);
-	//		orderRepository.save(order);
-	//
-	//		session.removeAttribute("orderForm");
-	//		session.removeAttribute("basketBeans");
-	//		session.removeAttribute("orderItemBeans");
-	//
-	//		return "redirect:/client/order/complete";
-	//	}
-	//
-	//	@RequestMapping(path = "/client/order/complete", method = RequestMethod.GET)
-	//	public String orderComplete() {
-	//		return "client/order/complete";
-	//	}
+	/**
+	 * 注文完了画面表示へリダイレクトする
+	 * 
+	 * @param session 注文商品リスト・ユーザー情報・買い物かご情報の受け渡し
+	 * @return "redirect:/client/order/complete"  注文完了画面表示へのリダイレクト
+	 * 
+	 **/
+	@RequestMapping(path = "/client/order/complete", method = RequestMethod.POST)
+	public String orderComplete(HttpSession session) {
+
+		// セッションスコープから注文商品のリストを取得
+		List<OrderItemBean> orderItemBeans = (List<OrderItemBean>) session.getAttribute("orderItemBeans");
+
+		// 各商品の注文個数と在庫を比較し、不足がある場合は注文確認表示へリダイレクト
+		for (OrderItemBean orderItemBean : orderItemBeans) {
+
+			Item item = itemRepository.getReferenceById(orderItemBean.getId());
+
+			if (item.getStock() < orderItemBean.getOrderNum()) {
+				return "redirect:/client/order/check";
+			}
+		}
+
+		// 注文情報エンティティを作成
+		Order order = new Order();
+
+		// 注文情報フォームをセッションスコープから取り出し、情報を注文情報エンティティにセット
+		OrderForm orderForm = (OrderForm) session.getAttribute("orderForm");
+		order.setPostalCode(orderForm.getPostalCode());
+		order.setAddress(orderForm.getAddress());
+		order.setName(orderForm.getName());
+		order.setPhoneNumber(orderForm.getPhoneNumber());
+		order.setPayMethod(orderForm.getPayMethod());
+
+		// セッションスコープからユーザーIDを取得し、それに基づきユーザー情報をDBから取得
+		// 取得したユーザー情報を注文情報エンティティにセット
+		Integer userId = ((UserBean) session.getAttribute("user")).getId();
+		User user = userRepository.getReferenceById(userId);
+		order.setUser(user);
+
+		// 注文情報を保存
+		orderRepository.save(order);
+
+		// 商品エンティティのリストを作成
+		List<OrderItem> orderItems = new ArrayList<OrderItem>();
+
+		// 注文商品リストの各商品に対して、対応する商品エンティティを作成し保存したのち、リストに追加
+		for (OrderItemBean orderItemBean : orderItemBeans) {
+
+			Item item = itemRepository.getReferenceById(orderItemBean.getId());
+
+			OrderItem orderItem = new OrderItem();
+			orderItem.setQuantity(orderItemBean.getOrderNum());
+			orderItem.setOrder(order);
+			orderItem.setItem(item);
+			orderItem.setPrice(orderItemBean.getPrice());
+			orderItemRepository.save(orderItem);
+
+			orderItems.add(orderItem);
+
+			item.setStock(item.getStock() - orderItemBean.getOrderNum());
+			itemRepository.save(item);
+		}
+
+		// 注文情報エンティティに注文商品リストを追加し、再度保存
+		order.setOrderItemsList(orderItems);
+		orderRepository.save(order);
+
+		// セッションスコープに保存している各注文情報を破棄
+		session.removeAttribute("orderForm");
+		session.removeAttribute("basketBeans");
+		session.removeAttribute("orderItemBeans");
+
+		return "redirect:/client/order/complete";
+	}
+
+	/**
+	 * 注文完了画面の表示
+	 * 
+	 * @return "client/order/complete" 注文完了画面
+	 **/
+	@RequestMapping(path = "/client/order/complete", method = RequestMethod.GET)
+	public String orderComplete() {
+		return "client/order/complete";
+	}
 
 }
