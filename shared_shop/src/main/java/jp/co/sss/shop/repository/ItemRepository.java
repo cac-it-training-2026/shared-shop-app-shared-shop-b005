@@ -49,11 +49,11 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 
 	List<Item> findByCategoryIdAndDeleteFlagOrderByInsertDateDesc(Integer categoryid, int deleteFlag);
 
-	@Query("SELECT i FROM Item i")
-	List<Item> findHotItems();
+	@Query("SELECT i FROM Item i INNER JOIN OrderItem oi ON i.id = oi.item.id WHERE i.deleteFlag = :deleteFlag GROUP BY i ORDER BY COUNT(oi.item.id) DESC, i.id ASC")
+	List<Item> findHotItems(@Param("deleteFlag") int deleteFlag);
 
-	@Query("SELECT i FROM Item i")
-	List<Item> findHotItemsByCategory(Integer categoryId);
+	@Query("SELECT i FROM Item i INNER JOIN OrderItem oi ON i.id = oi.item.id WHERE i.deleteFlag = :deleteFlag AND i.category.id = :categoryId GROUP BY i ORDER BY COUNT(oi.item.id) DESC, i.id ASC")
+	List<Item> findHotItemsByCategory(@Param("categoryId") Integer categoryId, @Param("deleteFlag") int deleteFlag);
 
 	@Override
 	Item getReferenceById(Integer id);

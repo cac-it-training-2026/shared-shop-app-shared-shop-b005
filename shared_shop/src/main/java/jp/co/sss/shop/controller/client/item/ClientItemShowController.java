@@ -52,7 +52,7 @@ public class ClientItemShowController {
 		 * これを売れ筋（注文回数が多い順）に改修する*/
 
 		// 注文情報の商品情報を全件表示
-		List<Item> itemList = itemRepository.findAll();
+		List<Item> itemList = itemRepository.findHotItems(0);
 
 		// エンティティ内の検索結果をJavaBeansにコピー
 		List<ItemBean> itemBeanList = beanTools.copyEntityListToItemBeanList(itemList);
@@ -130,12 +130,12 @@ public class ClientItemShowController {
 			if (categoryId == null || categoryId == 0) {
 
 				// itemListにメソッドで並び替えた（売れ筋順）itemRepositoryを格納する。
-				itemList = itemRepository.findHotItems();
+				itemList = itemRepository.findHotItems(0);
 
 			} else {
 
 				// itemListにカテゴリ別の売れ筋順商品を格納する。
-				itemList = itemRepository.findHotItemsByCategory(categoryId);
+				itemList = itemRepository.findHotItemsByCategory(categoryId, 0);
 			}
 		}
 
@@ -156,5 +156,16 @@ public class ClientItemShowController {
 		model.addAttribute("categoryId", categoryId);
 
 		return "client/item/list";
+	}
+
+	// 詳細画面戻るボタン
+	/**
+	 * @author 児島涼音
+	 * @param model
+	 * @return redirect:/client/item/list/1
+	 */
+	@RequestMapping(path = "/client/item/list/1", method = RequestMethod.POST)
+	public String backToList() {
+		return "redirect:/client/item/list/1";
 	}
 }
