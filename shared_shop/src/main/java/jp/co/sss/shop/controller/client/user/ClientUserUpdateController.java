@@ -155,6 +155,15 @@ public class ClientUserUpdateController {
 	}
 
 	/**
+	 * @return "redirect:/client/user/update/input" postに変換
+	 * 
+	 */
+	@RequestMapping(path = "/client/user/update/input", method = RequestMethod.POST)
+	public String updateInputBack() {
+		return "redirect:/client/user/update/input";
+	}
+
+	/**
 	 * @return
 	 * 入力エラーあり: "redirect:/syserror" エラー処理
 	 * 入力エラーなし: "redirect:/client/user/update/complete" updateCompleteFinishのメソッドへ
