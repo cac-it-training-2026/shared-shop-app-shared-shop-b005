@@ -26,7 +26,7 @@ public class UserForm implements Serializable {
 	 * 会員メールアドレス
 	 */
 	@NotBlank(message = "メールアドレスは必須項目です。")
-	@Email
+	@Email(message = "メールアドレスは正しい形式で入力してください。")
 	private String email;
 
 	/**
@@ -40,14 +40,14 @@ public class UserForm implements Serializable {
 	/**
 	 * 会員名
 	 */
-	@NotBlank(message = "氏名を入力してください。")
+	@NotBlank(message = "氏名は必須項目です。")
 	@Size(min = 1, max = 30, message = "{text.maxsize.message}")
 	private String name;
 
 	/**
 	 * 郵便番号
 	 */
-	@NotBlank(message = "郵便番号を入力してください。")
+	@NotBlank(message = "郵便番号は必須項目です。")
 	@Size(min = 7, max = 7, message = "{text.fixsize.message}")
 	@Pattern(regexp = "^[0-9]+$", message = "{userRegist.numberpattern.message}")
 	private String postalCode;
@@ -55,14 +55,14 @@ public class UserForm implements Serializable {
 	/**
 	 * 住所
 	 */
-	@NotBlank(message = "住所を入力してください。")
+	@NotBlank(message = "住所は必須項目です。")
 	@Size(min = 1, max = 150, message = "{text.maxsize.message}")
 	private String address;
 
 	/**
 	 * 電話番号
 	 */
-	@NotBlank(message = "電話番号を入力してください。")
+	@NotBlank(message = "電話番号は必須項目です。")
 	@Size(min = 10, max = 11, message = "電話番号は10文字以上11文字以下で入力してください。")
 	@Pattern(regexp = "^[0-9]+$", message = "{userRegist.numberpattern.message}")
 	private String phoneNumber;
