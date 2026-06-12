@@ -49,13 +49,35 @@ public class ClientBasketController {
 	@RequestMapping(path = "/client/basket/list", method = RequestMethod.GET)
 	public String showBasket(Model model, HttpSession session) {
 
-		// 買い物かご (BasketBeanのリスト) をセッションスコープから取り出す
-		List<BasketBean> basketBeans = (List<BasketBean>) session.getAttribute("basketBeans");
+		// 買い物かごをセッションスコープから取り出す
+		Object basket = session.getAttribute("basketBeans");
 
 		// 買い物かごがない場合、その旨を添えた画面を返す
-		if (basketBeans == null) {
+		if (basket == null) {
 			return "client/basket/list";
+
+			// 買い物かごがリストではない場合、買い物かごをリセットして画面を返す
+		} else if (!(basket instanceof List<?>)) {
+			session.removeAttribute("basketBeans");
+			return "client/basket/list";
+
+			//買い物かごがリストの場合、リストにキャストする
+		} else {
+			List<?> basketList = (List<?>) basket;
+
+			// 買い物かごの各要素が商品情報か調べる
+			// 商品情報でない場合は買い物かごをリセットして画面を返す
+			for (Object item : basketList) {
+				if (!(item instanceof BasketBean)) {
+					session.removeAttribute("basketBeans");
+					return "client/basket/list";
+				}
+			}
 		}
+
+		// 買い物かごをBasketBeanのリストにキャストする
+		@SuppressWarnings("unchecked")
+		List<BasketBean> basketBeans = (List<BasketBean>) session.getAttribute("basketBeans");
 
 		// 在庫不足商品を入れるリストを作成
 		List<String> itemNameListZero = new ArrayList<String>();
@@ -67,9 +89,10 @@ public class ClientBasketController {
 			BasketBean basketItem = basketBeans.get(i);
 			Item item = itemRepository.getReferenceById(basketItem.getId());
 			int itemStock = item.getStock();
+			int itemDeleteFlag = item.getDeleteFlag();
 
-			// 在庫が0の場合、在庫数と注文数を0にする
-			if (itemStock == 0) {
+			// 在庫が0または商品情報が削除されている場合、在庫数と注文数を0にする
+			if (itemStock == 0 || itemDeleteFlag == 1) {
 				itemNameListZero.add(basketItem.getName());
 				basketItem.setStock(itemStock);
 				basketItem.setOrderNum(itemStock);
@@ -112,17 +135,17 @@ public class ClientBasketController {
 	@RequestMapping(path = "/client/basket/add", method = RequestMethod.POST)
 	public String addBasket(Item item, HttpSession session) {
 
-		// セッションスコープから、買い物かごを取り出す
-		List<BasketBean> basketBeans = (List<BasketBean>) session.getAttribute("basketBeans");
+		// 買い物かごをセッションスコープから取り出す
+		Object basket = session.getAttribute("basketBeans");
 
 		// 追加する商品のエンティティを検索
 		Item addItem = itemRepository.getReferenceById(item.getId());
 
-		// 買い物かごがない場合、新たに生成して商品を追加
-		if (basketBeans == null) {
+		// 買い物かごがない場合、新たに買い物かごを生成して商品を追加
+		if (basket == null) {
 
 			// 買い物かごの生成
-			basketBeans = new ArrayList<BasketBean>();
+			List<BasketBean> basketBeans = new ArrayList<BasketBean>();
 
 			// 買い物かごに商品を追加
 			BasketBean addItemBean = new BasketBean();
@@ -136,7 +159,12 @@ public class ClientBasketController {
 			return "redirect:/client/basket/list";
 		}
 
-		// 買い物かごがある場合、追加商品が既にあるか調べる
+		// 買い物かごをBasketBeanのリストにキャストする
+		// (買い物かご画面が表示されている時点で、セッションスコープにあるbasketBeansはBasketBeanのリストであることが保障されている)
+		@SuppressWarnings("unchecked")
+		List<BasketBean> basketBeans = (List<BasketBean>) session.getAttribute("basketBeans");
+
+		// 追加商品が既にあるか調べる
 		boolean hasItemFlag = false;
 		BasketBean basketItem = null;
 
@@ -176,6 +204,8 @@ public class ClientBasketController {
 	public String deleteBasket(Integer id, HttpSession session) {
 
 		//セッションスコープから買い物かごを取り出す
+		// (買い物かご画面が表示されている時点で、セッションスコープにあるbasketBeansはBasketBeanのリストであることが保障されている)
+		@SuppressWarnings("unchecked")
 		List<BasketBean> basketBeans = (List<BasketBean>) session.getAttribute("basketBeans");
 
 		//削除する商品を買い物かごから検索
@@ -221,5 +251,4 @@ public class ClientBasketController {
 		session.removeAttribute("basketBeans");
 		return "redirect:/client/basket/list";
 	}
-
 }

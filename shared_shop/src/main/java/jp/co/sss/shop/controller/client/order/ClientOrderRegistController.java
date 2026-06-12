@@ -190,7 +190,10 @@ public class ClientOrderRegistController {
 	public String orderCheck(Model model, HttpSession session) {
 
 		//セッションスコープから注文情報と買い物かご情報を取り出す
+		// (買い物かご画面から進められている時点で、セッションスコープにあるbasketBeansはBasketBeanのリストであることが保障されている)
 		OrderForm orderForm = (OrderForm) session.getAttribute("orderForm");
+
+		@SuppressWarnings("unchecked")
 		List<BasketBean> basketBeans = (List<BasketBean>) session.getAttribute("basketBeans");
 
 		// 在庫不足商品を入れるリストを作成
@@ -203,9 +206,10 @@ public class ClientOrderRegistController {
 			BasketBean basketItem = basketBeans.get(i);
 			Item item = itemRepository.getReferenceById(basketItem.getId());
 			int itemStock = item.getStock();
+			int itemDeleteFlag = item.getDeleteFlag();
 
-			// 在庫が0の場合、在庫数と注文数を0にする
-			if (itemStock == 0) {
+			// 在庫が0、または商品情報が削除されている場合、在庫数と注文数を0にする
+			if (itemStock == 0 || itemDeleteFlag == 1) {
 				itemNameListZero.add(basketItem.getName());
 				basketItem.setStock(itemStock);
 				basketItem.setOrderNum(itemStock);
@@ -232,6 +236,11 @@ public class ClientOrderRegistController {
 		model.addAttribute("itemNameListZero", itemNameListZero);
 		model.addAttribute("itemNameListLessThan", itemNameListLessThan);
 		session.setAttribute("basketBeans", basketAvailableBean);
+
+		// 注文できる商品がない場合、その旨を表示する
+		if (basketAvailableBean.size() == 0) {
+			return "client/order/check";
+		}
 
 		// 注文商品リストを新たに作成
 		List<OrderItemBean> orderItemBeans = new ArrayList<OrderItemBean>();
@@ -280,14 +289,17 @@ public class ClientOrderRegistController {
 	public String orderComplete(HttpSession session) {
 
 		// セッションスコープから注文商品のリストを取得
+		// (買い物かご画面から進められている時点で、セッションスコープにあるbasketBeansはBasketBeanのリストであることが保障されている)
+		@SuppressWarnings("unchecked")
 		List<OrderItemBean> orderItemBeans = (List<OrderItemBean>) session.getAttribute("orderItemBeans");
 
 		// 各商品の注文個数と在庫を比較し、不足がある場合は注文確認表示へリダイレクト
+		// 商品情報が削除されている場合も注文確認表示へリダイレクト
 		for (OrderItemBean orderItemBean : orderItemBeans) {
 
 			Item item = itemRepository.getReferenceById(orderItemBean.getId());
 
-			if (item.getStock() < orderItemBean.getOrderNum()) {
+			if (item.getStock() < orderItemBean.getOrderNum() || item.getDeleteFlag() == 1) {
 				return "redirect:/client/order/check";
 			}
 		}
