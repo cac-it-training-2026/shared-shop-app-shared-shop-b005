@@ -46,18 +46,13 @@ public class ClientUserRegistController {
 	@RequestMapping(path = "/client/user/regist/input/init", method = RequestMethod.GET)
 	public String initRegistInput() {
 
-		// セッションに保存済みのuserFormを取得
-		UserForm userform = (UserForm) session.getAttribute("userForm");
+		// 入力フォーム情報を新規生成
+		UserForm userForm = new UserForm();
 
-		// userformが空の場合
-		if (userform == null) {
+		// セッションに保存
+		session.setAttribute("userForm", userForm);
 
-			// UserFormを新規作成
-			userform = new UserForm();
-
-			// セッションに保存
-			session.setAttribute("userForm", userform);
-		}
+		// 登録入力画面表示処理へリダイレクト
 		return "redirect:/client/user/regist/input";
 	}
 
