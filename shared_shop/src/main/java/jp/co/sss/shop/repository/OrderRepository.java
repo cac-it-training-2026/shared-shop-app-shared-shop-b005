@@ -1,5 +1,7 @@
 package jp.co.sss.shop.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,5 +26,10 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 	 */
 	@Query("SELECT o FROM Order o ORDER BY o.insertDate DESC,o.id DESC")
 	Page<Order> findAllOrderByInsertdateDescIdDesc(Pageable pageable);
+
+	@Query("SELECT o FROM Order o WHERE o.user.id = :userId ORDER BY o.insertDate DESC, o.id DESC")
+	List<Order> findByUserIdOrderByInsertDateDescIdDesc(Integer userId);
+
+	Order findByIdAndUserId(Integer id, Integer userId);
 
 }

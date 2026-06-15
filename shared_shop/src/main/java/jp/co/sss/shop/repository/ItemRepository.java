@@ -1,5 +1,7 @@
 package jp.co.sss.shop.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -42,4 +44,18 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 	 * @return 商品エンティティ
 	 */
 	public Item findByNameAndDeleteFlag(String name, int notDeleted);
+
+	List<Item> findByDeleteFlagOrderByInsertDateDescIdAsc(int deleteFlag);
+
+	List<Item> findByCategoryIdAndDeleteFlagOrderByInsertDateDescIdAsc(Integer categoryId,int deleteFlag);
+
+	@Query("SELECT i FROM Item i INNER JOIN OrderItem oi ON i.id = oi.item.id WHERE i.deleteFlag = :deleteFlag GROUP BY i ORDER BY COUNT(oi.item.id) DESC, i.id ASC")
+	List<Item> findHotItems(@Param("deleteFlag") int deleteFlag);
+
+	@Query("SELECT i FROM Item i INNER JOIN OrderItem oi ON i.id = oi.item.id WHERE i.deleteFlag = :deleteFlag AND i.category.id = :categoryId GROUP BY i ORDER BY COUNT(oi.item.id) DESC, i.id ASC")
+	List<Item> findHotItemsByCategory(@Param("categoryId") Integer categoryId, @Param("deleteFlag") int deleteFlag);
+
+	@Override
+	Item getReferenceById(Integer id);
+
 }

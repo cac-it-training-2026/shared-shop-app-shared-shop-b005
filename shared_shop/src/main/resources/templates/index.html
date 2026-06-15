@@ -20,7 +20,7 @@
 		<!--/* 1件分の商品情報 */-->
 		<div class="item">
 			<div class="item_name" th:text="${item.name}"></div>
-			<a th:href="@{/client/item/detail/}+${item.id}">
+			<a th:href="@{/client/item/detail/{id}(id=${item.id}, sortType=2, categoryId=0)}">
 			    <img th:src="@{/images/{image}(image=${item.image})}" th:if="${item.image != null}" />
 			    <img th:src="@{/images/common/no_image.jpg}" th:if="${item.image == null}" />
 			</a>
