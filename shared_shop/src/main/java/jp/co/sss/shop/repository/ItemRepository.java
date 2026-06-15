@@ -45,9 +45,9 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 	 */
 	public Item findByNameAndDeleteFlag(String name, int notDeleted);
 
-	List<Item> findByDeleteFlagOrderByInsertDateDesc(int deletFlag);
+	List<Item> findByDeleteFlagOrderByInsertDateDescIdAsc(int deleteFlag);
 
-	List<Item> findByCategoryIdAndDeleteFlagOrderByInsertDateDesc(Integer categoryid, int deleteFlag);
+	List<Item> findByCategoryIdAndDeleteFlagOrderByInsertDateDescIdAsc(Integer categoryId,int deleteFlag);
 
 	@Query("SELECT i FROM Item i INNER JOIN OrderItem oi ON i.id = oi.item.id WHERE i.deleteFlag = :deleteFlag GROUP BY i ORDER BY COUNT(oi.item.id) DESC, i.id ASC")
 	List<Item> findHotItems(@Param("deleteFlag") int deleteFlag);
