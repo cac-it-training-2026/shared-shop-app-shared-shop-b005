@@ -58,8 +58,16 @@ public class ClientOrderRegistController {
 	@RequestMapping(path = "/client/order/address/input", method = RequestMethod.POST)
 	public String addressInput(HttpSession session) {
 
-		// セッションスコープからユーザーIDを取得し、それに基づきユーザー情報をDBから取得
-		Integer userId = ((UserBean) session.getAttribute("user")).getId();
+		//セッションスコープからユーザー情報を取得
+		Object userObject = session.getAttribute("user");
+
+		// 取得したユーザー情報が空か、UserBeanでない場合、エラー画面を返す
+		if ((!(userObject instanceof UserBean)) || (userObject == null)) {
+			return "redirect:/syserror";
+		}
+
+		// ユーザーIDを取得し、それに基づきユーザー情報をDBから取得
+		Integer userId = ((UserBean) userObject).getId();
 		User user = userRepository.getReferenceById(userId);
 
 		// 注文情報のフォームを新規作成し、ユーザー情報を登録
@@ -88,14 +96,29 @@ public class ClientOrderRegistController {
 	@RequestMapping(path = "/client/order/address/input", method = RequestMethod.GET)
 	public String addressInput(Model model, HttpSession session) {
 
-		// 注文情報をリクエストスコープに登録
-		model.addAttribute("orderForm", (OrderForm) session.getAttribute("orderForm"));
+		// セッションスコープから、注文情報を取得
+		Object orderFormObject = session.getAttribute("orderForm");
 
-		// セッションスコープにエラー情報がある場合はエラー情報をリクエストスコープに移す
-		BindingResult result = (BindingResult) session.getAttribute("bindingResult");
-		if (result != null) {
-			model.addAttribute("org.springframework.validation.BindingResult.orderForm", result);
-			session.removeAttribute("bindingResult");
+		// 取得した注文情報が注文情報でないか、空の場合はエラー画面を返す
+		if ((orderFormObject == null) || !(orderFormObject instanceof OrderForm)) {
+			return "redirect:/syserror";
+		}
+
+		// 注文情報をリクエストスコープに登録
+		model.addAttribute("orderForm", (OrderForm) orderFormObject);
+
+		// セッションスコープからエラー情報を取得する
+		Object bindingResultObject = session.getAttribute("bindingResult");
+
+		// 取り出した情報がエラー情報でない場合、エラー画面を返す
+		if (bindingResultObject != null) {
+			if (!(bindingResultObject instanceof BindingResult)) {
+				return "redirect:/syserror";
+			} else {
+				BindingResult result = (BindingResult) bindingResultObject;
+				model.addAttribute("org.springframework.validation.BindingResult.orderForm", result);
+				session.removeAttribute("bindingResult");
+			}
 		}
 
 		return "client/order/address_input";
@@ -115,8 +138,16 @@ public class ClientOrderRegistController {
 	public String paymentInput(@Valid @ModelAttribute OrderForm orderForm, BindingResult result,
 			HttpSession session) {
 
+		// セッションスコープから、注文情報を取得
+		Object orderFormObject = session.getAttribute("orderForm");
+
+		// 取得した注文情報が注文情報でないか、空の場合はエラー画面を返す
+		if ((orderFormObject == null) || !(orderFormObject instanceof OrderForm)) {
+			return "redirect:/syserror";
+		}
+
 		// 入力された注文情報をセッションスコープに登録
-		OrderForm newOrderForm = (OrderForm) session.getAttribute("orderForm");
+		OrderForm newOrderForm = (OrderForm) orderFormObject;
 		BeanUtils.copyProperties(orderForm, newOrderForm, "payMethod");
 		session.setAttribute("orderForm", newOrderForm);
 
@@ -142,8 +173,16 @@ public class ClientOrderRegistController {
 	@RequestMapping(path = "/client/order/payment/input", method = RequestMethod.GET)
 	public String paymentInput(Model model, HttpSession session) {
 
-		// セッションスコープより注文情報を取り出し、リクエストスコープに保存
-		OrderForm orderForm = (OrderForm) session.getAttribute("orderForm");
+		// セッションスコープから、注文情報を取得
+		Object orderFormObject = session.getAttribute("orderForm");
+
+		// 取得した注文情報が注文情報でないか、空の場合はエラー画面を返す
+		if ((orderFormObject == null) || !(orderFormObject instanceof OrderForm)) {
+			return "redirect:/syserror";
+		}
+
+		// 取り出した注文情報をリクエストスコープに保存
+		OrderForm orderForm = (OrderForm) orderFormObject;
 		model.addAttribute("payMethod", orderForm.getPayMethod());
 
 		return "client/order/payment_input";
@@ -159,8 +198,16 @@ public class ClientOrderRegistController {
 	@RequestMapping(path = "/client/order/check", method = RequestMethod.POST)
 	public String orderCheck(Integer payMethod, HttpSession session) {
 
-		// セッションスコープから注文情報を取り出し、支払い方法を更新
-		OrderForm orderForm = (OrderForm) session.getAttribute("orderForm");
+		// セッションスコープから、注文情報を取得
+		Object orderFormObject = session.getAttribute("orderForm");
+
+		// 取得した注文情報が注文情報でないか、空の場合はエラー画面を返す
+		if ((orderFormObject == null) || !(orderFormObject instanceof OrderForm)) {
+			return "redirect:/syserror";
+		}
+
+		// 取り出した注文情報の支払い方法を更新
+		OrderForm orderForm = (OrderForm) orderFormObject;
 		orderForm.setPayMethod(payMethod);
 		session.setAttribute("orderForm", orderForm);
 
@@ -189,9 +236,36 @@ public class ClientOrderRegistController {
 	@RequestMapping(path = "/client/order/check", method = RequestMethod.GET)
 	public String orderCheck(Model model, HttpSession session) {
 
-		//セッションスコープから注文情報と買い物かご情報を取り出す
-		// (買い物かご画面から進められている時点で、セッションスコープにあるbasketBeansはBasketBeanのリストであることが保障されている)
-		OrderForm orderForm = (OrderForm) session.getAttribute("orderForm");
+		// セッションスコープから、注文情報を取得
+		Object orderFormObject = session.getAttribute("orderForm");
+
+		// 取得した注文情報が注文情報でないか、空の場合はエラー画面を返す
+		if ((orderFormObject == null) || !(orderFormObject instanceof OrderForm)) {
+			return "redirect:/syserror";
+		}
+
+		// 取得した注文情報をキャストする
+		OrderForm orderForm = (OrderForm) orderFormObject;
+
+		// 買い物かごをセッションスコープから取り出す
+		Object basketObject = session.getAttribute("basketBeans");
+
+		// 買い物かごがない、または買い物かご情報ではない場合、買い物かご情報を削除し、エラー画面を返す
+		if ((basketObject == null) || (!(basketObject instanceof List<?>))) {
+			session.removeAttribute("basketBeans");
+			return "redirect:/syserror";
+		} else {
+			List<?> basketList = (List<?>) basketObject;
+
+			// 買い物かごの各要素が商品情報か調べる
+			// 商品情報でない場合は買い物かごをリセットしてエラー画面を返す
+			for (Object item : basketList) {
+				if (!(item instanceof BasketBean)) {
+					session.removeAttribute("basketBeans");
+					return "redirect:/syserror";
+				}
+			}
+		}
 
 		@SuppressWarnings("unchecked")
 		List<BasketBean> basketBeans = (List<BasketBean>) session.getAttribute("basketBeans");
@@ -276,6 +350,7 @@ public class ClientOrderRegistController {
 		model.addAttribute("total", totalPrice);
 
 		return "client/order/check";
+
 	}
 
 	/**
@@ -289,7 +364,25 @@ public class ClientOrderRegistController {
 	public String orderComplete(HttpSession session) {
 
 		// セッションスコープから注文商品のリストを取得
-		// (買い物かご画面から進められている時点で、セッションスコープにあるbasketBeansはBasketBeanのリストであることが保障されている)
+		Object orderItemBeansObject = session.getAttribute("orderItemBeans");
+
+		// 注文商品リストがない、またはリストではない場合、注文商品リストを削除し、エラー画面を返す
+		if ((orderItemBeansObject == null) || (!(orderItemBeansObject instanceof List<?>))) {
+			session.removeAttribute("orderItemBeans");
+			return "redirect:/syserror";
+		} else {
+			List<?> orderItemList = (List<?>) orderItemBeansObject;
+
+			// リストの各要素が商品情報か調べる
+			// 商品情報でない場合はリストをリセットしてエラー画面を返す
+			for (Object item : orderItemList) {
+				if (!(item instanceof OrderItemBean)) {
+					session.removeAttribute("orderItemBeans");
+					return "redirect:/syserror";
+				}
+			}
+		}
+
 		@SuppressWarnings("unchecked")
 		List<OrderItemBean> orderItemBeans = (List<OrderItemBean>) session.getAttribute("orderItemBeans");
 
@@ -307,17 +400,36 @@ public class ClientOrderRegistController {
 		// 注文情報エンティティを作成
 		Order order = new Order();
 
-		// 注文情報フォームをセッションスコープから取り出し、情報を注文情報エンティティにセット
-		OrderForm orderForm = (OrderForm) session.getAttribute("orderForm");
+		// セッションスコープから、注文情報を取得
+		Object orderFormObject = session.getAttribute("orderForm");
+
+		// 取得した注文情報が注文情報でないか、空の場合はエラー画面を返す
+		if ((orderFormObject == null) || !(orderFormObject instanceof OrderForm)) {
+			return "redirect:/syserror";
+		}
+
+		// 注文情報を注文情報エンティティにセット
+		OrderForm orderForm = (OrderForm) orderFormObject;
 		order.setPostalCode(orderForm.getPostalCode());
 		order.setAddress(orderForm.getAddress());
 		order.setName(orderForm.getName());
 		order.setPhoneNumber(orderForm.getPhoneNumber());
 		order.setPayMethod(orderForm.getPayMethod());
 
+		// ユーザー情報をセッションスコープから取り出す
+		Object userObject = session.getAttribute("user");
+
+		// ユーザー情報が空か、ユーザー情報ではない場合、削除してエラー画面を返す
+		if ((userObject == null) || !((userObject instanceof UserBean))) {
+
+			session.removeAttribute("user");
+			return "redirect:/syserror";
+
+		}
+
 		// セッションスコープからユーザーIDを取得し、それに基づきユーザー情報をDBから取得
 		// 取得したユーザー情報を注文情報エンティティにセット
-		Integer userId = ((UserBean) session.getAttribute("user")).getId();
+		Integer userId = ((UserBean) userObject).getId();
 		User user = userRepository.getReferenceById(userId);
 		order.setUser(user);
 

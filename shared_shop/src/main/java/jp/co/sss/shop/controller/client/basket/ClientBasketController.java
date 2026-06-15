@@ -50,20 +50,20 @@ public class ClientBasketController {
 	public String showBasket(Model model, HttpSession session) {
 
 		// 買い物かごをセッションスコープから取り出す
-		Object basket = session.getAttribute("basketBeans");
+		Object basketObject = session.getAttribute("basketBeans");
 
 		// 買い物かごがない場合、その旨を添えた画面を返す
-		if (basket == null) {
+		if (basketObject == null) {
 			return "client/basket/list";
 
-			// 買い物かごがリストではない場合、買い物かごをリセットして画面を返す
-		} else if (!(basket instanceof List<?>)) {
+			// 買い物かごがリストではない場合、買い物かごをリセットしてエラー画面を返す
+		} else if (!(basketObject instanceof List<?>)) {
 			session.removeAttribute("basketBeans");
-			return "client/basket/list";
+			return "redirect:/syserror";
 
 			//買い物かごがリストの場合、リストにキャストする
 		} else {
-			List<?> basketList = (List<?>) basket;
+			List<?> basketList = (List<?>) basketObject;
 
 			// 買い物かごの各要素が商品情報か調べる
 			// 商品情報でない場合は買い物かごをリセットして画面を返す
@@ -136,13 +136,13 @@ public class ClientBasketController {
 	public String addBasket(Item item, HttpSession session) {
 
 		// 買い物かごをセッションスコープから取り出す
-		Object basket = session.getAttribute("basketBeans");
+		Object basketObject = session.getAttribute("basketBeans");
 
 		// 追加する商品のエンティティを検索
 		Item addItem = itemRepository.getReferenceById(item.getId());
 
 		// 買い物かごがない場合、新たに買い物かごを生成して商品を追加
-		if (basket == null) {
+		if (basketObject == null) {
 
 			// 買い物かごの生成
 			List<BasketBean> basketBeans = new ArrayList<BasketBean>();
@@ -159,10 +159,10 @@ public class ClientBasketController {
 			return "redirect:/client/basket/list";
 		}
 
-		// 買い物かごをBasketBeanのリストにキャストする
+		// 買い物かごがある場合、BasketBeanのリストにキャストする
 		// (買い物かご画面が表示されている時点で、セッションスコープにあるbasketBeansはBasketBeanのリストであることが保障されている)
 		@SuppressWarnings("unchecked")
-		List<BasketBean> basketBeans = (List<BasketBean>) session.getAttribute("basketBeans");
+		List<BasketBean> basketBeans = (List<BasketBean>) basketObject;
 
 		// 追加商品が既にあるか調べる
 		boolean hasItemFlag = false;
@@ -203,15 +203,20 @@ public class ClientBasketController {
 	@RequestMapping(path = "/client/basket/delete", method = RequestMethod.POST)
 	public String deleteBasket(Integer id, HttpSession session) {
 
-		//セッションスコープから買い物かごを取り出す
+		// セッションスコープから買い物かごを取り出す
 		// (買い物かご画面が表示されている時点で、セッションスコープにあるbasketBeansはBasketBeanのリストであることが保障されている)
 		@SuppressWarnings("unchecked")
 		List<BasketBean> basketBeans = (List<BasketBean>) session.getAttribute("basketBeans");
 
-		//削除する商品を買い物かごから検索
+		// 買い物かごがないとき、エラー画面を返す
+		if (basketBeans == null) {
+			return "redirect:/syserror";
+		}
+
+		// 削除する商品を買い物かごから検索
 		for (BasketBean basketBean : basketBeans) {
 
-			//削除する商品が見つかったら、買い物かご中の個数を確認
+			// 削除する商品が見つかったら、買い物かご中の個数を確認
 			if (id.equals(basketBean.getId())) {
 
 				//個数が1のとき、商品情報自体を削除
@@ -227,11 +232,11 @@ public class ClientBasketController {
 			}
 		}
 
-		//買い物かごに何も入っていない場合、買い物かご自体を削除
+		// 買い物かごに何も入っていない場合、買い物かご自体を削除
 		if (basketBeans.size() == 0) {
 			session.removeAttribute("basketBeans");
 
-			//買い物かごに商品が入っている場合は、更新後の買い物かごをセッションスコープに保存
+			// 買い物かごに商品が入っている場合は、更新後の買い物かごをセッションスコープに保存
 		} else {
 			session.setAttribute("basketBean", basketBeans);
 		}
