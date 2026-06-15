@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -67,10 +66,13 @@ public class ClientOrderShowController {
 
 		//ログイン中のユーザーを取得
 		UserBean userBean = (UserBean) session.getAttribute("user");
+		if (userBean == null) {
+			return "redirect:/syserror";
+		}
 
 		// すべての注文情報を取得(注文日降順)
 		// 表示画面でページングが必要なため、ページ情報付きの検索を行う
-		Page<Order> orderList = orderRepository.findByUserIdOrderByInsertDateDescIdDesc(userBean.getId(), pageable);
+		List<Order> orderList = orderRepository.findByUserIdOrderByInsertDateDescIdDesc(userBean.getId());
 
 		// 注文情報リストを生成
 		List<OrderBean> orderBeanList = new ArrayList<OrderBean>();
@@ -92,7 +94,6 @@ public class ClientOrderShowController {
 		}
 
 		// 注文情報リストをViewへ渡す
-		model.addAttribute("pages", orderList);
 		model.addAttribute("orders", orderBeanList);
 
 		return "client/order/list";
