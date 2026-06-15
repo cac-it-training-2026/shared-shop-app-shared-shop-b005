@@ -15,7 +15,7 @@ import jp.co.sss.shop.entity.Item;
 import jp.co.sss.shop.repository.ItemRepository;
 
 /**
- * 買い物かごのコントロールクラス
+ * 買い物かごのコントロールクラス (修正済)
  * 
  * @author 岩本虎太郎
  **/

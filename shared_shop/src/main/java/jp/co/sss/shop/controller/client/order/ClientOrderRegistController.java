@@ -28,7 +28,7 @@ import jp.co.sss.shop.repository.OrderRepository;
 import jp.co.sss.shop.repository.UserRepository;
 
 /**
- * 注文手続きのコントロールクラス
+ * 注文手続きのコントロールクラス (修正済)
  * 
  * @author 岩本虎太郎
  **/
