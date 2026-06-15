@@ -94,8 +94,8 @@ public class ClientBasketController {
 			// 在庫が0または商品情報が削除されている場合、在庫数と注文数を0にする
 			if (itemStock == 0 || itemDeleteFlag == 1) {
 				itemNameListZero.add(basketItem.getName());
-				basketItem.setStock(itemStock);
-				basketItem.setOrderNum(itemStock);
+				basketItem.setStock(0);
+				basketItem.setOrderNum(0);
 
 				//在庫が不足している場合、在庫数と注文数を実際の在庫数に合わせる
 			} else if (itemStock < basketItem.getOrderNum()) {
@@ -116,10 +116,17 @@ public class ClientBasketController {
 			}
 		}
 
-		// 各リスト・買い物かごをリクエストスコープ・セッションスコープに追加
+		// 各リストをリクエストスコープに追加
 		model.addAttribute("itemNameListZero", itemNameListZero);
 		model.addAttribute("itemNameListLessThan", itemNameListLessThan);
-		session.setAttribute("basketBeans", basketAvailableBean);
+
+		// 買い物かごが空のとき、削除する
+		// 買い物かごが空でないとき、セッションスコープに保存する
+		if (basketAvailableBean.size() == 0) {
+			session.removeAttribute("basketBeans");
+		} else {
+			session.setAttribute("basketBeans", basketAvailableBean);
+		}
 
 		return "client/basket/list";
 

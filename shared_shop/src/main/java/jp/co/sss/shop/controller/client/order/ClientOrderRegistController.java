@@ -285,8 +285,8 @@ public class ClientOrderRegistController {
 			// 在庫が0、または商品情報が削除されている場合、在庫数と注文数を0にする
 			if (itemStock == 0 || itemDeleteFlag == 1) {
 				itemNameListZero.add(basketItem.getName());
-				basketItem.setStock(itemStock);
-				basketItem.setOrderNum(itemStock);
+				basketItem.setStock(0);
+				basketItem.setOrderNum(0);
 
 				//在庫が不足している場合、在庫数と注文数を実際の在庫数に合わせる
 			} else if (itemStock < basketItem.getOrderNum()) {
