@@ -71,7 +71,11 @@ public class ClientItemShowController {
 	 * @return "client/item/detail" 詳細画面 表示
 	 */
 	@RequestMapping(path = "/client/item/detail/{id}")
-	public String showItem(@PathVariable int id, Model model) {
+	public String showItem(
+			@PathVariable int id,
+			@RequestParam(required = false, defaultValue = "1") Integer sortType,
+			@RequestParam(required = false, defaultValue = "0") Integer categoryId,
+			Model model) {
 
 		// 商品IDに該当する商品情報を取得する
 		Item item = itemRepository.findByIdAndDeleteFlag(id, Constant.NOT_DELETED);
@@ -85,6 +89,8 @@ public class ClientItemShowController {
 		// 商品情報をViewへ渡す
 		model.addAttribute("item", itemBean);
 
+		model.addAttribute("sortType", sortType);
+		model.addAttribute("categoryId", categoryId);
 		return "client/item/detail";
 	}
 
