@@ -15,7 +15,7 @@ import jp.co.sss.shop.entity.Item;
 import jp.co.sss.shop.repository.ItemRepository;
 
 /**
- * 買い物かごのコントロールクラス(テスト)
+ * 買い物かごのコントロールクラス
  * 
  * @author 岩本虎太郎
  **/
@@ -187,13 +187,13 @@ public class ClientBasketController {
 		if (hasItemFlag) {
 			basketItem.setOrderNum(basketItem.getOrderNum() + 1);
 
-			// 商品がない場合買い物かごに新たに追加
+			// 商品がない場合買い物かごの先頭に新たに追加
 		} else {
 			BasketBean addItemBean = new BasketBean();
 			addItemBean.setId(addItem.getId());
 			addItemBean.setName(addItem.getName());
 			addItemBean.setStock(addItem.getStock());
-			basketBeans.add(addItemBean);
+			basketBeans.add(0, addItemBean);
 		}
 
 		session.setAttribute("basketBeans", basketBeans);
