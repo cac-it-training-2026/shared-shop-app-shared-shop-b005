@@ -63,7 +63,7 @@ public class UserForm implements Serializable {
 	 * 電話番号
 	 */
 	@NotBlank(message = "電話番号は必須項目です。")
-	@Size(min = 10, max = 11, message = "電話番号は10文字以上11文字以下で入力してください。")
+	@Size(min = 10, max = 11, message = "電話番号は10文字以上11文字以内で入力してください。")
 	@Pattern(regexp = "^[0-9]+$", message = "{userRegist.numberpattern.message}")
 	private String phoneNumber;
 
