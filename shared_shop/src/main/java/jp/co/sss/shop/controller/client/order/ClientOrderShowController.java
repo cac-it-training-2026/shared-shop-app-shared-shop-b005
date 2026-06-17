@@ -118,6 +118,9 @@ public class ClientOrderShowController {
 
 		// 選択された注文情報に該当する情報を取得
 		Order order = orderRepository.findByIdAndUserId(id, userBean.getId());
+		if (order == null) {
+			return "redirect:/syserror";
+		}
 
 		// 表示する注文情報を生成
 		OrderBean orderBean = beanTools.copyEntityToOrderBean(order);
