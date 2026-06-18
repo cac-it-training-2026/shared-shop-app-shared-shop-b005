@@ -1,5 +1,7 @@
 package jp.co.sss.shop.repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -42,4 +44,43 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 	 * @return 商品エンティティ
 	 */
 	public Item findByNameAndDeleteFlag(String name, int notDeleted);
+
+	/**
+	 * 商品一覧を新着順（同日の場合はIDの降順）に並び替え
+	 * @author 児島涼音
+	 * @param deleteFlag
+	 * @return 商品一覧
+	 */
+	List<Item> findByDeleteFlagOrderByInsertDateDescIdDesc(int deleteFlag);
+
+	/**
+	 * 商品一覧をカテゴリ別に新着順（同日の場合はIDの降順）に並び替
+	 * @author 児島涼音
+	 * @param categoryId
+	 * @param deleteFlag
+	 * @return 商品一覧
+	 */
+	List<Item> findByCategoryIdAndDeleteFlagOrderByInsertDateDescIdDesc(Integer categoryId, int deleteFlag);
+
+	/**
+	 * 商品一覧を売れ筋順（同数の場合はIDの昇順）に並び替え
+	 * @author 児島涼音
+	 * @param deleteFlag
+	 * @return 商品一覧
+	 */
+	@Query("SELECT i FROM Item i INNER JOIN OrderItem oi ON i.id = oi.item.id WHERE i.deleteFlag = :deleteFlag GROUP BY i ORDER BY COUNT(oi.item.id) DESC, i.id ASC")
+	List<Item> findHotItems(@Param("deleteFlag") int deleteFlag);
+
+	/** 商品一覧をカテゴリ別に売れ筋順（同数の場合はIDの昇順）で並び替え
+	 * @author 児島涼音
+	 * @param categoryId
+	 * @param deleteFlag
+	 * @return 商品一覧
+	 */
+	@Query("SELECT i FROM Item i INNER JOIN OrderItem oi ON i.id = oi.item.id WHERE i.deleteFlag = :deleteFlag AND i.category.id = :categoryId GROUP BY i ORDER BY COUNT(oi.item.id) DESC, i.id ASC")
+	List<Item> findHotItemsByCategory(@Param("categoryId") Integer categoryId, @Param("deleteFlag") int deleteFlag);
+
+	@Override
+	Item getReferenceById(Integer id);
+
 }
