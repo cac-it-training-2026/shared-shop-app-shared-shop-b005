@@ -121,12 +121,12 @@ public class ClientItemShowController {
 			if (categoryId == null || categoryId == 0) {
 
 				// itemListにメソッドで並び替えた（新着順）itemRepositoryを格納する。
-				itemList = itemRepository.findByDeleteFlagOrderByInsertDateDescIdAsc(0);
+				itemList = itemRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0);
 
 			} else {
 
 				// itemListにカテゴリ別の新着順商品を格納する。
-				itemList = itemRepository.findByCategoryIdAndDeleteFlagOrderByInsertDateDescIdAsc(categoryId, 0);
+				itemList = itemRepository.findByCategoryIdAndDeleteFlagOrderByInsertDateDescIdDesc(categoryId, 0);
 			}
 
 			// もしsortType == 2(売れ筋順)の場合
@@ -168,7 +168,7 @@ public class ClientItemShowController {
 	/**
 	 * @author 児島涼音
 	 * @param model
-	 * @return redirect:/client/item/list/1
+	 * @return redirect:/client/item/list/1 商品一覧画面
 	 */
 	@RequestMapping(path = "/client/item/list/1", method = RequestMethod.POST)
 	public String backToList() {
