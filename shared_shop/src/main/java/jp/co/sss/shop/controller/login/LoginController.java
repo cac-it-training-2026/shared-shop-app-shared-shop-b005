@@ -84,6 +84,8 @@ public class LoginController {
 
 		// 成功時のリセット
 		user.setLoginFailureCount(0);
+		user.setAccountLocked(0);
+		user.setAccountLockedUntil(null);
 		userRepository.save(user);
 
 		UserBean userBean = new UserBean();
@@ -105,11 +107,25 @@ public class LoginController {
 	private void updateLoginFailure(String email) {
 		User user = userRepository.findByEmailAndDeleteFlag(email, Constant.NOT_DELETED);
 		if (user != null) {
-			int count = (user.getLoginFailureCount() != null ? user.getLoginFailureCount() : 0) + 1;
-			user.setLoginFailureCount(count);
-			if (count >= 5) {
-				user.setAccountLocked(1);
-				user.setAccountLockedUntil(new Timestamp(System.currentTimeMillis() + 30 * 60 * 1000));
+			// 権限が管理者系の場合はロック対象外（必要に応じて調整可、ここでは一般会員のみを想定した課題とするが、全ユーザー対象とする）
+
+			// すでにロックされている場合は更新しない
+			if (user.getAccountLocked() != null && user.getAccountLocked() == 1) {
+				// ロック期限をチェックし、過ぎていればリセット
+				if (user.getAccountLockedUntil() != null && user.getAccountLockedUntil().before(new Timestamp(System.currentTimeMillis()))) {
+					user.setAccountLocked(0);
+					user.setLoginFailureCount(1);
+					user.setAccountLockedUntil(null);
+				} else {
+					return;
+				}
+			} else {
+				int count = (user.getLoginFailureCount() != null ? user.getLoginFailureCount() : 0) + 1;
+				user.setLoginFailureCount(count);
+				if (count >= 5) {
+					user.setAccountLocked(1);
+					user.setAccountLockedUntil(new Timestamp(System.currentTimeMillis() + 30 * 60 * 1000));
+				}
 			}
 			userRepository.save(user);
 		}
