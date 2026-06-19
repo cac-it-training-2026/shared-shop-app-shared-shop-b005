@@ -48,6 +48,14 @@
 					<label><span class="input_title">[[#{userForm.phoneNumber}]]</span></label>
 					<input type="text" th:field="*{phoneNumber}" />
 				</li>
+				<li>
+					<label><span class="input_title">秘密の質問</span></label>
+					<input type="text" th:field="*{secretQuestion}" placeholder="例：母親の旧姓は？" />
+				</li>
+				<li>
+					<label><span class="input_title">秘密の質問の回答</span></label>
+					<input type="text" th:field="*{secretAnswer}" />
+				</li>
 			</ul>
 			<input type="hidden" name="authority" value="2" />
 			<input type="submit" value="確認" th:class="send_button" />

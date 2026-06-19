@@ -1,6 +1,7 @@
 package jp.co.sss.shop.entity;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -80,6 +81,48 @@ public class User {
 	 */
 	@Column(insertable = false)
 	private Date insertDate;
+
+	/**
+	 * 秘密の質問
+	 */
+	@Column
+	private String secretQuestion;
+
+	/**
+	 * 秘密の質問の回答
+	 */
+	@Column
+	private String secretAnswer;
+
+	/**
+	 * ログイン失敗回数
+	 */
+	@Column
+	private Integer loginFailureCount = 0;
+
+	/**
+	 * アカウントロック状態
+	 */
+	@Column
+	private Integer accountLocked = 0;
+
+	/**
+	 * アカウントロック期限
+	 */
+	@Column
+	private Timestamp accountLockedUntil;
+
+	/**
+	 * パスワード再設定トークン
+	 */
+	@Column
+	private String resetToken;
+
+	/**
+	 * トークン有効期限
+	 */
+	@Column
+	private Timestamp resetTokenExpire;
 
 	/**
 	 * 会員IDの取得
@@ -239,5 +282,117 @@ public class User {
 	 */
 	public void setInsertDate(Date insertDate) {
 		this.insertDate = insertDate;
+	}
+
+	/**
+	 * 秘密の質問の取得
+	 * @return 秘密の質問
+	 */
+	public String getSecretQuestion() {
+		return secretQuestion;
+	}
+
+	/**
+	 * 秘密の質問のセット
+	 * @param secretQuestion 秘密の質問
+	 */
+	public void setSecretQuestion(String secretQuestion) {
+		this.secretQuestion = secretQuestion;
+	}
+
+	/**
+	 * 秘密の質問の回答の取得
+	 * @return 秘密の質問の回答
+	 */
+	public String getSecretAnswer() {
+		return secretAnswer;
+	}
+
+	/**
+	 * 秘密の質問の回答のセット
+	 * @param secretAnswer 秘密の質問の回答
+	 */
+	public void setSecretAnswer(String secretAnswer) {
+		this.secretAnswer = secretAnswer;
+	}
+
+	/**
+	 * ログイン失敗回数の取得
+	 * @return ログイン失敗回数
+	 */
+	public Integer getLoginFailureCount() {
+		return loginFailureCount;
+	}
+
+	/**
+	 * ログイン失敗回数のセット
+	 * @param loginFailureCount ログイン失敗回数
+	 */
+	public void setLoginFailureCount(Integer loginFailureCount) {
+		this.loginFailureCount = loginFailureCount;
+	}
+
+	/**
+	 * アカウントロック状態の取得
+	 * @return アカウントロック状態
+	 */
+	public Integer getAccountLocked() {
+		return accountLocked;
+	}
+
+	/**
+	 * アカウントロック状態のセット
+	 * @param accountLocked アカウントロック状態
+	 */
+	public void setAccountLocked(Integer accountLocked) {
+		this.accountLocked = accountLocked;
+	}
+
+	/**
+	 * アカウントロック期限の取得
+	 * @return アカウントロック期限
+	 */
+	public Timestamp getAccountLockedUntil() {
+		return accountLockedUntil;
+	}
+
+	/**
+	 * アカウントロック期限のセット
+	 * @param accountLockedUntil アカウントロック期限
+	 */
+	public void setAccountLockedUntil(Timestamp accountLockedUntil) {
+		this.accountLockedUntil = accountLockedUntil;
+	}
+
+	/**
+	 * パスワード再設定トークンの取得
+	 * @return パスワード再設定トークン
+	 */
+	public String getResetToken() {
+		return resetToken;
+	}
+
+	/**
+	 * パスワード再設定トークンのセット
+	 * @param resetToken パスワード再設定トークン
+	 */
+	public void setResetToken(String resetToken) {
+		this.resetToken = resetToken;
+	}
+
+	/**
+	 * トークン有効期限の取得
+	 * @return トークン有効期限
+	 */
+	public Timestamp getResetTokenExpire() {
+		return resetTokenExpire;
+	}
+
+	/**
+	 * トークン有効期限のセット
+	 * @param resetTokenExpire トークン有効期限
+	 */
+	public void setResetTokenExpire(Timestamp resetTokenExpire) {
+		this.resetTokenExpire = resetTokenExpire;
 	}
 }

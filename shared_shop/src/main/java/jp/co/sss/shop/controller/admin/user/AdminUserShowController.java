@@ -105,4 +105,22 @@ public class AdminUserShowController {
 		// 詳細画面　表示
 		return "admin/user/detail";
 	}
+
+	/**
+	 * アカウントロック解除処理
+	 *
+	 * @param id 解除対象会員ID
+	 * @return "redirect:/admin/user/detail/{id}" 詳細画面へ
+	 */
+	@RequestMapping(path = "/admin/user/unlock/{id}", method = RequestMethod.POST)
+	public String unlockUser(@PathVariable int id) {
+		User user = userRepository.findByIdAndDeleteFlag(id, Constant.NOT_DELETED);
+		if (user != null) {
+			user.setAccountLocked(0);
+			user.setLoginFailureCount(0);
+			user.setAccountLockedUntil(null);
+			userRepository.save(user);
+		}
+		return "redirect:/admin/user/detail/" + id;
+	}
 }

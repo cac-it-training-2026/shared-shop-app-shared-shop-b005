@@ -37,6 +37,14 @@
 				<span class="input_title">[[#{userForm.phoneNumber}]]</span>
 				<span class="input_value" th:text="*{phoneNumber}"></span>
 			</li>
+			<li>
+				<span class="input_title">秘密の質問</span>
+				<span class="input_value" th:text="*{secretQuestion}"></span>
+			</li>
+			<li>
+				<span class="input_title">秘密の質問の回答</span>
+				<span class="input_value" th:text="*{secretAnswer}"></span>
+			</li>
 		</ul>
 
 		<form th:action="@{/client/user/update/complete}" method="post">

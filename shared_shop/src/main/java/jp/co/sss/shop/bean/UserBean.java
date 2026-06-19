@@ -167,4 +167,30 @@ public class UserBean {
 		this.authority = authority;
 	}
 
+	/**
+	 * アカウントロック状態
+	 */
+	private Integer accountLocked = 0;
+
+	/**
+	 * アカウントロック期限
+	 */
+	private java.sql.Timestamp accountLockedUntil;
+
+	public Integer getAccountLocked() {
+		return accountLocked;
+	}
+
+	public void setAccountLocked(Integer accountLocked) {
+		this.accountLocked = accountLocked;
+	}
+
+	public java.sql.Timestamp getAccountLockedUntil() {
+		return accountLockedUntil;
+	}
+
+	public void setAccountLockedUntil(java.sql.Timestamp accountLockedUntil) {
+		this.accountLockedUntil = accountLockedUntil;
+	}
+
 }

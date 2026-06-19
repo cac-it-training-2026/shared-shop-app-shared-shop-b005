@@ -15,6 +15,7 @@ import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.form.UserForm;
 import jp.co.sss.shop.repository.UserRepository;
+import jp.co.sss.shop.util.PasswordHashUtil;
 
 /**
  * 会員管理 新規会員登録機能(非会員向け)のコントローラクラス
@@ -213,6 +214,9 @@ public class ClientUserRegistController {
 
 		// 入力フォーム情報をエンティティに設定
 		BeanUtils.copyProperties(userform, user);
+
+		// パスワードをハッシュ化して設定
+		user.setPassword(PasswordHashUtil.hashPassword(userform.getPassword()));
 
 		// DB登録実施
 		userRepository.save(user);

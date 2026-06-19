@@ -20,6 +20,7 @@ import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.form.UserForm;
 import jp.co.sss.shop.repository.UserRepository;
 import jp.co.sss.shop.util.Constant;
+import jp.co.sss.shop.util.PasswordHashUtil;
 
 /**
  * 会員管理 変更機能(運用管理者、システム管理者)のコントローラクラス
@@ -200,6 +201,9 @@ public class AdminUserUpdateController {
 
 		// 入力フォーム情報を変更用エンティティに設定
 		BeanUtils.copyProperties(userForm, user);
+
+		// パスワードをハッシュ化して設定
+		user.setPassword(PasswordHashUtil.hashPassword(userForm.getPassword()));
 
 		// 入力値以外の項目を設定
 		user.setDeleteFlag(deleteFlag);

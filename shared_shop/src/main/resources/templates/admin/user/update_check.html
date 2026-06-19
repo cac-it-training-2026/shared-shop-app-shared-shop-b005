@@ -37,6 +37,14 @@
 				<span class="input_value" th:text="*{phoneNumber}"></span>
 			</li>
 			<li>
+				<span class="input_title">秘密の質問</span>
+				<span class="input_value" th:text="*{secretQuestion}"></span>
+			</li>
+			<li>
+				<span class="input_title">秘密の質問の回答</span>
+				<span class="input_value" th:text="*{secretAnswer}"></span>
+			</li>
+			<li>
 				<span class="input_title">[[#{data.authority}]]</span>
 				<th:block th:switch="*{authority}">
 					<span class="input_value" th:case="0">[[#{auth.system.str}]]</span>

@@ -73,6 +73,18 @@ public class UserForm implements Serializable {
 	private Integer authority;
 
 	/**
+	 * 秘密の質問
+	 */
+	@NotBlank(message = "秘密の質問は必須項目です。")
+	private String secretQuestion;
+
+	/**
+	 * 秘密の質問の回答
+	 */
+	@NotBlank(message = "秘密の質問の回答は必須項目です。")
+	private String secretAnswer;
+
+	/**
 	 * 会員IDの取得
 	 * @return 会員ID
 	 */
@@ -198,6 +210,38 @@ public class UserForm implements Serializable {
 	 */
 	public void setAuthority(Integer authority) {
 		this.authority = authority;
+	}
+
+	/**
+	 * 秘密の質問の取得
+	 * @return 秘密の質問
+	 */
+	public String getSecretQuestion() {
+		return secretQuestion;
+	}
+
+	/**
+	 * 秘密の質問のセット
+	 * @param secretQuestion 秘密の質問
+	 */
+	public void setSecretQuestion(String secretQuestion) {
+		this.secretQuestion = secretQuestion;
+	}
+
+	/**
+	 * 秘密の質問の回答の取得
+	 * @return 秘密の質問の回答
+	 */
+	public String getSecretAnswer() {
+		return secretAnswer;
+	}
+
+	/**
+	 * 秘密の質問の回答のセット
+	 * @param secretAnswer 秘密の質問の回答
+	 */
+	public void setSecretAnswer(String secretAnswer) {
+		this.secretAnswer = secretAnswer;
 	}
 
 }

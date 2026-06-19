@@ -40,6 +40,16 @@
 						<span th:case="2">[[#{auth.client.str}]]</span>
 					</span>
 				</li>
+				<li>
+					<span class="input_title">アカウント状態</span>
+					<span class="input_value" th:if="*{accountLocked == 1}">
+						ロック中（期限：<span th:text="${#dates.format(userBean.accountLockedUntil, 'yyyy/MM/dd HH:mm:ss')}"></span>）
+						<form th:action="@{/admin/user/unlock/{id}(id=*{id})}" method="post" style="display:inline;">
+							<input type="submit" value="ロック解除" />
+						</form>
+					</span>
+					<span class="input_value" th:unless="*{accountLocked == 1}">通常</span>
+				</li>
 			</ul>
 		</div>
 

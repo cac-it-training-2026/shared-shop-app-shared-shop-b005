@@ -51,6 +51,13 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	 */
 	User findByIdAndDeleteFlag(Integer id, int deleteFlg);
 
+	/**
+	 * パスワード再設定トークンに該当する会員情報を検索
+	 * @param resetToken トークン
+	 * @return 会員エンティティ
+	 */
+	User findByResetToken(String resetToken);
+
 	@Override
 	User getReferenceById(Integer id);
 
