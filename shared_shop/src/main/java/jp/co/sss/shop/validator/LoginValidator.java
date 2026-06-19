@@ -10,9 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import jp.co.sss.shop.annotation.LoginCheck;
 import jp.co.sss.shop.bean.UserBean;
+import java.sql.Timestamp;
+
 import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.repository.UserRepository;
 import jp.co.sss.shop.util.Constant;
+import jp.co.sss.shop.util.PasswordHashUtil;
 
 /**
  * ログインチェックの独自検証クラス
@@ -44,18 +47,25 @@ public class LoginValidator implements ConstraintValidator<LoginCheck, Object> {
 
 		User user = userRepository.findByEmailAndDeleteFlag(emailProp, Constant.NOT_DELETED);
 
-		if (user != null && passwordProp.equals(user.getPassword())) {
-			UserBean userBean = new UserBean();
+		if (user != null) {
+			// アカウントロック状態の確認
+			if (user.getAccountLocked() != null && user.getAccountLocked() == 1) {
+				if (user.getAccountLockedUntil() != null && user.getAccountLockedUntil().before(new Timestamp(System.currentTimeMillis()))) {
+					// ロック期限を過ぎている場合はここでは何もしない（Controllerでリセットする）
+				} else {
+					// ロック中
+					return false;
+				}
+			}
 
-			userBean.setId(user.getId());
-			userBean.setName(user.getName());
-			userBean.setAuthority(user.getAuthority());
-
-			// セッションスコープにログインしたユーザの情報を登録
-			session.setAttribute("user", userBean);
-			isValidFlg = true;
+			String hashedInputPassword = PasswordHashUtil.hash(passwordProp);
+			// 互換性のため平文もチェック
+			if (hashedInputPassword.equals(user.getPassword()) || passwordProp.equals(user.getPassword())) {
+				isValidFlg = true;
+			} else {
+				isValidFlg = false;
+			}
 		} else {
-			//ユーザ認証に失敗
 			isValidFlg = false;
 		}
 		return isValidFlg;
