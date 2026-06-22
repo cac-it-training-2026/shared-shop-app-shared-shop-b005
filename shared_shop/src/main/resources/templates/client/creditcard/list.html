@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+
+<head>
+	<title>クレジットカード一覧 | [[#{shop.title}]]</title>
+	<meta charset="UTF-8" />
+</head>
+
+<body class="user credit_card_list">
+	<h2 class="title">クレジットカード一覧</h2>
+
+	<div class="user_info_form_area">
+		<div th:if="${#lists.isEmpty(creditCards)}">
+			<p>登録されているクレジットカードはありません。</p>
+		</div>
+
+		<table class="list_table" th:unless="${#lists.isEmpty(creditCards)}">
+			<tr>
+				<th>ブランド</th>
+				<th>カード番号</th>
+				<th>名義人</th>
+				<th>有効期限</th>
+				<th>操作</th>
+			</tr>
+			<tr th:each="card : ${creditCards}">
+				<td th:text="${card.brand}"></td>
+				<td th:text="${card.cardNumber}"></td>
+				<td th:text="${card.holderName}"></td>
+				<td th:text="${card.expirationDate}"></td>
+				<td>
+					<div class="op_button_area">
+						<form th:action="@{/client/creditcard/update/input/{id}(id=${card.id})}" method="post">
+							<input type="submit" value="変更" />
+						</form>
+						<form th:action="@{/client/creditcard/delete/check/{id}(id=${card.id})}" method="post">
+							<input type="submit" value="削除" class="delete" />
+						</form>
+					</div>
+				</td>
+			</tr>
+		</table>
+
+		<div class="detail_button_area">
+			<form th:action="@{/client/user/detail}" method="get">
+				<input type="submit" value="戻る" class="back_button" />
+			</form>
+			<form th:action="@{/client/creditcard/regist/input}" method="get">
+				<input type="submit" value="新規登録" />
+			</form>
+		</div>
+	</div>
+</body>
+
+</html>

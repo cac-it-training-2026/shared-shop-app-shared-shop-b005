@@ -14,6 +14,17 @@
 
 	<div class="user_info_form_area">
 		<form th:action="@{/client/order/check}" method="post">
+			<!-- クレジットカード選択 (クレジットカードが選択された時のみ表示) -->
+			<div id="credit_card_selection" th:if="${not #lists.isEmpty(creditCards)}">
+				<p>使用するクレジットカードを選択してください：</p>
+				<select name="creditCardId">
+					<option th:each="card : ${creditCards}" th:value="${card.id}" th:text="${card.brand} + ' ' + ${card.cardNumber}"></option>
+				</select>
+			</div>
+			<div th:if="${#lists.isEmpty(creditCards)}">
+				<p>登録されているクレジットカードがありません。<a th:href="@{/client/creditcard/regist/input}">こちらから登録</a>してください。</p>
+			</div>
+			<br/>
 			<ul class="payment_method_select">
 				<li>
 					<label class="radio_label">

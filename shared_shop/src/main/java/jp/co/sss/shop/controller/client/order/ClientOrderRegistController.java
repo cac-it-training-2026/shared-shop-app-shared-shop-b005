@@ -19,13 +19,18 @@ import jp.co.sss.shop.bean.OrderItemBean;
 import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.Item;
 import jp.co.sss.shop.entity.Order;
+import jp.co.sss.shop.bean.CreditCardBean;
+import jp.co.sss.shop.entity.CreditCard;
 import jp.co.sss.shop.entity.OrderItem;
 import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.form.OrderForm;
+import jp.co.sss.shop.repository.CreditCardRepository;
 import jp.co.sss.shop.repository.ItemRepository;
 import jp.co.sss.shop.repository.OrderItemRepository;
 import jp.co.sss.shop.repository.OrderRepository;
 import jp.co.sss.shop.repository.UserRepository;
+import jp.co.sss.shop.util.CipherUtil;
+import jp.co.sss.shop.util.DiscountCalcUtil;
 
 /**
  * 注文手続きのコントロールクラス
@@ -47,6 +52,9 @@ public class ClientOrderRegistController {
 
 	@Autowired
 	OrderRepository orderRepository;
+
+	@Autowired
+	CreditCardRepository creditCardRepository;
 
 	/**
 	 * 届け先入力画面へリダイレクトする
@@ -185,6 +193,21 @@ public class ClientOrderRegistController {
 		OrderForm orderForm = (OrderForm) orderFormObject;
 		model.addAttribute("payMethod", orderForm.getPayMethod());
 
+		UserBean userBean = (UserBean) session.getAttribute("user");
+		List<CreditCard> cards = creditCardRepository.findByUserIdOrderByInsertDateDescIdDesc(userBean.getId());
+		List<CreditCardBean> cardBeans = new ArrayList<>();
+		for (CreditCard card : cards) {
+			CreditCardBean bean = new CreditCardBean();
+			BeanUtils.copyProperties(card, bean);
+			// 復号してからマスク処理
+			String number = CipherUtil.decrypt(card.getCardNumber());
+			if (number != null && number.length() >= 4) {
+				bean.setCardNumber("****-****-****-" + number.substring(number.length() - 4));
+			}
+			cardBeans.add(bean);
+		}
+		model.addAttribute("creditCards", cardBeans);
+
 		return "client/order/payment_input";
 	}
 
@@ -196,7 +219,7 @@ public class ClientOrderRegistController {
 	 * @return "redirect:/client/order/check" 注文確認画面表示へのリダイレクト
 	 **/
 	@RequestMapping(path = "/client/order/check", method = RequestMethod.POST)
-	public String orderCheck(Integer payMethod, HttpSession session) {
+	public String orderCheck(Integer payMethod, Integer creditCardId, HttpSession session) {
 
 		// セッションスコープから、注文情報を取得
 		Object orderFormObject = session.getAttribute("orderForm");
@@ -210,6 +233,7 @@ public class ClientOrderRegistController {
 		OrderForm orderForm = (OrderForm) orderFormObject;
 		orderForm.setPayMethod(payMethod);
 		session.setAttribute("orderForm", orderForm);
+		session.setAttribute("creditCardId", creditCardId);
 
 		return "redirect:/client/order/check";
 	}
@@ -339,8 +363,12 @@ public class ClientOrderRegistController {
 
 		// 合計金額を計算
 		int totalPrice = 0;
+		int totalDiscount = 0;
 
 		for (OrderItemBean orderItemBean : orderItemBeans) {
+			int discount = DiscountCalcUtil.calculateDiscount(orderItemBean.getPrice(), orderItemBean.getOrderNum());
+			totalDiscount += discount;
+			orderItemBean.setSubtotal(orderItemBean.getPrice() * orderItemBean.getOrderNum() - discount);
 			totalPrice += orderItemBean.getSubtotal();
 		}
 
@@ -348,6 +376,18 @@ public class ClientOrderRegistController {
 		model.addAttribute("orderForm", orderForm);
 		model.addAttribute("orderItemBeans", orderItemBeans);
 		model.addAttribute("total", totalPrice);
+		model.addAttribute("totalDiscount", totalDiscount);
+
+		if (orderForm.getPayMethod() == 1) {
+			Integer creditCardId = (Integer) session.getAttribute("creditCardId");
+			if (creditCardId != null) {
+				CreditCard card = creditCardRepository.findById(creditCardId).orElse(null);
+				if (card != null) {
+					String number = CipherUtil.decrypt(card.getCardNumber());
+					model.addAttribute("selectedCardNumber", "****-****-****-" + number.substring(number.length() - 4));
+				}
+			}
+		}
 
 		return "client/order/check";
 
@@ -465,6 +505,7 @@ public class ClientOrderRegistController {
 		session.removeAttribute("orderForm");
 		session.removeAttribute("basketBeans");
 		session.removeAttribute("orderItemBeans");
+		session.removeAttribute("creditCardId");
 
 		return "redirect:/client/order/complete";
 	}

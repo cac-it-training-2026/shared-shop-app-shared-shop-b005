@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+
+<head>
+	<title>クレジットカード登録 | [[#{shop.title}]]</title>
+	<meta charset="UTF-8" />
+</head>
+
+<body class="user credit_card_regist_input">
+	<h2 class="title">クレジットカード登録</h2>
+	<p class="input_message">カード情報を入力してください。</p>
+
+	<div class="user_info_form_area">
+		<form th:action="@{/client/creditcard/regist/check}" method="post" th:object="${creditCardForm}">
+			<div th:if="${#fields.hasErrors()}" class="error_list">
+				<ul>
+					<li th:each="err : ${#fields.detailedErrors()}" th:text="${err.message}"></li>
+				</ul>
+			</div>
+			<table class="input_table">
+				<tr>
+					<th>ブランド</th>
+					<td>
+						<select th:field="*{brand}">
+							<option value="Visa">Visa</option>
+							<option value="Mastercard">Mastercard</option>
+							<option value="JCB">JCB</option>
+							<option value="American Express">American Express</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th>カード番号</th>
+					<td><input type="text" th:field="*{cardNumber}" placeholder="16桁の半角数字" /></td>
+				</tr>
+				<tr>
+					<th>名義人</th>
+					<td><input type="text" th:field="*{holderName}" placeholder="TARO YAMADA" /></td>
+				</tr>
+				<tr>
+					<th>有効期限</th>
+					<td><input type="text" th:field="*{expirationDate}" placeholder="MM/YY" /></td>
+				</tr>
+			</table>
+			<div class="button_area">
+				<input type="submit" value="確認" class="send_button" />
+			</div>
+		</form>
+		<form th:action="@{/client/creditcard/list}" method="get">
+			<input type="submit" value="戻る" class="back_button" />
+		</form>
+	</div>
+</body>
+
+</html>

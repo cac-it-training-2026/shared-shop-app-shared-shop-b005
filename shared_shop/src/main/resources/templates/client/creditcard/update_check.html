@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+
+<head>
+	<title>変更確認 | [[#{shop.title}]]</title>
+	<meta charset="UTF-8" />
+</head>
+
+<body class="user credit_card_update_check">
+	<h2 class="title">変更確認</h2>
+	<p class="check_message">以下の内容に変更します。</p>
+
+	<div class="user_info_form_area">
+		<table class="detail_table" th:object="${creditCardForm}">
+			<tr>
+				<th>ブランド</th>
+				<td th:text="*{brand}"></td>
+			</tr>
+			<tr>
+				<th>カード番号</th>
+				<td th:text="${maskedCardNumber}"></td>
+			</tr>
+			<tr>
+				<th>名義人</th>
+				<td th:text="*{holderName}"></td>
+			</tr>
+			<tr>
+				<th>有効期限</th>
+				<td th:text="*{expirationDate}"></td>
+			</tr>
+		</table>
+
+		<div class="button_area">
+			<form th:action="@{/client/creditcard/update/complete}" method="post" th:object="${creditCardForm}">
+				<input type="hidden" th:field="*{id}" />
+				<input type="hidden" th:field="*{brand}" />
+				<input type="hidden" th:field="*{cardNumber}" />
+				<input type="hidden" th:field="*{holderName}" />
+				<input type="hidden" th:field="*{expirationDate}" />
+				<input type="submit" value="変更" class="send_button" />
+			</form>
+			<form th:action="@{/client/creditcard/update/input/} + ${creditCardForm.id}" method="post" th:object="${creditCardForm}">
+				<input type="submit" value="戻る" class="back_button" />
+			</form>
+		</div>
+	</div>
+</body>
+
+</html>

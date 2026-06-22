@@ -51,6 +51,11 @@
 			<td class="total">[[#{data.total}]]</td>
 			<td class="total" th:text="${total}"></td>
 		</tr>
+		<tr th:if="${totalDiscount > 0}">
+			<td colspan="3"></td>
+			<td class="total">割引額合計</td>
+			<td class="total" th:text="'- ' + ${totalDiscount}"></td>
+		</tr>
 	</table>
 	<div class="user_info_form_area">
 		<table class="detail_table address">
@@ -77,7 +82,7 @@
 			<tr>
 				<th>[[#{paymethod.str}]]</th>
 				<td th:switch="${orderForm.payMethod}">
-					<span th:case="1">[[#{paymethod.credit.str}]]</span>
+					<span th:case="1">[[#{paymethod.credit.str}]] <br/> (カード番号: [[${selectedCardNumber}]])</span>
 					<span th:case="2">[[#{paymethod.bank.str}]]</span>
 					<span th:case="3">[[#{paymethod.onarrival.str}]]</span>
 					<span th:case="4">[[#{paymethod.emoney.str}]]</span>

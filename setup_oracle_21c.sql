@@ -13,6 +13,8 @@ DROP SEQUENCE seq_orders;
 CREATE SEQUENCE seq_orders START WITH 1000 INCREMENT BY 1;
 DROP SEQUENCE seq_order_items;
 CREATE SEQUENCE seq_order_items START WITH 5000 INCREMENT BY 1;
+DROP SEQUENCE seq_credit_cards;
+CREATE SEQUENCE seq_credit_cards START WITH 1 INCREMENT BY 1;
 
 -- 2. テーブル
 CREATE TABLE users (
@@ -72,6 +74,16 @@ CREATE TABLE order_items (
     order_id    NUMBER(10)      REFERENCES orders(id),
     item_id     NUMBER(10)      REFERENCES items(id),
     price       NUMBER(10)      NOT NULL
+);
+
+CREATE TABLE credit_cards (
+    id              NUMBER(10)      PRIMARY KEY,
+    holder_name     VARCHAR2(255)   NOT NULL,
+    card_number     VARCHAR2(255)   NOT NULL,
+    expiration_date VARCHAR2(5)     NOT NULL,
+    brand           VARCHAR2(50)    NOT NULL,
+    user_id         NUMBER(10)      REFERENCES users(id),
+    insert_date     DATE            DEFAULT SYSDATE NOT NULL
 );
 
 -- 3. データ (パスワード 'password' のハッシュ: 5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8)
