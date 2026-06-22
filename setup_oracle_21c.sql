@@ -15,6 +15,14 @@ DROP SEQUENCE seq_order_items;
 CREATE SEQUENCE seq_order_items START WITH 5000 INCREMENT BY 1;
 
 -- 2. テーブル
+-- 2. テーブル削除 (既存のオブジェクト名衝突回避)
+DROP TABLE order_items CASCADE CONSTRAINTS;
+DROP TABLE orders CASCADE CONSTRAINTS;
+DROP TABLE items CASCADE CONSTRAINTS;
+DROP TABLE categories CASCADE CONSTRAINTS;
+DROP TABLE users CASCADE CONSTRAINTS;
+
+-- 3. テーブル作成
 CREATE TABLE users (
     id                  NUMBER(10)      PRIMARY KEY,
     email               VARCHAR2(255)   NOT NULL UNIQUE,
