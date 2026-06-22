@@ -24,6 +24,7 @@ import jp.co.sss.shop.entity.CreditCard;
 import jp.co.sss.shop.entity.OrderItem;
 import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.form.OrderForm;
+import jp.co.sss.shop.repository.CategoryRepository;
 import jp.co.sss.shop.repository.CreditCardRepository;
 import jp.co.sss.shop.repository.ItemRepository;
 import jp.co.sss.shop.repository.OrderItemRepository;
@@ -55,6 +56,9 @@ public class ClientOrderRegistController {
 
 	@Autowired
 	CreditCardRepository creditCardRepository;
+
+	@Autowired
+	CategoryRepository categoryRepository;
 
 	/**
 	 * 届け先入力画面へリダイレクトする
@@ -103,6 +107,8 @@ public class ClientOrderRegistController {
 	 ***/
 	@RequestMapping(path = "/client/order/address/input", method = RequestMethod.GET)
 	public String addressInput(Model model, HttpSession session) {
+
+		model.addAttribute("categories", categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0));
 
 		// セッションスコープから、注文情報を取得
 		Object orderFormObject = session.getAttribute("orderForm");
@@ -192,6 +198,7 @@ public class ClientOrderRegistController {
 		// 取り出した注文情報をリクエストスコープに保存
 		OrderForm orderForm = (OrderForm) orderFormObject;
 		model.addAttribute("payMethod", orderForm.getPayMethod());
+		model.addAttribute("categories", categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0));
 
 		UserBean userBean = (UserBean) session.getAttribute("user");
 		List<CreditCard> cards = creditCardRepository.findByUserIdOrderByInsertDateDescIdDesc(userBean.getId());
@@ -248,6 +255,7 @@ public class ClientOrderRegistController {
 	@RequestMapping(path = "/client/order/card/select", method = RequestMethod.GET)
 	public String cardSelect(Model model, HttpSession session) {
 		UserBean userBean = (UserBean) session.getAttribute("user");
+		model.addAttribute("categories", categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0));
 		List<CreditCard> cards = creditCardRepository.findByUserIdOrderByInsertDateDescIdDesc(userBean.getId());
 		List<CreditCardBean> cardBeans = new ArrayList<>();
 		for (CreditCard card : cards) {
@@ -425,6 +433,7 @@ public class ClientOrderRegistController {
 		model.addAttribute("orderItemBeans", orderItemBeans);
 		model.addAttribute("total", totalPrice);
 		model.addAttribute("totalDiscount", totalDiscount);
+		model.addAttribute("categories", categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0));
 
 		if (orderForm.getPayMethod() == 1) {
 			Integer creditCardId = (Integer) session.getAttribute("creditCardId");

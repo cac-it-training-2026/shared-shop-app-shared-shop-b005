@@ -11,8 +11,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import jakarta.servlet.http.HttpSession;
 import jp.co.sss.shop.bean.BasketBean;
+import jp.co.sss.shop.bean.CategoryBean;
+import jp.co.sss.shop.entity.Category;
 import jp.co.sss.shop.entity.Item;
+import jp.co.sss.shop.repository.CategoryRepository;
 import jp.co.sss.shop.repository.ItemRepository;
+import jp.co.sss.shop.service.BeanTools;
 
 /**
  * 買い物かごのコントロールクラス
@@ -24,6 +28,12 @@ public class ClientBasketController {
 
 	@Autowired
 	ItemRepository itemRepository;
+
+	@Autowired
+	CategoryRepository categoryRepository;
+
+	@Autowired
+	BeanTools beanTools;
 
 	/**
 	 * 買い物かごの商品一覧表示へリダイレクトする
@@ -120,6 +130,11 @@ public class ClientBasketController {
 		model.addAttribute("itemNameListZero", itemNameListZero);
 		model.addAttribute("itemNameListLessThan", itemNameListLessThan);
 
+		// サイドバー用のカテゴリ一覧を追加
+		List<Category> categoryList = categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0);
+		List<CategoryBean> categoryBeanList = beanTools.copyEntityListToCategoryBeanList(categoryList);
+		model.addAttribute("categories", categoryBeanList);
+
 		// 買い物かごが空のとき、削除する
 		// 買い物かごが空でないとき、セッションスコープに保存する
 		if (basketAvailableBean.size() == 0) {
@@ -140,7 +155,12 @@ public class ClientBasketController {
 	 * @return "redirect:/client/basket/list" 買い物かごの商品一覧表示へのリダイレクト
 	 **/
 	@RequestMapping(path = "/client/basket/add", method = RequestMethod.POST)
-	public String addBasket(Item item, HttpSession session) {
+	public String addBasket(Item item, Integer orderNum, HttpSession session) {
+
+		// 注文個数が指定されていない場合は1とする
+		if (orderNum == null || orderNum < 1) {
+			orderNum = 1;
+		}
 
 		// 買い物かごをセッションスコープから取り出す
 		Object basketObject = session.getAttribute("basketBeans");
@@ -159,6 +179,8 @@ public class ClientBasketController {
 			addItemBean.setId(addItem.getId());
 			addItemBean.setName(addItem.getName());
 			addItemBean.setStock(addItem.getStock());
+			addItemBean.setOrderNum(orderNum);
+			addItemBean.setPrice(addItem.getPrice());
 			basketBeans.add(addItemBean);
 
 			session.setAttribute("basketBeans", basketBeans);
@@ -183,9 +205,9 @@ public class ClientBasketController {
 			}
 		}
 
-		// 商品がある場合、購入個数を1増やす
+		// 商品がある場合、購入個数を増やす
 		if (hasItemFlag) {
-			basketItem.setOrderNum(basketItem.getOrderNum() + 1);
+			basketItem.setOrderNum(basketItem.getOrderNum() + orderNum);
 
 			// 商品がない場合買い物かごの先頭に新たに追加
 		} else {
@@ -193,6 +215,8 @@ public class ClientBasketController {
 			addItemBean.setId(addItem.getId());
 			addItemBean.setName(addItem.getName());
 			addItemBean.setStock(addItem.getStock());
+			addItemBean.setOrderNum(orderNum);
+			addItemBean.setPrice(addItem.getPrice());
 			basketBeans.add(0, addItemBean);
 		}
 
@@ -248,6 +272,35 @@ public class ClientBasketController {
 			session.setAttribute("basketBean", basketBeans);
 		}
 
+		return "redirect:/client/basket/list";
+	}
+
+	/**
+	 * 買い物かごの商品の個数を変更する
+	 *
+	 * @param id 変更する商品の製品id
+	 * @param orderNum 変更後の個数
+	 * @param session 買い物かご情報の受け渡し
+	 * @return "redirect:/client/basket/list" 買い物かごの商品一覧表示へのリダイレクト
+	 **/
+	@RequestMapping(path = "/client/basket/update", method = RequestMethod.POST)
+	public String updateBasket(Integer id, Integer orderNum, HttpSession session) {
+
+		@SuppressWarnings("unchecked")
+		List<BasketBean> basketBeans = (List<BasketBean>) session.getAttribute("basketBeans");
+
+		if (basketBeans == null || orderNum == null || orderNum < 1) {
+			return "redirect:/client/basket/list";
+		}
+
+		for (BasketBean basketBean : basketBeans) {
+			if (id.equals(basketBean.getId())) {
+				basketBean.setOrderNum(orderNum);
+				break;
+			}
+		}
+
+		session.setAttribute("basketBeans", basketBeans);
 		return "redirect:/client/basket/list";
 	}
 

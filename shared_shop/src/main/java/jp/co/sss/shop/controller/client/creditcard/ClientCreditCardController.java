@@ -20,6 +20,7 @@ import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.CreditCard;
 import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.form.CreditCardForm;
+import jp.co.sss.shop.repository.CategoryRepository;
 import jp.co.sss.shop.repository.CreditCardRepository;
 import jp.co.sss.shop.repository.UserRepository;
 import jp.co.sss.shop.util.CipherUtil;
@@ -35,6 +36,9 @@ public class ClientCreditCardController {
 
 	@Autowired
 	UserRepository userRepository;
+
+	@Autowired
+	CategoryRepository categoryRepository;
 
 	/**
 	 * カード番号をマスクする
@@ -72,6 +76,7 @@ public class ClientCreditCardController {
 			cardBeans.add(bean);
 		}
 		model.addAttribute("creditCards", cardBeans);
+		model.addAttribute("categories", categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0));
 		return "client/creditcard/list";
 	}
 
@@ -79,7 +84,8 @@ public class ClientCreditCardController {
 	 * 登録入力
 	 */
 	@RequestMapping(path = "/client/creditcard/regist/input", method = RequestMethod.GET)
-	public String registInput(@ModelAttribute CreditCardForm form) {
+	public String registInput(@ModelAttribute("creditCardForm") CreditCardForm form, Model model) {
+		model.addAttribute("categories", categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0));
 		return "client/creditcard/regist_input";
 	}
 
@@ -89,10 +95,12 @@ public class ClientCreditCardController {
 	@RequestMapping(path = "/client/creditcard/regist/check", method = RequestMethod.POST)
 	public String registCheck(@Valid @ModelAttribute CreditCardForm form, BindingResult result, Model model) {
 		if (result.hasErrors()) {
+			model.addAttribute("categories", categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0));
 			return "client/creditcard/regist_input";
 		}
 		model.addAttribute("creditCardForm", form);
 		model.addAttribute("maskedCardNumber", maskCardNumber(form.getCardNumber()));
+		model.addAttribute("categories", categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0));
 		return "client/creditcard/regist_check";
 	}
 
@@ -131,6 +139,7 @@ public class ClientCreditCardController {
 		// 復号してフォームにセット
 		form.setCardNumber(CipherUtil.decrypt(card.getCardNumber()));
 		model.addAttribute("creditCardForm", form);
+		model.addAttribute("categories", categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0));
 		return "client/creditcard/update_input";
 	}
 
@@ -140,10 +149,12 @@ public class ClientCreditCardController {
 	@RequestMapping(path = "/client/creditcard/update/check", method = RequestMethod.POST)
 	public String updateCheck(@Valid @ModelAttribute CreditCardForm form, BindingResult result, Model model) {
 		if (result.hasErrors()) {
+			model.addAttribute("categories", categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0));
 			return "client/creditcard/update_input";
 		}
 		model.addAttribute("creditCardForm", form);
 		model.addAttribute("maskedCardNumber", maskCardNumber(form.getCardNumber()));
+		model.addAttribute("categories", categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0));
 		return "client/creditcard/update_check";
 	}
 
@@ -183,6 +194,7 @@ public class ClientCreditCardController {
 		// 復号してからマスク
 		bean.setCardNumber(maskCardNumber(CipherUtil.decrypt(card.getCardNumber())));
 		model.addAttribute("creditCard", bean);
+		model.addAttribute("categories", categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0));
 		return "client/creditcard/delete_check";
 	}
 

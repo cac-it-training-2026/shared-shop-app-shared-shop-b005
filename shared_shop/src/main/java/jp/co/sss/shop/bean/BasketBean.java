@@ -29,6 +29,16 @@ public class BasketBean {
 	private Integer orderNum = 1;
 
 	/**
+	 * 商品単価
+	 */
+	private Integer price;
+
+	/**
+	 * 小計
+	 */
+	private Integer subtotal;
+
+	/**
 	 * コンストラクタ
 	 */
 	public BasketBean() {
@@ -124,6 +134,38 @@ public class BasketBean {
 	 */
 	public void setOrderNum(Integer orderNum) {
 		this.orderNum = orderNum;
+	}
+
+	/**
+	 * 商品単価の取得
+	 * @return 商品単価
+	 */
+	public Integer getPrice() {
+		return price;
+	}
+
+	/**
+	 * 商品単価のセット
+	 * @param price 商品単価
+	 */
+	public void setPrice(Integer price) {
+		this.price = price;
+	}
+
+	/**
+	 * 商品ごとの小計額の取得
+	 * @return 小計
+	 */
+	public Integer getSubtotal() {
+		return subtotal;
+	}
+
+	/**
+	 * 商品ごとの小計額のセット
+	 * @param subtotal 小計
+	 */
+	public void setSubtotal(Integer subtotal) {
+		this.subtotal = subtotal;
 	}
 
 }

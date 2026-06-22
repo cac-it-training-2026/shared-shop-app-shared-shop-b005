@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import jakarta.servlet.http.HttpSession;
 import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.User;
+import jp.co.sss.shop.repository.CategoryRepository;
 import jp.co.sss.shop.repository.UserRepository;
 import jp.co.sss.shop.util.Constant;
 
@@ -26,6 +27,9 @@ public class ClientUserShowController {
 	 */
 	@Autowired
 	UserRepository userRepository;
+
+	@Autowired
+	CategoryRepository categoryRepository;
 
 	/**
 	 * セッション情報
@@ -85,6 +89,7 @@ public class ClientUserShowController {
 
 		// 会員情報をViewに渡す
 		model.addAttribute("userBean", userBean);
+		model.addAttribute("categories", categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0));
 
 		// 会員登録・変更・削除用のセッションスコープを初期化
 		session.removeAttribute("userForm");
