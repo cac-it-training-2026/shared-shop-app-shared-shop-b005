@@ -1,6 +1,7 @@
 package jp.co.sss.shop.entity;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -80,6 +81,48 @@ public class User {
 	 */
 	@Column(insertable = false)
 	private Date insertDate;
+
+	/**
+	 * 秘密の質問
+	 */
+	@Column
+	private String secretQuestion;
+
+	/**
+	 * 秘密の質問の回答
+	 */
+	@Column
+	private String secretAnswer;
+
+	/**
+	 * ログイン失敗回数
+	 */
+	@Column
+	private Integer loginFailureCount = 0;
+
+	/**
+	 * アカウントロック状態 0:通常, 1:ロック
+	 */
+	@Column
+	private Integer accountLocked = 0;
+
+	/**
+	 * アカウントロック期限
+	 */
+	@Column
+	private Timestamp accountLockedUntil;
+
+	/**
+	 * パスワード再設定トークン
+	 */
+	@Column
+	private String resetToken;
+
+	/**
+	 * トークン有効期限
+	 */
+	@Column
+	private Timestamp resetTokenExpire;
 
 	/**
 	 * 会員IDの取得
@@ -239,5 +282,61 @@ public class User {
 	 */
 	public void setInsertDate(Date insertDate) {
 		this.insertDate = insertDate;
+	}
+
+	public String getSecretQuestion() {
+		return secretQuestion;
+	}
+
+	public void setSecretQuestion(String secretQuestion) {
+		this.secretQuestion = secretQuestion;
+	}
+
+	public String getSecretAnswer() {
+		return secretAnswer;
+	}
+
+	public void setSecretAnswer(String secretAnswer) {
+		this.secretAnswer = secretAnswer;
+	}
+
+	public Integer getLoginFailureCount() {
+		return loginFailureCount;
+	}
+
+	public void setLoginFailureCount(Integer loginFailureCount) {
+		this.loginFailureCount = loginFailureCount;
+	}
+
+	public Integer getAccountLocked() {
+		return accountLocked;
+	}
+
+	public void setAccountLocked(Integer accountLocked) {
+		this.accountLocked = accountLocked;
+	}
+
+	public Timestamp getAccountLockedUntil() {
+		return accountLockedUntil;
+	}
+
+	public void setAccountLockedUntil(Timestamp accountLockedUntil) {
+		this.accountLockedUntil = accountLockedUntil;
+	}
+
+	public String getResetToken() {
+		return resetToken;
+	}
+
+	public void setResetToken(String resetToken) {
+		this.resetToken = resetToken;
+	}
+
+	public Timestamp getResetTokenExpire() {
+		return resetTokenExpire;
+	}
+
+	public void setResetTokenExpire(Timestamp resetTokenExpire) {
+		this.resetTokenExpire = resetTokenExpire;
 	}
 }
