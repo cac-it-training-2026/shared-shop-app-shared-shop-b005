@@ -1,0 +1,10 @@
+メモメモ
+
+
+オーバーライド
+コンストラクタの設定
+static変数をつかうメソッドはstaticをつける
+item = item.substring(0, 5);	itemの最初から5文字目までを取り出す
+抽象メソッド	abstract
+super();
+instansof
