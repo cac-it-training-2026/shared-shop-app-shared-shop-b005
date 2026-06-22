@@ -178,6 +178,10 @@ public class AdminUserRegistController {
 		// パスワードをハッシュ化
 		user.setPassword(PasswordHashUtil.hash(userForm.getPassword()));
 
+		// 初期設定
+		user.setLoginFailureCount(0);
+		user.setAccountLocked(0);
+
 		// DB登録
 		userRepository.save(user);
 

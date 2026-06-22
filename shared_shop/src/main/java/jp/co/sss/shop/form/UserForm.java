@@ -72,7 +72,16 @@ public class UserForm implements Serializable {
 	 */
 	private Integer authority;
 
+	/**
+	 * 秘密の質問
+	 */
+	@NotBlank(message = "秘密の質問は必須項目です。")
 	private String secretQuestion;
+
+	/**
+	 * 秘密の質問の回答
+	 */
+	@NotBlank(message = "秘密の質問の回答は必須項目です。")
 	private String secretAnswer;
 
 	/**

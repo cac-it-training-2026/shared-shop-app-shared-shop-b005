@@ -15,6 +15,7 @@ import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.form.UserForm;
 import jp.co.sss.shop.repository.UserRepository;
+import jp.co.sss.shop.util.Constant;
 import jp.co.sss.shop.util.PasswordHashUtil;
 
 /**
@@ -74,8 +75,13 @@ public class ClientUserRegistController {
 			// UserFormを新規作成
 			userform = new UserForm();
 
-			// 権限をコピー
-			userform.setAuthority(((UserBean) session.getAttribute("user")).getAuthority());
+			// 権限を設定（未ログインの場合は一般会員:2）
+			UserBean loginUser = (UserBean) session.getAttribute("user");
+			if (loginUser != null) {
+				userform.setAuthority(loginUser.getAuthority());
+			} else {
+				userform.setAuthority(Constant.AUTH_CLIENT);
+			}
 
 			// セッションに保存
 			session.setAttribute("userForm", userform);
@@ -217,6 +223,10 @@ public class ClientUserRegistController {
 
 		// パスワードをハッシュ化
 		user.setPassword(PasswordHashUtil.hash(userform.getPassword()));
+
+		// 初期設定
+		user.setLoginFailureCount(0);
+		user.setAccountLocked(0);
 
 		// DB登録実施
 		userRepository.save(user);
