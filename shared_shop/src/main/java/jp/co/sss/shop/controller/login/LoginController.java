@@ -73,16 +73,28 @@ public class LoginController {
 
 		User user = userRepository.findByEmailAndDeleteFlag(form.getEmail(), Constant.NOT_DELETED);
 
-		// ロック自動解除
-		if (user.getAccountLocked() != null && user.getAccountLocked() == 1
-				&& user.getAccountLockedUntil() != null
-				&& user.getAccountLockedUntil().before(new Timestamp(System.currentTimeMillis()))) {
-			user.setAccountLocked(0);
-			user.setLoginFailureCount(0);
-			user.setAccountLockedUntil(null);
+		// NullPointerException対策
+		if (user == null) {
+			session.invalidate();
+			return "login";
 		}
 
-		// 成功時のリセット
+		// アカウントロック処理の見直し
+		if (user.getAccountLocked() != null && user.getAccountLocked() == 1) {
+			if (user.getAccountLockedUntil() != null && user.getAccountLockedUntil().before(new Timestamp(System.currentTimeMillis()))) {
+				// 自動解除
+				user.setLoginFailureCount(0);
+				user.setAccountLocked(0);
+				user.setAccountLockedUntil(null);
+				userRepository.save(user);
+			} else {
+				// ロック中（ログイン不可）
+				session.invalidate();
+				return "login";
+			}
+		}
+
+		// ログイン成功時の処理（初期化と保存）
 		user.setLoginFailureCount(0);
 		user.setAccountLocked(0);
 		user.setAccountLockedUntil(null);
@@ -106,29 +118,36 @@ public class LoginController {
 
 	private void updateLoginFailure(String email) {
 		User user = userRepository.findByEmailAndDeleteFlag(email, Constant.NOT_DELETED);
-		if (user != null) {
-			// 権限が管理者系の場合はロック対象外（必要に応じて調整可、ここでは一般会員のみを想定した課題とするが、全ユーザー対象とする）
 
-			// すでにロックされている場合は更新しない
-			if (user.getAccountLocked() != null && user.getAccountLocked() == 1) {
-				// ロック期限をチェックし、過ぎていればリセット
-				if (user.getAccountLockedUntil() != null && user.getAccountLockedUntil().before(new Timestamp(System.currentTimeMillis()))) {
-					user.setAccountLocked(0);
-					user.setLoginFailureCount(1);
-					user.setAccountLockedUntil(null);
-				} else {
-					return;
-				}
-			} else {
-				int count = (user.getLoginFailureCount() != null ? user.getLoginFailureCount() : 0) + 1;
-				user.setLoginFailureCount(count);
-				if (count >= 5) {
-					user.setAccountLocked(1);
-					user.setAccountLockedUntil(new Timestamp(System.currentTimeMillis() + 30 * 60 * 1000));
-				}
-			}
-			userRepository.save(user);
+		// user == null の場合は return
+		if (user == null) {
+			return;
 		}
+
+		// ロック中の場合は回数を加算しない
+		if (user.getAccountLocked() != null && user.getAccountLocked() == 1) {
+			if (user.getAccountLockedUntil() != null && user.getAccountLockedUntil().before(new Timestamp(System.currentTimeMillis()))) {
+				// ロック期限切れの場合はロック解除後、今回の失敗を1回目として扱う
+				user.setAccountLocked(0);
+				user.setLoginFailureCount(1);
+				user.setAccountLockedUntil(null);
+			} else {
+				// ロック継続中は何もしない
+				return;
+			}
+		} else {
+			// 通常の失敗カウント
+			int count = (user.getLoginFailureCount() != null ? user.getLoginFailureCount() : 0) + 1;
+			user.setLoginFailureCount(count);
+
+			// 失敗回数5回以上で30分ロックする
+			if (count >= 5) {
+				user.setAccountLocked(1);
+				user.setAccountLockedUntil(new Timestamp(System.currentTimeMillis() + 30 * 60 * 1000));
+			}
+		}
+
+		userRepository.save(user);
 	}
 
 	/**
