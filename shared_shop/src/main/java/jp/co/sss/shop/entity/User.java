@@ -82,24 +82,6 @@ public class User {
 	private Date insertDate;
 
 	/**
-	 * 現在の保有ポイント
-	 */
-	@Column
-	private Integer currentPoint;
-
-	/**
-	 * 累計獲得ポイント
-	 */
-	@Column
-	private Integer totalPoint;
-
-	/**
-	 * 会員ランク 0:ブロンズ, 1:シルバー, 2:ゴールド
-	 */
-	@Column
-	private Integer rank;
-
-	/**
 	 * 会員IDの取得
 	 * @return 会員ID
 	 */
@@ -257,53 +239,5 @@ public class User {
 	 */
 	public void setInsertDate(Date insertDate) {
 		this.insertDate = insertDate;
-	}
-
-	/**
-	 * 現在の保有ポイントの取得
-	 * @return 現在の保有ポイント
-	 */
-	public Integer getCurrentPoint() {
-		return currentPoint;
-	}
-
-	/**
-	 * 現在の保有ポイントのセット
-	 * @param currentPoint 現在の保有ポイント
-	 */
-	public void setCurrentPoint(Integer currentPoint) {
-		this.currentPoint = currentPoint;
-	}
-
-	/**
-	 * 累計獲得ポイントの取得
-	 * @return 累計獲得ポイント
-	 */
-	public Integer getTotalPoint() {
-		return totalPoint;
-	}
-
-	/**
-	 * 累計獲得ポイントのセット
-	 * @param totalPoint 累計獲得ポイント
-	 */
-	public void setTotalPoint(Integer totalPoint) {
-		this.totalPoint = totalPoint;
-	}
-
-	/**
-	 * 会員ランクの取得
-	 * @return 会員ランク
-	 */
-	public Integer getRank() {
-		return rank;
-	}
-
-	/**
-	 * 会員ランクのセット
-	 * @param rank 会員ランク
-	 */
-	public void setRank(Integer rank) {
-		this.rank = rank;
 	}
 }

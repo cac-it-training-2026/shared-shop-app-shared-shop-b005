@@ -57,11 +57,6 @@ public class OrderForm implements Serializable {
 	private Integer payMethod;
 
 	/**
-	 * 利用ポイント
-	 */
-	private Integer usedPoint;
-
-	/**
 	 * 注文するユーザIDの取得
 	 * @return 注文するユーザID
 	 */
@@ -157,20 +152,5 @@ public class OrderForm implements Serializable {
 		this.payMethod = payMethod;
 	}
 
-	/**
-	 * 利用ポイントの取得
-	 * @return 利用ポイント
-	 */
-	public Integer getUsedPoint() {
-		return usedPoint;
-	}
-
-	/**
-	 * 利用ポイントのセット
-	 * @param usedPoint 利用ポイント
-	 */
-	public void setUsedPoint(Integer usedPoint) {
-		this.usedPoint = usedPoint;
-	}
 
 }

@@ -22,8 +22,6 @@ import jp.co.sss.shop.entity.Order;
 import jp.co.sss.shop.entity.OrderItem;
 import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.form.OrderForm;
-import jp.co.sss.shop.util.PointCalcUtil;
-import jp.co.sss.shop.util.LotteryUtil;
 import jp.co.sss.shop.repository.ItemRepository;
 import jp.co.sss.shop.repository.OrderItemRepository;
 import jp.co.sss.shop.repository.OrderRepository;
@@ -194,12 +192,11 @@ public class ClientOrderRegistController {
 	 * 注文確認画面表示へリダイレクトする
 	 * 
 	 * @param payMethod 支払い方法
-	 * @param usedPoint 利用ポイント
 	 * @session 
 	 * @return "redirect:/client/order/check" 注文確認画面表示へのリダイレクト
 	 **/
 	@RequestMapping(path = "/client/order/check", method = RequestMethod.POST)
-	public String orderCheck(Integer payMethod, Integer usedPoint, HttpSession session) {
+	public String orderCheck(Integer payMethod, HttpSession session) {
 
 		// セッションスコープから、注文情報を取得
 		Object orderFormObject = session.getAttribute("orderForm");
@@ -211,12 +208,7 @@ public class ClientOrderRegistController {
 
 		// 取り出した注文情報の支払い方法を更新
 		OrderForm orderForm = (OrderForm) orderFormObject;
-		if (payMethod != null) {
-			orderForm.setPayMethod(payMethod);
-		}
-		if (usedPoint != null) {
-			orderForm.setUsedPoint(usedPoint);
-		}
+		orderForm.setPayMethod(payMethod);
 		session.setAttribute("orderForm", orderForm);
 
 		return "redirect:/client/order/check";
@@ -352,27 +344,6 @@ public class ClientOrderRegistController {
 			totalPrice += orderItemBean.getSubtotal();
 		}
 
-		// ユーザー情報を取得して、ポイント利用のバリデーション
-		UserBean loginUser = (UserBean) session.getAttribute("user");
-		User user = userRepository.getReferenceById(loginUser.getId());
-		UserBean userBean = new UserBean();
-		BeanUtils.copyProperties(user, userBean);
-		model.addAttribute("userBean", userBean);
-
-		if (orderForm.getUsedPoint() != null) {
-			int usedPoint = orderForm.getUsedPoint();
-			if (usedPoint < 0) {
-				model.addAttribute("pointError", "ポイントに負の値は入力できません。");
-				orderForm.setUsedPoint(0);
-			} else if (usedPoint > user.getCurrentPoint()) {
-				model.addAttribute("pointError", "保有ポイントを超えるポイントは利用できません。");
-				orderForm.setUsedPoint(user.getCurrentPoint());
-			} else if (usedPoint > totalPrice) {
-				model.addAttribute("pointError", "注文金額を超えるポイントは利用できません。");
-				orderForm.setUsedPoint(totalPrice);
-			}
-		}
-
 		// 注文情報・注文商品リスト・合計金額をリクエストスコープに追加
 		model.addAttribute("orderForm", orderForm);
 		model.addAttribute("orderItemBeans", orderItemBeans);
@@ -462,30 +433,8 @@ public class ClientOrderRegistController {
 		User user = userRepository.getReferenceById(userId);
 		order.setUser(user);
 
-		// ポイント計算
-		int totalAmount = 0;
-		for (OrderItemBean oib : orderItemBeans) {
-			totalAmount += oib.getSubtotal();
-		}
-
-		int usedPoint = (orderForm.getUsedPoint() != null) ? orderForm.getUsedPoint() : 0;
-		int earnedPoint = PointCalcUtil.calculateEarnedPoint(totalAmount - usedPoint);
-
-		order.setUsedPoint(usedPoint);
-		order.setEarnedPoint(earnedPoint);
-		order.setLotteryExecuted(0);
-
 		// 注文情報を保存
 		orderRepository.save(order);
-
-		// ユーザーのポイント・ランク更新
-		user.setCurrentPoint(user.getCurrentPoint() - usedPoint + earnedPoint);
-		user.setTotalPoint(user.getTotalPoint() + earnedPoint);
-		user.setRank(PointCalcUtil.judgeRank(user.getTotalPoint()));
-		userRepository.save(user);
-
-		// セッションのユーザー情報更新
-		BeanUtils.copyProperties(user, (UserBean) userObject);
 
 		// 商品エンティティのリストを作成
 		List<OrderItem> orderItems = new ArrayList<OrderItem>();
@@ -512,10 +461,6 @@ public class ClientOrderRegistController {
 		order.setOrderItemsList(orderItems);
 		orderRepository.save(order);
 
-		// 完了画面表示用に注文IDと獲得ポイントをセッションに一時保存
-		session.setAttribute("lastOrderId", order.getId());
-		session.setAttribute("lastEarnedPoint", earnedPoint);
-
 		// セッションスコープに保存している各注文情報を破棄
 		session.removeAttribute("orderForm");
 		session.removeAttribute("basketBeans");
@@ -530,68 +475,8 @@ public class ClientOrderRegistController {
 	 * @return "client/order/complete" 注文完了画面
 	 **/
 	@RequestMapping(path = "/client/order/complete", method = RequestMethod.GET)
-	public String orderComplete(Model model, HttpSession session) {
-		Integer orderId = (Integer) session.getAttribute("lastOrderId");
-		Integer earnedPoint = (Integer) session.getAttribute("lastEarnedPoint");
-
-		if (orderId != null) {
-			model.addAttribute("orderId", orderId);
-			model.addAttribute("earnedPoint", earnedPoint);
-
-			Order order = orderRepository.getReferenceById(orderId);
-			if (order.getLotteryExecuted() == 1) {
-				model.addAttribute("lotteryResult", 1);
-				model.addAttribute("lotteryRankName", LotteryUtil.getLotteryRankName(order.getLotteryRank()));
-				model.addAttribute("lotteryPoint", order.getLotteryPoint());
-			}
-		}
-
+	public String orderComplete() {
 		return "client/order/complete";
-	}
-
-	/**
-	 * くじ引き処理
-	 */
-	@RequestMapping(path = "/client/order/lottery", method = RequestMethod.POST)
-	public String doLottery(Integer orderId, Model model, HttpSession session) {
-		if (orderId == null) {
-			return "redirect:/syserror";
-		}
-
-		Order order = orderRepository.getReferenceById(orderId);
-		if (order.getLotteryExecuted() == 1) {
-			model.addAttribute("lotteryError", "すでにくじを引いています。");
-			return orderComplete(model, session);
-		}
-
-		// 抽選
-		int rank = LotteryUtil.doLottery();
-		int point = LotteryUtil.getLotteryPoint(rank);
-
-		// 注文情報更新
-		order.setLotteryExecuted(1);
-		order.setLotteryRank(rank);
-		order.setLotteryPoint(point);
-		orderRepository.save(order);
-
-		// 会員情報更新
-		User user = order.getUser();
-		user.setCurrentPoint(user.getCurrentPoint() + point);
-		user.setTotalPoint(user.getTotalPoint() + point);
-		user.setRank(PointCalcUtil.judgeRank(user.getTotalPoint()));
-		userRepository.save(user);
-
-		// セッションのユーザー情報更新
-		UserBean userBean = (UserBean) session.getAttribute("user");
-		if (userBean != null && userBean.getId().equals(user.getId())) {
-			BeanUtils.copyProperties(user, userBean);
-		}
-
-		model.addAttribute("lotteryResult", 1);
-		model.addAttribute("lotteryRankName", LotteryUtil.getLotteryRankName(rank));
-		model.addAttribute("lotteryPoint", point);
-
-		return orderComplete(model, session);
 	}
 
 }
