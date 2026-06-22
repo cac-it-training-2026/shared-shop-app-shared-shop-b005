@@ -17,6 +17,7 @@ import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.form.UserForm;
 import jp.co.sss.shop.repository.UserRepository;
 import jp.co.sss.shop.util.Constant;
+import jp.co.sss.shop.util.PasswordHashUtil;
 
 /**
  * @author 犬丸 晴斗
@@ -190,6 +191,10 @@ public class ClientUserUpdateController {
 
 		// 入力フォームの内容を会員情報エンティティにコピー
 		BeanUtils.copyProperties(userForm, user);
+
+		// パスワードをハッシュ化
+		user.setPassword(PasswordHashUtil.hash(userForm.getPassword()));
+
 		user.setDeleteFlag(Constant.NOT_DELETED);
 
 		// 変更後の会員情報をDBに保存

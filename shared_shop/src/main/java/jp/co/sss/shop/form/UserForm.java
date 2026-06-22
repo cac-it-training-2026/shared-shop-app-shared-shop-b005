@@ -72,6 +72,9 @@ public class UserForm implements Serializable {
 	 */
 	private Integer authority;
 
+	private String secretQuestion;
+	private String secretAnswer;
+
 	/**
 	 * 会員IDの取得
 	 * @return 会員ID
@@ -198,6 +201,22 @@ public class UserForm implements Serializable {
 	 */
 	public void setAuthority(Integer authority) {
 		this.authority = authority;
+	}
+
+	public String getSecretQuestion() {
+		return secretQuestion;
+	}
+
+	public void setSecretQuestion(String secretQuestion) {
+		this.secretQuestion = secretQuestion;
+	}
+
+	public String getSecretAnswer() {
+		return secretAnswer;
+	}
+
+	public void setSecretAnswer(String secretAnswer) {
+		this.secretAnswer = secretAnswer;
 	}
 
 }

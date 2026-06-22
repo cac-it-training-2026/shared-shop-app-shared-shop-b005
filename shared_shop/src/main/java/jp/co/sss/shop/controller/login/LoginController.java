@@ -7,11 +7,15 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.sql.Timestamp;
+
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import jp.co.sss.shop.bean.UserBean;
+import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.form.LoginForm;
 import jp.co.sss.shop.repository.UserRepository;
+import jp.co.sss.shop.util.AuthCodeUtil;
 import jp.co.sss.shop.util.Constant;
 
 /**
@@ -61,27 +65,70 @@ public class LoginController {
 	@RequestMapping(path = "/login", method = RequestMethod.POST)
 	public String doLogin(@Valid @ModelAttribute LoginForm form, BindingResult result) {
 
-		String returnStr = "login";
 		if (result.hasErrors()) {
-			// 入力値に誤りがあった場合
-			// セッション情報を無効にして、ログイン画面再表示
+			updateLoginFailure(form.getEmail());
 			session.invalidate();
-			returnStr = "login";
-
-		} else {
-			//セッションスコープから権限を取り出す
-			Integer authority = ((UserBean) session.getAttribute("user")).getAuthority();
-			if (authority.intValue() == Constant.AUTH_CLIENT) {
-				// 一般会員ログインした場合、トップ画面表示処理にリダイレクト
-				returnStr = "redirect:/";
-			} else {
-
-				// 運用管理者、もしくはシステム管理者としてログインした場合、管理者用メニュー画面表示処理にリダイレクト
-				returnStr = "redirect:/admin/menu";
-			}
+			return "login";
 		}
-		return returnStr;
 
+		User user = userRepository.findByEmailAndDeleteFlag(form.getEmail(), Constant.NOT_DELETED);
+
+		// ロック自動解除
+		if (user.getAccountLocked() != null && user.getAccountLocked() == 1
+				&& user.getAccountLockedUntil() != null
+				&& user.getAccountLockedUntil().before(new Timestamp(System.currentTimeMillis()))) {
+			user.setAccountLocked(0);
+			user.setLoginFailureCount(0);
+			user.setAccountLockedUntil(null);
+		}
+
+		// 成功時のリセット
+		user.setLoginFailureCount(0);
+		user.setAccountLocked(0);
+		user.setAccountLockedUntil(null);
+		userRepository.save(user);
+
+		UserBean userBean = new UserBean();
+		userBean.setId(user.getId());
+		userBean.setName(user.getName());
+		userBean.setAuthority(user.getAuthority());
+
+		// 二段階認証準備
+		session.setAttribute("tempUser", userBean);
+		String authCode = AuthCodeUtil.generate();
+		session.setAttribute("authCode", authCode);
+		session.setAttribute("authCodeTime", System.currentTimeMillis());
+
+		System.out.println("Auth Code for " + user.getEmail() + ": " + authCode);
+
+		return "redirect:/login/2fa";
+	}
+
+	private void updateLoginFailure(String email) {
+		User user = userRepository.findByEmailAndDeleteFlag(email, Constant.NOT_DELETED);
+		if (user != null) {
+			// 権限が管理者系の場合はロック対象外（必要に応じて調整可、ここでは一般会員のみを想定した課題とするが、全ユーザー対象とする）
+
+			// すでにロックされている場合は更新しない
+			if (user.getAccountLocked() != null && user.getAccountLocked() == 1) {
+				// ロック期限をチェックし、過ぎていればリセット
+				if (user.getAccountLockedUntil() != null && user.getAccountLockedUntil().before(new Timestamp(System.currentTimeMillis()))) {
+					user.setAccountLocked(0);
+					user.setLoginFailureCount(1);
+					user.setAccountLockedUntil(null);
+				} else {
+					return;
+				}
+			} else {
+				int count = (user.getLoginFailureCount() != null ? user.getLoginFailureCount() : 0) + 1;
+				user.setLoginFailureCount(count);
+				if (count >= 5) {
+					user.setAccountLocked(1);
+					user.setAccountLockedUntil(new Timestamp(System.currentTimeMillis() + 30 * 60 * 1000));
+				}
+			}
+			userRepository.save(user);
+		}
 	}
 
 	/**

@@ -51,6 +51,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	 */
 	User findByIdAndDeleteFlag(Integer id, int deleteFlg);
 
+	User findByResetToken(String resetToken);
+
 	@Override
 	User getReferenceById(Integer id);
 

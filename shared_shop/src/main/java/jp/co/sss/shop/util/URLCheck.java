@@ -35,7 +35,8 @@ public class URLCheck {
 	public static boolean isURLForSystemAdmin(String requestURL) {
 		boolean isCheckURLOK = false;
 		if (isURLForStaticFile(requestURL)
-				|| requestURL.endsWith("/login")
+				|| requestURL.indexOf("/login") != -1
+				|| requestURL.indexOf("/password_reset") != -1
 				|| requestURL.indexOf("admin/menu") != -1
 				|| requestURL.indexOf("/admin/admin_menu") != -1
 				|| requestURL.indexOf("admin/user") != -1
@@ -84,7 +85,8 @@ public class URLCheck {
 		boolean isCheckURLOK = false;
 		if (URLCheck.isURLForStaticFile(requestURL)
 				|| requestURL.endsWith(contextPath + "/")
-				|| requestURL.endsWith("/login")
+				|| requestURL.indexOf("/login") != -1
+				|| requestURL.indexOf("/password_reset") != -1
 				|| requestURL.indexOf("client") != -1
 				|| requestURL.indexOf("admin") == -1
 				|| requestURL.endsWith("/logout")) {
@@ -109,7 +111,8 @@ public class URLCheck {
 
 		boolean isCheckURLOK = false;
 		if (!URLCheck.isURLForStaticFile(requestURL)
-				&& !requestURL.endsWith("/login")
+				&& requestURL.indexOf("/login") == -1
+				&& requestURL.indexOf("/password_reset") == -1
 				&& !requestURL.endsWith(contextPath + "/")
 				&& requestURL.indexOf("/client/item/list/") == -1
 				&& requestURL.indexOf("/client/item/detail/") == -1
