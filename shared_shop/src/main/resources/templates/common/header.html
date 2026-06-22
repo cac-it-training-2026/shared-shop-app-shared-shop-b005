@@ -15,6 +15,14 @@
 	<div th:if="${session.user == null}" class="user_info">
 		<a th:href="@{/login}" th:text="#{login}"></a> | <a th:href="@{/client/user/regist/input/init}" th:text="#{client.regist}"></a>
 	</div>
+	<div class="user_info">
+		<th:block th:if="${session.user != null and (session.user.authority == 0 or session.user.authority == 1)}">
+			<a th:href="@{/admin/inquiry/list}" th:text="#{header.inquiry.list}"></a>
+		</th:block>
+		<th:block th:unless="${session.user != null and (session.user.authority == 0 or session.user.authority == 1)}">
+			<a th:href="@{/inquiry/input}" th:text="#{header.inquiry}"></a>
+		</th:block>
+	</div>
 </div>
 </body>
 </html>

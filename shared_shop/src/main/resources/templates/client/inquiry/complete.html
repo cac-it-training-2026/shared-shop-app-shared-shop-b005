@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+
+<head>
+	<title th:text="#{title.inquiry.complete} + ' | ' + #{shop.title}"></title>
+	<meta charset="UTF-8" />
+</head>
+
+<body class="inquiry_complete">
+	<h2 class="title" th:text="#{title.inquiry.complete}"></h2>
+	<p class="input_message">
+		<span th:text="#{msg.inquiry.complete1}"></span><br/>
+		<span th:text="#{msg.inquiry.complete2}"></span>
+	</p>
+
+	<div class="user_info_form_area">
+		<form th:action="@{/}" method="get">
+			<input type="submit" value="トップ画面へ" class="back_button" />
+		</form>
+	</div>
+</body>
+
+</html>

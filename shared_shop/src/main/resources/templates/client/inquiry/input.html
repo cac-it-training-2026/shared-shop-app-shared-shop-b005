@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+
+<head>
+	<title th:text="#{title.inquiry.input} + ' | ' + #{shop.title}"></title>
+	<meta charset="UTF-8" />
+</head>
+
+<body class="inquiry_input">
+	<h2 class="title" th:text="#{title.inquiry.input}"></h2>
+	<p class="input_message" th:text="#{msg.regist.input}"></p>
+
+	<div class="user_info_form_area">
+		<form th:action="@{/inquiry/check}" method="post" class="user_info_form" th:object="${inquiryForm}">
+			<th:block th:if="${#fields.hasErrors()}">
+				<ul class="error_list">
+					<li th:each="err:${#fields.detailedErrors()}" th:text="${err.message}"></li>
+				</ul>
+				<br />
+			</th:block>
+
+			<ul class="input_list">
+				<li>
+					<label><span class="input_title" th:text="#{inquiryForm.name}"></span></label>
+					<input type="text" th:field="*{name}" />
+				</li>
+				<li>
+					<label><span class="input_title" th:text="#{inquiryForm.email}"></span></label>
+					<input type="text" th:field="*{email}" />
+				</li>
+				<li>
+					<label><span class="input_title" th:text="#{inquiryForm.content}"></span></label>
+					<textarea rows="6" th:field="*{content}"></textarea>
+				</li>
+			</ul>
+			<input type="submit" value="確認" class="send_button" />
+		</form>
+		<form th:action="@{/}" method="get">
+			<input type="submit" value="戻る" class="back_button" />
+		</form>
+	</div>
+</body>
+
+</html>
