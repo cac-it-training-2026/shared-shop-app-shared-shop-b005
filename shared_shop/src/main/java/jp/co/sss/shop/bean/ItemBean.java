@@ -18,6 +18,21 @@ public class ItemBean {
 	private String name;
 
 	/**
+	 * 商品名(英語)
+	 */
+	private String nameEn;
+
+	/**
+	 * 商品名(スペイン語)
+	 */
+	private String nameEs;
+
+	/**
+	 * 商品名(エスペラント語)
+	 */
+	private String nameEo;
+
+	/**
 	 * 価格
 	 */
 	private Integer price;
@@ -26,6 +41,21 @@ public class ItemBean {
 	 * 商品説明
 	 */
 	private String description;
+
+	/**
+	 * 商品説明(英語)
+	 */
+	private String descriptionEn;
+
+	/**
+	 * 商品説明(スペイン語)
+	 */
+	private String descriptionEs;
+
+	/**
+	 * 商品説明(エスペラント語)
+	 */
+	private String descriptionEo;
 
 	/**
 	 * 在庫数
@@ -46,6 +76,21 @@ public class ItemBean {
 	 * カテゴリ名
 	 */
 	private String categoryName;
+
+	/**
+	 * カテゴリ名(英語)
+	 */
+	private String categoryNameEn;
+
+	/**
+	 * カテゴリ名(スペイン語)
+	 */
+	private String categoryNameEs;
+
+	/**
+	 * カテゴリ名(エスペラント語)
+	 */
+	private String categoryNameEo;
 
 	/**
 	 * 商品ID取得
@@ -80,6 +125,54 @@ public class ItemBean {
 	}
 
 	/**
+	 * 商品名(英語)の取得
+	 * @return 商品名(英語)
+	 */
+	public String getNameEn() {
+		return nameEn;
+	}
+
+	/**
+	 * 商品名(英語)のセット
+	 * @param nameEn 商品名(英語)
+	 */
+	public void setNameEn(String nameEn) {
+		this.nameEn = nameEn;
+	}
+
+	/**
+	 * 商品名(スペイン語)の取得
+	 * @return 商品名(スペイン語)
+	 */
+	public String getNameEs() {
+		return nameEs;
+	}
+
+	/**
+	 * 商品名(スペイン語)のセット
+	 * @param nameEs 商品名(スペイン語)
+	 */
+	public void setNameEs(String nameEs) {
+		this.nameEs = nameEs;
+	}
+
+	/**
+	 * 商品名(エスペラント語)の取得
+	 * @return 商品名(エスペラント語)
+	 */
+	public String getNameEo() {
+		return nameEo;
+	}
+
+	/**
+	 * 商品名(エスペラント語)のセット
+	 * @param nameEo 商品名(エスペラント語)
+	 */
+	public void setNameEo(String nameEo) {
+		this.nameEo = nameEo;
+	}
+
+	/**
 	 * 商品単価の取得
 	 * @return 商品単価
 	 */
@@ -109,6 +202,54 @@ public class ItemBean {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	/**
+	 * 商品説明(英語)の取得
+	 * @return 商品説明(英語)
+	 */
+	public String getDescriptionEn() {
+		return descriptionEn;
+	}
+
+	/**
+	 * 商品説明(英語)のセット
+	 * @param descriptionEn 商品説明(英語)
+	 */
+	public void setDescriptionEn(String descriptionEn) {
+		this.descriptionEn = descriptionEn;
+	}
+
+	/**
+	 * 商品説明(スペイン語)の取得
+	 * @return 商品説明(スペイン語)
+	 */
+	public String getDescriptionEs() {
+		return descriptionEs;
+	}
+
+	/**
+	 * 商品説明(スペイン語)のセット
+	 * @param descriptionEs 商品説明(スペイン語)
+	 */
+	public void setDescriptionEs(String descriptionEs) {
+		this.descriptionEs = descriptionEs;
+	}
+
+	/**
+	 * 商品説明(エスペラント語)の取得
+	 * @return 商品説明(エスペラント語)
+	 */
+	public String getDescriptionEo() {
+		return descriptionEo;
+	}
+
+	/**
+	 * 商品説明(エスペラント語)のセット
+	 * @param descriptionEo 商品説明(エスペラント語)
+	 */
+	public void setDescriptionEo(String descriptionEo) {
+		this.descriptionEo = descriptionEo;
 	}
 
 	/**
@@ -173,6 +314,54 @@ public class ItemBean {
 	 */
 	public void setCategoryName(String categoryName) {
 		this.categoryName = categoryName;
+	}
+
+	/**
+	 * カテゴリ名(英語)の取得
+	 * @return カテゴリ名(英語)
+	 */
+	public String getCategoryNameEn() {
+		return categoryNameEn;
+	}
+
+	/**
+	 * カテゴリ名(英語)のセット
+	 * @param categoryNameEn カテゴリ名(英語)
+	 */
+	public void setCategoryNameEn(String categoryNameEn) {
+		this.categoryNameEn = categoryNameEn;
+	}
+
+	/**
+	 * カテゴリ名(スペイン語)の取得
+	 * @return カテゴリ名(スペイン語)
+	 */
+	public String getCategoryNameEs() {
+		return categoryNameEs;
+	}
+
+	/**
+	 * カテゴリ名(スペイン語)のセット
+	 * @param categoryNameEs カテゴリ名(スペイン語)
+	 */
+	public void setCategoryNameEs(String categoryNameEs) {
+		this.categoryNameEs = categoryNameEs;
+	}
+
+	/**
+	 * カテゴリ名(エスペラント語)の取得
+	 * @return カテゴリ名(エスペラント語)
+	 */
+	public String getCategoryNameEo() {
+		return categoryNameEo;
+	}
+
+	/**
+	 * カテゴリ名(エスペラント語)のセット
+	 * @param categoryNameEo カテゴリ名(エスペラント語)
+	 */
+	public void setCategoryNameEo(String categoryNameEo) {
+		this.categoryNameEo = categoryNameEo;
 	}
 
 }

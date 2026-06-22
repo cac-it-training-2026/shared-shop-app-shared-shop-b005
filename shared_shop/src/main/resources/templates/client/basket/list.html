@@ -38,12 +38,14 @@
 				<th>[[#{data.basket.stock.status}]]</th>
 			</tr>
 			<tr th:each="item, status: ${session.basketBeans}">
-				<td><a th:href="@{/client/item/detail/{id}(id=${item.id}, sortType=1, categoryId=0)}" th:text="${item.name}"></a></td>
+				<td><a th:href="@{/client/item/detail/{id}(id=${item.id}, sortType=1, categoryId=0)}"
+						th:text="${#locale.language == 'en' ? item.nameEn : (#locale.language == 'es' ? item.nameEs : (#locale.language == 'eo' ? item.nameEo : item.name))}"></a>
+				</td>
 				<td th:text="${item.orderNum}"></td>
 				<td>
 					<form th:action="@{/client/basket/delete}" method="post">
-						<input type="hidden" name="id" th:value="${item.id}" /> <input type="submit" value="削除"
-							class="delete" />
+						<input type="hidden" name="id" th:value="${item.id}" /> <input type="submit"
+							th:value="#{list.title.action}" class="delete" />
 					</form>
 				</td>
 				<td th:if="${item.stock == 0}" th:text="#{data.out.of.stock}"></td>
@@ -54,11 +56,11 @@
 		<div class="user_info_form_area shopping_button">
 			<!--/* 注文手続きフォーム */-->
 			<form th:action="@{/client/order/address/input}" method="post">
-				<input type="submit" value="ご注文のお手続き" />
+				<input type="submit" th:value="#{order}+#{title.order.address.input}" />
 			</form>
 			<!--/* 買い物かごを空にするフォーム */-->
 			<form th:action="@{/client/basket/allDelete}" method="post">
-				<input type="submit" value="買い物かごを空にする" class="delete" />
+				<input type="submit" th:value="#{basket}+#{msg.delete.check}" class="delete" />
 			</form>
 		</div>
 	</th:block>

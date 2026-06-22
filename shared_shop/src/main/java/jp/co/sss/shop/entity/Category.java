@@ -36,6 +36,24 @@ public class Category {
 	private String name;
 
 	/**
+	 * カテゴリ名(英語)
+	 */
+	@Column
+	private String nameEn;
+
+	/**
+	 * カテゴリ名(スペイン語)
+	 */
+	@Column
+	private String nameEs;
+
+	/**
+	 * カテゴリ名(エスペラント語)
+	 */
+	@Column
+	private String nameEo;
+
+	/**
 	 * カテゴリ説明
 	 */
 	@Column
@@ -103,6 +121,54 @@ public class Category {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * カテゴリ名(英語)の取得
+	 * @return カテゴリ名(英語)
+	 */
+	public String getNameEn() {
+		return nameEn;
+	}
+
+	/**
+	 * カテゴリ名(英語)のセット
+	 * @param nameEn カテゴリ名(英語)
+	 */
+	public void setNameEn(String nameEn) {
+		this.nameEn = nameEn;
+	}
+
+	/**
+	 * カテゴリ名(スペイン語)の取得
+	 * @return カテゴリ名(スペイン語)
+	 */
+	public String getNameEs() {
+		return nameEs;
+	}
+
+	/**
+	 * カテゴリ名(スペイン語)のセット
+	 * @param nameEs カテゴリ名(スペイン語)
+	 */
+	public void setNameEs(String nameEs) {
+		this.nameEs = nameEs;
+	}
+
+	/**
+	 * カテゴリ名(エスペラント語)の取得
+	 * @return カテゴリ名(エスペラント語)
+	 */
+	public String getNameEo() {
+		return nameEo;
+	}
+
+	/**
+	 * カテゴリ名(エスペラント語)のセット
+	 * @param nameEo カテゴリ名(エスペラント語)
+	 */
+	public void setNameEo(String nameEo) {
+		this.nameEo = nameEo;
 	}
 
 	/**

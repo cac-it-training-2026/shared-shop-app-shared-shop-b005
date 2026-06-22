@@ -23,6 +23,12 @@
 			<dl class="item_detail_list">
 				<dt>[[#{itemForm.name}]]</dt>
 				<dd th:text="*{name}"></dd>
+				<dt>[[#{itemForm.name}]] ([[#{label.english}]])</dt>
+				<dd th:text="*{nameEn}"></dd>
+				<dt>[[#{itemForm.name}]] ([[#{label.spanish}]])</dt>
+				<dd th:text="*{nameEs}"></dd>
+				<dt>[[#{itemForm.name}]] ([[#{label.esperanto}]])</dt>
+				<dd th:text="*{nameEo}"></dd>
 				<dt>[[#{itemForm.price}]]</dt>
 				<dd th:text="*{price}"></dd>
 				<dt>[[#{itemForm.stock}]]</dt>
@@ -31,20 +37,26 @@
 				<dd th:text="*{categoryName}"></dd>
 				<dt>[[#{itemForm.description}]]</dt>
 				<dd th:text="*{description}"></dd>
+				<dt>[[#{itemForm.description}]] ([[#{label.english}]])</dt>
+				<dd th:text="*{descriptionEn}"></dd>
+				<dt>[[#{itemForm.description}]] ([[#{label.spanish}]])</dt>
+				<dd th:text="*{descriptionEs}"></dd>
+				<dt>[[#{itemForm.description}]] ([[#{label.esperanto}]])</dt>
+				<dd th:text="*{descriptionEo}"></dd>
 			</dl>
 		</div>
 
 		<div class="detail_button_area">
 			<form th:action="@{/admin/item/list}" method="post">
-				<input type="submit" value="戻る" class="back_button" />
+				<input type="submit" th:value="#{msg.back.to.list}" class="back_button" />
 			</form>
 
 			<form th:action="@{/admin/item/update/input/{id}(id=*{id})}" method="post">
-				<input type="submit" value="変更" />
+				<input type="submit" th:value="#{title.update.input}" />
 			</form>
 
 			<form th:action="@{/admin/item/delete/check/{id}(id=*{id})}" method="post">
-				<input type="submit" value="削除" class="delete" />
+				<input type="submit" th:value="#{list.title.action}" class="delete" />
 			</form>
 		</div>
 	</div>

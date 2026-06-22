@@ -22,7 +22,7 @@
 		<p th:text="#{msg.admin.list.none(#{category})}"></p>
 	</div>
 	<form th:action="@{/admin/category/regist/input}" method="post" class="sign_up_form">
-		<input type="submit" value="カテゴリ新規登録" class="menu_button" th:if="${registrable}" />
+		<input type="submit" th:value="#{category}+#{title.input.new}" class="menu_button" th:if="${registrable}" />
 	</form>
 	
 	<table class="list_table category_list" th:if="!${#lists.isEmpty(categories)}">
@@ -34,14 +34,15 @@
 		<tr th:each="category: ${categories}">
 			<td th:text="${category.id}"></td>
 			<td>
-				<a th:href="@{/admin/category/detail/{id}(id=${category.id})}" th:text="${category.name}"></a>
+				<a th:href="@{/admin/category/detail/{id}(id=${category.id})}"
+					th:text="${#locale.language == 'en' ? category.nameEn : (#locale.language == 'es' ? category.nameEs : (#locale.language == 'eo' ? category.nameEo : category.name))}"></a>
 			</td>
 			<td>
 				<form th:action="@{/admin/category/update/input/{id}(id=${category.id})}" method="post">
-					<input type="submit" value="変更" />
+					<input type="submit" th:value="#{title.update.input}" />
 				</form>
 				<form th:action="@{/admin/category/delete/check/{id}(id=${category.id})}" method="post">
-					<input type="submit" value="削除" class="delete" />
+					<input type="submit" th:value="#{list.title.action}" class="delete" />
 				</form>
 			</td>
 		</tr>

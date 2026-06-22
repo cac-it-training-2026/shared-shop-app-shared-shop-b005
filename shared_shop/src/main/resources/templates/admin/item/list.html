@@ -39,15 +39,19 @@
 		<!--/* 商品情報 */-->
 		<tr th:each="item: ${items}">
 			<td th:text="${item.id}"></td>
-			<td><a th:href="@{/admin/item/detail/{id}(id=${item.id})}" th:text="${item.name}"></a></td>
+			<td><a th:href="@{/admin/item/detail/{id}(id=${item.id})}"
+					th:text="${#locale.language == 'en' ? item.nameEn : (#locale.language == 'es' ? item.nameEs : (#locale.language == 'eo' ? item.nameEo : item.name))}"></a>
+			</td>
 			<td th:text="${item.price}"></td>
-			<td th:text="${item.category.name}"></td>
+			<td
+				th:text="${#locale.language == 'en' ? item.category.nameEn : (#locale.language == 'es' ? item.category.nameEs : (#locale.language == 'eo' ? item.category.nameEo : item.category.name))}">
+			</td>
 			<td>
 				<form th:action="@{/admin/item/update/input/{id}(id=${item.id})}" method="post">
-					<input type="submit" value="変更" />
+					<input type="submit" th:value="#{title.update.input}" />
 				</form>
 				<form th:action="@{/admin/item/delete/check/{id}(id=${item.id})}" method="post">
-					<input type="submit" value="削除" class="delete" />
+					<input type="submit" th:value="#{list.title.action}" class="delete" />
 				</form>
 			</td>
 		</tr>

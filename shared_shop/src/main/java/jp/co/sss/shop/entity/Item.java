@@ -37,6 +37,24 @@ public class Item {
 	private String name;
 
 	/**
+	 * 商品名(英語)
+	 */
+	@Column
+	private String nameEn;
+
+	/**
+	 * 商品名(スペイン語)
+	 */
+	@Column
+	private String nameEs;
+
+	/**
+	 * 商品名(エスペラント語)
+	 */
+	@Column
+	private String nameEo;
+
+	/**
 	 * 価格
 	 */
 	@Column
@@ -47,6 +65,24 @@ public class Item {
 	 */
 	@Column
 	private String description;
+
+	/**
+	 * 商品説明(英語)
+	 */
+	@Column
+	private String descriptionEn;
+
+	/**
+	 * 商品説明(スペイン語)
+	 */
+	@Column
+	private String descriptionEs;
+
+	/**
+	 * 商品説明(エスペラント語)
+	 */
+	@Column
+	private String descriptionEo;
 
 	/**
 	 * 在庫数
@@ -160,6 +196,54 @@ public class Item {
 	}
 
 	/**
+	 * 商品名(英語)の取得
+	 * @return 商品名(英語)
+	 */
+	public String getNameEn() {
+		return nameEn;
+	}
+
+	/**
+	 * 商品名(英語)のセット
+	 * @param nameEn 商品名(英語)
+	 */
+	public void setNameEn(String nameEn) {
+		this.nameEn = nameEn;
+	}
+
+	/**
+	 * 商品名(スペイン語)の取得
+	 * @return 商品名(スペイン語)
+	 */
+	public String getNameEs() {
+		return nameEs;
+	}
+
+	/**
+	 * 商品名(スペイン語)のセット
+	 * @param nameEs 商品名(スペイン語)
+	 */
+	public void setNameEs(String nameEs) {
+		this.nameEs = nameEs;
+	}
+
+	/**
+	 * 商品名(エスペラント語)の取得
+	 * @return 商品名(エスペラント語)
+	 */
+	public String getNameEo() {
+		return nameEo;
+	}
+
+	/**
+	 * 商品名(エスペラント語)のセット
+	 * @param nameEo 商品名(エスペラント語)
+	 */
+	public void setNameEo(String nameEo) {
+		this.nameEo = nameEo;
+	}
+
+	/**
 	 * 商品単価の取得
 	 * @return 商品単価
 	 */
@@ -189,6 +273,54 @@ public class Item {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	/**
+	 * 商品説明(英語)の取得
+	 * @return 商品説明(英語)
+	 */
+	public String getDescriptionEn() {
+		return descriptionEn;
+	}
+
+	/**
+	 * 商品説明(英語)のセット
+	 * @param descriptionEn 商品説明(英語)
+	 */
+	public void setDescriptionEn(String descriptionEn) {
+		this.descriptionEn = descriptionEn;
+	}
+
+	/**
+	 * 商品説明(スペイン語)の取得
+	 * @return 商品説明(スペイン語)
+	 */
+	public String getDescriptionEs() {
+		return descriptionEs;
+	}
+
+	/**
+	 * 商品説明(スペイン語)のセット
+	 * @param descriptionEs 商品説明(スペイン語)
+	 */
+	public void setDescriptionEs(String descriptionEs) {
+		this.descriptionEs = descriptionEs;
+	}
+
+	/**
+	 * 商品説明(エスペラント語)の取得
+	 * @return 商品説明(エスペラント語)
+	 */
+	public String getDescriptionEo() {
+		return descriptionEo;
+	}
+
+	/**
+	 * 商品説明(エスペラント語)のセット
+	 * @param descriptionEo 商品説明(エスペラント語)
+	 */
+	public void setDescriptionEo(String descriptionEo) {
+		this.descriptionEo = descriptionEo;
 	}
 
 	/**

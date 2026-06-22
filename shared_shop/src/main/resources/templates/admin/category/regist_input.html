@@ -26,16 +26,25 @@
 				<li><label> <span class="input_title">[[#{categoryForm.name}]]</span></label>
 					<input type="text" th:field="*{name}" />
 				</li>
+				<li><label> <span class="input_title">[[#{categoryForm.name}]] ([[#{label.english}]])</span></label>
+					<input type="text" th:field="*{nameEn}" />
+				</li>
+				<li><label> <span class="input_title">[[#{categoryForm.name}]] ([[#{label.spanish}]])</span></label>
+					<input type="text" th:field="*{nameEs}" />
+				</li>
+				<li><label> <span class="input_title">[[#{categoryForm.name}]] ([[#{label.esperanto}]])</span></label>
+					<input type="text" th:field="*{nameEo}" />
+				</li>
 				<li><label> <span class="input_title">[[#{categoryForm.description}]]</span></label> 
 				 <textarea
 					name="description" th:inline="text" rows="6"
 					th:text="*{description}"></textarea>
 				</li>
 			</ul>
-			<input type="submit" value="確認" class="send_button" />
+			<input type="submit" th:value="#{title.input.check}" class="send_button" />
 		</form>
 		<form th:action="@{/admin/category/list}" method="post">
-			<input type="submit" value="戻る" class="back_button" />
+			<input type="submit" th:value="#{msg.back.to.list}" class="back_button" />
 		</form>
 	</div>
 </body>

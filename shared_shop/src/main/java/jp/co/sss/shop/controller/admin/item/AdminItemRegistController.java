@@ -134,6 +134,9 @@ public class AdminItemRegistController {
 			//カテゴリーIDで検索し、結果が無ければnullを返す
 			Category category = categoryRepository.findById(form.getCategoryId()).orElse(null);
 			form.setCategoryName(category.getName());
+			form.setCategoryNameEn(category.getNameEn());
+			form.setCategoryNameEs(category.getNameEs());
+			form.setCategoryNameEo(category.getNameEo());
 		}
 
 		//直前のセッション情報を取得
