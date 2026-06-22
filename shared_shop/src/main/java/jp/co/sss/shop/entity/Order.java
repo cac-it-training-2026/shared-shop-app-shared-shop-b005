@@ -67,6 +67,36 @@ public class Order {
 	private Date insertDate;
 
 	/**
+	 * 利用ポイント
+	 */
+	@Column
+	private Integer usedPoint;
+
+	/**
+	 * 今回獲得ポイント
+	 */
+	@Column
+	private Integer earnedPoint;
+
+	/**
+	 * 抽選実施フラグ 0:未実施, 1:実施済み
+	 */
+	@Column
+	private Integer lotteryExecuted;
+
+	/**
+	 * 抽選結果 1:1等, 2:2等, 3:3等, 4:はずれ
+	 */
+	@Column
+	private Integer lotteryRank;
+
+	/**
+	 * 抽選付与ポイント
+	 */
+	@Column
+	private Integer lotteryPoint;
+
+	/**
 	 * 会員情報
 	 */
 	@ManyToOne
@@ -189,6 +219,86 @@ public class Order {
 	 */
 	public void setInsertDate(Date insertDate) {
 		this.insertDate = insertDate;
+	}
+
+	/**
+	 * 利用ポイントの取得
+	 * @return 利用ポイント
+	 */
+	public Integer getUsedPoint() {
+		return usedPoint;
+	}
+
+	/**
+	 * 利用ポイントのセット
+	 * @param usedPoint 利用ポイント
+	 */
+	public void setUsedPoint(Integer usedPoint) {
+		this.usedPoint = usedPoint;
+	}
+
+	/**
+	 * 今回獲得ポイントの取得
+	 * @return 今回獲得ポイント
+	 */
+	public Integer getEarnedPoint() {
+		return earnedPoint;
+	}
+
+	/**
+	 * 今回獲得ポイントのセット
+	 * @param earnedPoint 今回獲得ポイント
+	 */
+	public void setEarnedPoint(Integer earnedPoint) {
+		this.earnedPoint = earnedPoint;
+	}
+
+	/**
+	 * 抽選実施フラグの取得
+	 * @return 抽選実施フラグ
+	 */
+	public Integer getLotteryExecuted() {
+		return lotteryExecuted;
+	}
+
+	/**
+	 * 抽選実施フラグのセット
+	 * @param lotteryExecuted 抽選実施フラグ
+	 */
+	public void setLotteryExecuted(Integer lotteryExecuted) {
+		this.lotteryExecuted = lotteryExecuted;
+	}
+
+	/**
+	 * 抽選結果の取得
+	 * @return 抽選結果
+	 */
+	public Integer getLotteryRank() {
+		return lotteryRank;
+	}
+
+	/**
+	 * 抽選結果のセット
+	 * @param lotteryRank 抽選結果
+	 */
+	public void setLotteryRank(Integer lotteryRank) {
+		this.lotteryRank = lotteryRank;
+	}
+
+	/**
+	 * 抽選付与ポイントの取得
+	 * @return 抽選付与ポイント
+	 */
+	public Integer getLotteryPoint() {
+		return lotteryPoint;
+	}
+
+	/**
+	 * 抽選付与ポイントのセット
+	 * @param lotteryPoint 抽選付与ポイント
+	 */
+	public void setLotteryPoint(Integer lotteryPoint) {
+		this.lotteryPoint = lotteryPoint;
 	}
 
 	/**

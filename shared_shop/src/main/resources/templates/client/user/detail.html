@@ -33,6 +33,22 @@
 					<span class="input_title">[[#{userForm.phoneNumber}]]</span>
 					<span class="input_value" th:text="*{phoneNumber}"></span>
 				</li>
+				<li>
+					<span class="input_title">[[#{userForm.currentPoint}]]</span>
+					<span class="input_value" th:text="*{currentPoint} + ' pt'"></span>
+				</li>
+				<li>
+					<span class="input_title">[[#{userForm.totalPoint}]]</span>
+					<span class="input_value" th:text="*{totalPoint} + ' pt'"></span>
+				</li>
+				<li>
+					<span class="input_title">[[#{userForm.rank}]]</span>
+					<span class="input_value" th:switch="*{rank}">
+						<span th:case="0">ブロンズ</span>
+						<span th:case="1">シルバー</span>
+						<span th:case="2">ゴールド</span>
+					</span>
+				</li>
 			</ul>
 		</div>
 

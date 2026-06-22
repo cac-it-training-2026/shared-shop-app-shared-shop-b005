@@ -14,6 +14,24 @@
 		<br />
 		<span th:text="#{msg.order.complete2}"></span>
 	</p>
+
+	<div class="point_info" th:if="${earnedPoint != null}">
+		<p th:text="#{msg.order.point.earned(${earnedPoint})}"></p>
+	</div>
+
+	<div class="lottery_area" th:if="${orderId != null}">
+		<th:block th:if="${lotteryResult == null}">
+			<form th:action="@{/client/order/lottery}" method="post">
+				<input type="hidden" name="orderId" th:value="${orderId}" />
+				<input type="submit" th:value="#{msg.order.lottery.challenge}" class="send_button" />
+			</form>
+		</th:block>
+		<th:block th:if="${lotteryResult != null}">
+			<p th:text="#{msg.order.lottery.result(${lotteryRankName}, ${lotteryPoint})}"></p>
+		</th:block>
+	</div>
+	<div th:if="${lotteryError != null}" class="error_message" th:text="${lotteryError}"></div>
+
 	<p class="complete_link"><a th:href="@{/}" th:text="#{msg.back.to.top}"></a></p>
 </body>
 

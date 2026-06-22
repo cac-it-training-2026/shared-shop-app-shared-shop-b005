@@ -51,7 +51,24 @@
 			<td class="total">[[#{data.total}]]</td>
 			<td class="total" th:text="${total}"></td>
 		</tr>
+		<tr th:if="${userBean.currentPoint > 0}">
+			<td colspan="3"></td>
+			<td class="total">利用ポイント (保有: <span th:text="${userBean.currentPoint}"></span>pt)</td>
+			<td class="total">
+				<form th:action="@{/client/order/check}" method="post" id="pointForm">
+					<input type="number" name="usedPoint" th:value="${orderForm.usedPoint}" min="0" th:max="${userBean.currentPoint < total ? userBean.currentPoint : total}" />
+					<input type="hidden" name="payMethod" th:value="${orderForm.payMethod}" />
+					<input type="submit" value="適用" />
+				</form>
+			</td>
+		</tr>
+		<tr th:if="${orderForm.usedPoint != null && orderForm.usedPoint > 0}">
+			<td colspan="3"></td>
+			<td class="total">お支払い合計</td>
+			<td class="total" th:text="${total - orderForm.usedPoint}"></td>
+		</tr>
 	</table>
+	<div th:if="${pointError != null}" class="error_message" th:text="${pointError}"></div>
 	<div class="user_info_form_area">
 		<table class="detail_table address">
 			<caption class="table_caption">[[#{data.address}]]</caption>
