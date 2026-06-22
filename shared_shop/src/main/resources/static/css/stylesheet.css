@@ -562,6 +562,22 @@ select {
 }
 
 /* ---- 商品詳細 ---- */
+.quantity_control {
+	margin-bottom: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.qty_btn {
+	width: 30px;
+	height: 30px;
+	cursor: pointer;
+}
+.qty_input {
+	width: 50px;
+	text-align: center;
+	margin: 0 5px;
+}
 .list_table.item_detail{
 	margin: 10px auto 20px;
 }

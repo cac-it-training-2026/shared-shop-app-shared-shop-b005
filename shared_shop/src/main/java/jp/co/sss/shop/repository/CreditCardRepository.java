@@ -19,5 +19,5 @@ public interface CreditCardRepository extends JpaRepository<CreditCard, Integer>
 	 * @param userId 会員ID
 	 * @return クレジットカード情報のリスト
 	 */
-	List<CreditCard> findByUserIdOrderByInsertDateDescIdDesc(Integer userId);
+	List<CreditCard> findByUser_IdOrderByInsertDateDescIdDesc(Integer userId);
 }

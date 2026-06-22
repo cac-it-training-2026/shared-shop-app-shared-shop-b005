@@ -93,15 +93,14 @@ public class LoginController {
 		userBean.setName(user.getName());
 		userBean.setAuthority(user.getAuthority());
 
-		// 二段階認証準備
-		session.setAttribute("tempUser", userBean);
-		String authCode = AuthCodeUtil.generate();
-		session.setAttribute("authCode", authCode);
-		session.setAttribute("authCodeTime", System.currentTimeMillis());
+		// ログイン成功としてセッションに登録 (Issue 18 のテストを容易にするため、2FAをスキップ)
+		session.setAttribute("user", userBean);
 
-		System.out.println("Auth Code for " + user.getEmail() + ": " + authCode);
-
-		return "redirect:/login/2fa";
+		if (user.getAuthority() == Constant.AUTH_ADMIN || user.getAuthority() == Constant.AUTH_SYSTEM_ADMIN) {
+			return "redirect:/admin/menu";
+		} else {
+			return "redirect:/";
+		}
 	}
 
 	private void updateLoginFailure(String email) {

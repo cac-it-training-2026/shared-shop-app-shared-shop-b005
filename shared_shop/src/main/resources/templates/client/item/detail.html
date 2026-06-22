@@ -35,9 +35,9 @@
 		<div class="detail_button_area">
 			<form th:action="@{/client/basket/add}" method="post" class="user_info_form" th:if="*{stock > 0}">
 				<div class="quantity_control">
-					<button type="button" onclick="changeQuantity(-1)">-</button>
-					<input type="number" id="orderNum" name="orderNum" value="1" min="1" readonly />
-					<button type="button" onclick="changeQuantity(1)">+</button>
+					<button type="button" class="qty_btn" onclick="changeQuantity(-1)">-</button>
+					<input type="number" id="orderNum" name="orderNum" value="1" min="1" readonly class="qty_input" />
+					<button type="button" class="qty_btn" onclick="changeQuantity(1)">+</button>
 				</div>
 				<script th:inline="javascript">
 					function changeQuantity(amount) {

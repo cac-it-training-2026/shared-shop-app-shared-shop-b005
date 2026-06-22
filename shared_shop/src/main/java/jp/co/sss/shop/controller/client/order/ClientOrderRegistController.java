@@ -201,7 +201,10 @@ public class ClientOrderRegistController {
 		model.addAttribute("categories", categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0));
 
 		UserBean userBean = (UserBean) session.getAttribute("user");
-		List<CreditCard> cards = creditCardRepository.findByUserIdOrderByInsertDateDescIdDesc(userBean.getId());
+		if (userBean == null) {
+			return "redirect:/login";
+		}
+		List<CreditCard> cards = creditCardRepository.findByUser_IdOrderByInsertDateDescIdDesc(userBean.getId());
 		List<CreditCardBean> cardBeans = new ArrayList<>();
 		for (CreditCard card : cards) {
 			CreditCardBean bean = new CreditCardBean();
@@ -236,6 +239,11 @@ public class ClientOrderRegistController {
 			return "redirect:/syserror";
 		}
 
+		// 支払い方法が指定されていない場合はエラー画面を返す
+		if (payMethod == null) {
+			return "redirect:/syserror";
+		}
+
 		// 取り出した注文情報の支払い方法を更新
 		OrderForm orderForm = (OrderForm) orderFormObject;
 		orderForm.setPayMethod(payMethod);
@@ -255,8 +263,11 @@ public class ClientOrderRegistController {
 	@RequestMapping(path = "/client/order/card/select", method = RequestMethod.GET)
 	public String cardSelect(Model model, HttpSession session) {
 		UserBean userBean = (UserBean) session.getAttribute("user");
+		if (userBean == null) {
+			return "redirect:/login";
+		}
 		model.addAttribute("categories", categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0));
-		List<CreditCard> cards = creditCardRepository.findByUserIdOrderByInsertDateDescIdDesc(userBean.getId());
+		List<CreditCard> cards = creditCardRepository.findByUser_IdOrderByInsertDateDescIdDesc(userBean.getId());
 		List<CreditCardBean> cardBeans = new ArrayList<>();
 		for (CreditCard card : cards) {
 			CreditCardBean bean = new CreditCardBean();
@@ -587,7 +598,8 @@ public class ClientOrderRegistController {
 	 * @return "client/order/complete" 注文完了画面
 	 **/
 	@RequestMapping(path = "/client/order/complete", method = RequestMethod.GET)
-	public String orderComplete() {
+	public String orderComplete(Model model) {
+		model.addAttribute("categories", categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0));
 		return "client/order/complete";
 	}
 

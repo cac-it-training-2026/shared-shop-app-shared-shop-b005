@@ -66,7 +66,7 @@ public class ClientCreditCardController {
 			return "redirect:/login";
 		}
 
-		List<CreditCard> cards = creditCardRepository.findByUserIdOrderByInsertDateDescIdDesc(userBean.getId());
+		List<CreditCard> cards = creditCardRepository.findByUser_IdOrderByInsertDateDescIdDesc(userBean.getId());
 		List<CreditCardBean> cardBeans = new ArrayList<>();
 		for (CreditCard card : cards) {
 			CreditCardBean bean = new CreditCardBean();
@@ -108,7 +108,7 @@ public class ClientCreditCardController {
 	 * 登録完了
 	 */
 	@RequestMapping(path = "/client/creditcard/regist/complete", method = RequestMethod.POST)
-	public String registComplete(@ModelAttribute CreditCardForm form, HttpSession session) {
+	public String registComplete(@ModelAttribute CreditCardForm form, HttpSession session, Model model) {
 		UserBean userBean = (UserBean) session.getAttribute("user");
 		if (userBean == null) {
 			return "redirect:/login";
@@ -122,6 +122,7 @@ public class ClientCreditCardController {
 		card.setUser(user);
 		creditCardRepository.save(card);
 
+		model.addAttribute("categories", categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0));
 		return "client/creditcard/regist_complete";
 	}
 
@@ -162,7 +163,7 @@ public class ClientCreditCardController {
 	 * 変更完了
 	 */
 	@RequestMapping(path = "/client/creditcard/update/complete", method = RequestMethod.POST)
-	public String updateComplete(@ModelAttribute CreditCardForm form, HttpSession session) {
+	public String updateComplete(@ModelAttribute CreditCardForm form, HttpSession session, Model model) {
 		UserBean userBean = (UserBean) session.getAttribute("user");
 		if (userBean == null) {
 			return "redirect:/login";
@@ -177,6 +178,7 @@ public class ClientCreditCardController {
 		card.setCardNumber(CipherUtil.encrypt(form.getCardNumber()));
 		creditCardRepository.save(card);
 
+		model.addAttribute("categories", categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0));
 		return "client/creditcard/update_complete";
 	}
 
@@ -202,8 +204,9 @@ public class ClientCreditCardController {
 	 * 削除完了
 	 */
 	@RequestMapping(path = "/client/creditcard/delete/complete", method = RequestMethod.POST)
-	public String deleteComplete(Integer id) {
+	public String deleteComplete(Integer id, Model model) {
 		creditCardRepository.deleteById(id);
+		model.addAttribute("categories", categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0));
 		return "client/creditcard/delete_complete";
 	}
 }
