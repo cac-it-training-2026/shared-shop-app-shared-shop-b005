@@ -31,7 +31,8 @@
 				<dt>[[#{data.description}]]</dt>
 				<dd th:text="*{description}"></dd>
 				<dt>平均評価</dt>
-				<dd th:text="${avgRating != null ? #numbers.formatDecimal(avgRating, 1, 1) : 'まだレビューがありません'}"></dd>
+				<dd th:if="${avgRating != null}" th:text="${#numbers.formatDecimal(avgRating, 1, 1)}"></dd>
+				<dd th:if="${avgRating == null}">まだレビューがありません</dd>
 				<dt>お気に入り数</dt>
 				<dd th:text="*{favoriteCount}"></dd>
 			</dl>

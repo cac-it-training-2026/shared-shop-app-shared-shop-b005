@@ -89,8 +89,10 @@ public class BeanTools {
 
 		BeanUtils.copyProperties(entity, bean);
 
-		bean.setCategoryId(entity.getCategory().getId());
-		bean.setCategoryName(entity.getCategory().getName());
+		if (entity.getCategory() != null) {
+			bean.setCategoryId(entity.getCategory().getId());
+			bean.setCategoryName(entity.getCategory().getName());
+		}
 
 		return bean;
 	}
