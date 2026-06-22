@@ -48,6 +48,11 @@ public class ItemBean {
 	private String categoryName;
 
 	/**
+	 * お気に入り登録数
+	 */
+	private long favoriteCount;
+
+	/**
 	 * 商品ID取得
 	 * @return 商品ID
 	 */
@@ -173,6 +178,22 @@ public class ItemBean {
 	 */
 	public void setCategoryName(String categoryName) {
 		this.categoryName = categoryName;
+	}
+
+	/**
+	 * お気に入り登録数の取得
+	 * @return お気に入り登録数
+	 */
+	public long getFavoriteCount() {
+		return favoriteCount;
+	}
+
+	/**
+	 * お気に入り登録数のセット
+	 * @param favoriteCount お気に入り登録数
+	 */
+	public void setFavoriteCount(long favoriteCount) {
+		this.favoriteCount = favoriteCount;
 	}
 
 }

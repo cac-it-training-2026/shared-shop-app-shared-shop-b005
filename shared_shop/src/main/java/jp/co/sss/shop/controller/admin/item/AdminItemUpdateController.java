@@ -14,10 +14,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.List;
+
 import jp.co.sss.shop.entity.Category;
 import jp.co.sss.shop.entity.Item;
+import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.form.ItemForm;
 import jp.co.sss.shop.repository.CategoryRepository;
+import jp.co.sss.shop.repository.FavoriteRepository;
 import jp.co.sss.shop.repository.ItemRepository;
 import jp.co.sss.shop.service.BeanTools;
 import jp.co.sss.shop.service.UploadFileService;
@@ -60,6 +64,9 @@ public class AdminItemUpdateController {
 	 */
 	@Autowired
 	BeanTools beanTools;
+
+	@Autowired
+	FavoriteRepository favoriteRepository;
 
 	/**
 	 * 変更入力画面　初期表示処理(POST)
@@ -229,8 +236,21 @@ public class AdminItemUpdateController {
 		item.setDeleteFlag(deleteFlag);
 		item.setInsertDate(insertDate);
 
+		// 在庫が0から1以上になったかチェック
+		Item oldItem = itemRepository.findByIdAndDeleteFlag(itemForm.getId(), Constant.NOT_DELETED);
+		boolean isStockRecovered = (oldItem.getStock() == 0 && itemForm.getStock() > 0);
+
 		// 商品情報を保存
 		itemRepository.save(item);
+
+		if (isStockRecovered) {
+			// お気に入り登録ユーザーを取得
+			List<User> targetUsers = favoriteRepository.findUsersByItemId(item.getId());
+			// TODO: MailUtilが存在しないため、通知対象取得までの処理を実装
+			// for (User targetUser : targetUsers) {
+			//     MailUtil.sendStockRecoveryMail(targetUser.getEmail(), item.getName());
+			// }
+		}
 
 		//セッション情報の削除
 		session.removeAttribute("itemForm");

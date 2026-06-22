@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+
+<head>
+	<title th:text="#{title.review.input} + ' | ' + #{shop.title}"> </title>
+	<meta charset="UTF-8" />
+</head>
+
+<body class="user">
+	<h2 th:class="title" th:text="#{title.review.input}"></h2>
+
+	<div class="info_form_area">
+		<div class="item_detail_area">
+			<div class="item_image_area">
+				<img th:if="${item.image != null}" th:src="@{/images/{image}(image=${item.image})}"></img>
+				<img th:if="${item.image == null}" th:src="@{/images/common/no_image.jpg}"></img>
+			</div>
+			<dl class="item_detail_list">
+				<dt>[[#{data.item.name}]]</dt>
+				<dd th:text="${item.name}"></dd>
+			</dl>
+		</div>
+
+		<form th:action="@{/client/review/complete}" method="post" th:object="${reviewForm}" class="user_info_form">
+			<ul class="input_list">
+				<li>
+					<span class="input_title">評価 (1-5)</span>
+					<select th:field="*{rating}">
+						<option value="5">5 (非常に良い)</option>
+						<option value="4">4 (良い)</option>
+						<option value="3">3 (普通)</option>
+						<option value="2">2 (悪い)</option>
+						<option value="1">1 (非常に悪い)</option>
+					</select>
+					<span th:if="${#fields.hasErrors('rating')}" th:errors="*{rating}" class="error"></span>
+				</li>
+				<li>
+					<span class="input_title">コメント</span>
+					<textarea th:field="*{comment}" rows="5" cols="40"></textarea>
+					<span th:if="${#fields.hasErrors('comment')}" th:errors="*{comment}" class="error"></span>
+				</li>
+			</ul>
+			<input type="hidden" th:field="*{itemId}" />
+			<div class="detail_button_area">
+				<input type="submit" value="投稿" class="send_button" />
+				<a th:href="@{/client/item/detail/{id}(id=*{itemId})}" class="back_button">戻る</a>
+			</div>
+		</form>
+	</div>
+</body>
+
+</html>

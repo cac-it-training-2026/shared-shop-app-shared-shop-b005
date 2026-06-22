@@ -15,6 +15,27 @@
 		<span th:text="#{msg.order.complete2}"></span>
 	</p>
 	<p class="complete_link"><a th:href="@{/}" th:text="#{msg.back.to.top}"></a></p>
+
+	<th:block th:if="${not #lists.isEmpty(recommendItems)}">
+		<h3 class="title">この商品を購入した人はこの商品も買っています</h3>
+		<table class="list_table item_detail">
+			<tr>
+				<th th:text="#{data.item.image}"></th>
+				<th th:text="#{data.item.name}"></th>
+				<th th:text="#{data.item.price}"></th>
+			</tr>
+			<tr th:each="item : ${recommendItems}">
+				<td class="image">
+					<a th:href="@{/client/item/detail/{id}(id=${item.id})}">
+						<img th:src="@{/images/{image}(image=${item.image})}" th:if="${item.image != null}" />
+						<img th:src="@{/images/common/no_image.jpg}" th:if="${item.image == null}" />
+					</a>
+				</td>
+				<td><a th:href="@{/client/item/detail/{id}(id=${item.id})}" th:text="${item.name}"></a></td>
+				<td th:text="${item.price}"></td>
+			</tr>
+		</table>
+	</th:block>
 </body>
 
 </html>

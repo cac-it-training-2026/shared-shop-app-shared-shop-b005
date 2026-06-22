@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+
+<head>
+	<title th:text="#{title.favorite.list} + ' | ' + #{shop.title}"> </title>
+	<meta charset="UTF-8" />
+</head>
+
+<body class="user">
+	<h2 th:class="title" th:text="#{title.favorite.list}"></h2>
+
+	<p th:if="${#lists.isEmpty(favorites)}" th:text="#{msg.client.favorite.list.none}"></p>
+
+	<th:block th:if="!${#lists.isEmpty(favorites)}">
+		<table class="list_table item_detail">
+			<tr>
+				<th th:text="#{data.item.image}"></th>
+				<th th:text="#{data.item.name}"></th>
+				<th th:text="#{data.item.price}"></th>
+				<th>解除</th>
+			</tr>
+			<tr th:each="favorite : ${favorites}">
+				<td class="image">
+					<img th:src="@{/images/{image}(image=${favorite.item.image})}" th:if="${favorite.item.image != null}" />
+					<img th:src="@{/images/common/no_image.jpg}" th:if="${favorite.item.image == null}" />
+				</td>
+				<td><a th:href="@{/client/item/detail/{id}(id=${favorite.item.id})}" th:text="${favorite.item.name}"></a></td>
+				<td th:text="${favorite.item.price}"></td>
+				<td>
+					<form th:action="@{/client/favorite/toggle/{itemId}(itemId=${favorite.item.id})}" method="post">
+						<input type="submit" value="解除" />
+					</form>
+				</td>
+			</tr>
+		</table>
+	</th:block>
+
+	<div class="detail_button_area">
+		<a th:href="@{/}" class="back_button">トップに戻る</a>
+	</div>
+</body>
+
+</html>

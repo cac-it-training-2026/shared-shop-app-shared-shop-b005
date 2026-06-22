@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -461,6 +462,15 @@ public class ClientOrderRegistController {
 		order.setOrderItemsList(orderItems);
 		orderRepository.save(order);
 
+		// レコメンド商品取得用（最後の1商品から取得）
+		if (!orderItemBeans.isEmpty()) {
+			OrderItemBean lastItem = orderItemBeans.get(0);
+			Item item = itemRepository.getReferenceById(lastItem.getItemId());
+			List<Item> recommendItems = itemRepository.findRecommendItems(
+					item.getCategory().getId(), item.getId(), PageRequest.of(0, 5));
+			session.setAttribute("recommendItems", recommendItems);
+		}
+
 		// セッションスコープに保存している各注文情報を破棄
 		session.removeAttribute("orderForm");
 		session.removeAttribute("basketBeans");
@@ -475,7 +485,13 @@ public class ClientOrderRegistController {
 	 * @return "client/order/complete" 注文完了画面
 	 **/
 	@RequestMapping(path = "/client/order/complete", method = RequestMethod.GET)
-	public String orderComplete() {
+	public String orderComplete(Model model, HttpSession session) {
+		@SuppressWarnings("unchecked")
+		List<Item> recommendItems = (List<Item>) session.getAttribute("recommendItems");
+		if (recommendItems != null) {
+			model.addAttribute("recommendItems", recommendItems);
+			session.removeAttribute("recommendItems");
+		}
 		return "client/order/complete";
 	}
 

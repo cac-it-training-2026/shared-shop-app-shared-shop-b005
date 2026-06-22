@@ -30,9 +30,18 @@
 				<dd th:text="*{categoryName}"></dd>
 				<dt>[[#{data.description}]]</dt>
 				<dd th:text="*{description}"></dd>
+				<dt>平均評価</dt>
+				<dd th:text="${avgRating != null ? #numbers.formatDecimal(avgRating, 1, 1) : 'まだレビューがありません'}"></dd>
+				<dt>お気に入り数</dt>
+				<dd th:text="*{favoriteCount}"></dd>
 			</dl>
 		</div>
 		<div class="detail_button_area">
+			<th:block th:if="${session.user != null and session.user.authority == 2}">
+				<form th:action="@{/client/favorite/toggle/{itemId}(itemId=*{id})}" method="post" style="display:inline;">
+					<input type="submit" th:value="${isFavorite ? 'お気に入り解除' : 'お気に入り登録'}" class="send_button" />
+				</form>
+			</th:block>
 			<form th:action="@{/client/basket/add}" method="post" class="user_info_form" th:if="*{stock > 0}">
 				<input type="hidden" th:field="*{id}" />
 				<input type="submit" value="買い物かごに入れる" class="send_button" />
@@ -41,6 +50,29 @@
 				<input type="submit" value="戻る" class="back_button" />
 			</form>
 		</div>
+	</div>
+
+	<h3 class="title">レビュー一覧</h3>
+	<div class="info_form_area">
+		<div style="margin-bottom: 10px;">
+			<span th:if="${reviewSortType==1}">新着順</span>
+			<a th:unless="${reviewSortType==1}" th:href="@{/client/item/detail/{id}(id=${item.id}, sortType=${sortType}, categoryId=${categoryId}, reviewSortType=1)}">新着順</a>
+			|
+			<span th:if="${reviewSortType==2}">評価が高い順</span>
+			<a th:unless="${reviewSortType==2}" th:href="@{/client/item/detail/{id}(id=${item.id}, sortType=${sortType}, categoryId=${categoryId}, reviewSortType=2)}">評価が高い順</a>
+		</div>
+
+		<p th:if="${#lists.isEmpty(reviews)}">レビューはまだありません。</p>
+		<th:block th:if="!${#lists.isEmpty(reviews)}">
+			<div th:each="review : ${reviews}" style="border-bottom: 1px solid #ccc; margin-bottom: 10px; padding-bottom: 10px;">
+				<p>
+					<strong>評価: [[${review.rating}]]</strong>
+					| 投稿者: [[${review.user.name}]]
+					| 投稿日: [[${review.insertDate}]]
+				</p>
+				<p th:text="${review.comment}"></p>
+			</div>
+		</th:block>
 	</div>
 
 </body>

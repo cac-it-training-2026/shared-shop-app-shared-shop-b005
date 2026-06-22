@@ -40,6 +40,9 @@
 			<form th:action="@{/}" method="post">
 				<input type="submit" value="戻る" class="back_button" />
 			</form>
+			<form th:action="@{/client/favorite/list}" method="get">
+				<input type="submit" value="お気に入り一覧" />
+			</form>
 			<form th:action="@{/client/user/update/input/{id}(id=${userBean.id})}" method="post">
 				<input type="submit" value="変更" />
 			</form>
