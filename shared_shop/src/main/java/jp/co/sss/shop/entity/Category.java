@@ -234,4 +234,22 @@ public class Category {
 	public void setItemList(List<Item> itemList) {
 		this.itemList = itemList;
 	}
+
+	/**
+	 * ロケールに応じたカテゴリ名の取得（フォールバック付き）
+	 * @param lang 言語コード
+	 * @return ロケールに応じたカテゴリ名
+	 */
+	public String getName(String lang) {
+		if ("en".equals(lang) && nameEn != null && !nameEn.isEmpty()) {
+			return nameEn;
+		}
+		if ("es".equals(lang) && nameEs != null && !nameEs.isEmpty()) {
+			return nameEs;
+		}
+		if ("eo".equals(lang) && nameEo != null && !nameEo.isEmpty()) {
+			return nameEo;
+		}
+		return name;
+	}
 }

@@ -41,10 +41,10 @@
 				</td>
 				<td>
 					<a th:href="@{/client/item/detail/{id}(id=${item.id})}"
-						th:text="${#locale.language == 'en' ? item.nameEn : (#locale.language == 'es' ? item.nameEs : (#locale.language == 'eo' ? item.nameEo : item.name))}"></a>
+						th:text="${item.getName(#locale.language)}"></a>
 				</td>
 				<td th:text="${item.price}"></td>
-				<td th:text="${#locale.language == 'en' ? item.categoryNameEn : (#locale.language == 'es' ? item.categoryNameEs : (#locale.language == 'eo' ? item.categoryNameEo : item.categoryName))}"></td>
+				<td th:text="${item.getCategoryName(#locale.language)}"></td>
 			</tr>
 		</table>
 	</th:block>

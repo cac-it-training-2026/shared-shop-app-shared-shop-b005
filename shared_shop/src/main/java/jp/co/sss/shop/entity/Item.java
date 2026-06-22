@@ -419,4 +419,39 @@ public class Item {
 		this.orderItemList = orderItemList;
 	}
 
+	/**
+	 * ロケールに応じた商品名の取得（フォールバック付き）
+	 * @param lang 言語コード
+	 * @return ロケールに応じた商品名
+	 */
+	public String getName(String lang) {
+		if ("en".equals(lang) && nameEn != null && !nameEn.isEmpty()) {
+			return nameEn;
+		}
+		if ("es".equals(lang) && nameEs != null && !nameEs.isEmpty()) {
+			return nameEs;
+		}
+		if ("eo".equals(lang) && nameEo != null && !nameEo.isEmpty()) {
+			return nameEo;
+		}
+		return name;
+	}
+
+	/**
+	 * ロケールに応じた商品説明の取得（フォールバック付き）
+	 * @param lang 言語コード
+	 * @return ロケールに応じた商品説明
+	 */
+	public String getDescription(String lang) {
+		if ("en".equals(lang) && descriptionEn != null && !descriptionEn.isEmpty()) {
+			return descriptionEn;
+		}
+		if ("es".equals(lang) && descriptionEs != null && !descriptionEs.isEmpty()) {
+			return descriptionEs;
+		}
+		if ("eo".equals(lang) && descriptionEo != null && !descriptionEo.isEmpty()) {
+			return descriptionEo;
+		}
+		return description;
+	}
 }

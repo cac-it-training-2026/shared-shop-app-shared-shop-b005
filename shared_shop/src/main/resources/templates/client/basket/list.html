@@ -39,7 +39,7 @@
 			</tr>
 			<tr th:each="item, status: ${session.basketBeans}">
 				<td><a th:href="@{/client/item/detail/{id}(id=${item.id}, sortType=1, categoryId=0)}"
-						th:text="${#locale.language == 'en' ? item.nameEn : (#locale.language == 'es' ? item.nameEs : (#locale.language == 'eo' ? item.nameEo : item.name))}"></a>
+						th:text="${item.getName(#locale.language)}"></a>
 				</td>
 				<td th:text="${item.orderNum}"></td>
 				<td>

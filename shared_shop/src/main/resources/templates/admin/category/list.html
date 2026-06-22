@@ -35,7 +35,7 @@
 			<td th:text="${category.id}"></td>
 			<td>
 				<a th:href="@{/admin/category/detail/{id}(id=${category.id})}"
-					th:text="${#locale.language == 'en' ? category.nameEn : (#locale.language == 'es' ? category.nameEs : (#locale.language == 'eo' ? category.nameEo : category.name))}"></a>
+					th:text="${category.getName(#locale.language)}"></a>
 			</td>
 			<td>
 				<form th:action="@{/admin/category/update/input/{id}(id=${category.id})}" method="post">

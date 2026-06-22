@@ -40,11 +40,11 @@
 		<tr th:each="item: ${items}">
 			<td th:text="${item.id}"></td>
 			<td><a th:href="@{/admin/item/detail/{id}(id=${item.id})}"
-					th:text="${#locale.language == 'en' ? item.nameEn : (#locale.language == 'es' ? item.nameEs : (#locale.language == 'eo' ? item.nameEo : item.name))}"></a>
+					th:text="${item.getName(#locale.language)}"></a>
 			</td>
 			<td th:text="${item.price}"></td>
 			<td
-				th:text="${#locale.language == 'en' ? item.category.nameEn : (#locale.language == 'es' ? item.category.nameEs : (#locale.language == 'eo' ? item.category.nameEo : item.category.name))}">
+				th:text="${item.category.getName(#locale.language)}">
 			</td>
 			<td>
 				<form th:action="@{/admin/item/update/input/{id}(id=${item.id})}" method="post">

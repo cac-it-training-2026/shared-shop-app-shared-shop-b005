@@ -19,7 +19,7 @@
 			</div>
 			<dl class="item_detail_list">
 				<dt>[[#{data.item.name}]]</dt>
-				<dd th:text="${#locale.language == 'en' ? item.nameEn : (#locale.language == 'es' ? item.nameEs : (#locale.language == 'eo' ? item.nameEo : item.name))}"></dd>
+				<dd th:text="${item.getName(#locale.language)}"></dd>
 				<dt>[[#{data.item.price}]]</dt>
 				<dd th:text="*{price}"></dd>
 				<dt>[[#{data.item.stock}]]</dt>
@@ -27,9 +27,9 @@
 				<dd th:if="*{stock >= 1 and 5 >= stock }" th:text="*{stock}"></dd>
 				<dd th:if="*{stock == 0}" th:text="#{data.out.of.stock}"></dd>
 				<dt>[[#{data.category}]]</dt>
-				<dd th:text="${#locale.language == 'en' ? item.categoryNameEn : (#locale.language == 'es' ? item.categoryNameEs : (#locale.language == 'eo' ? item.categoryNameEo : item.categoryName))}"></dd>
+				<dd th:text="${item.getCategoryName(#locale.language)}"></dd>
 				<dt>[[#{data.description}]]</dt>
-				<dd th:text="${#locale.language == 'en' ? item.descriptionEn : (#locale.language == 'es' ? item.descriptionEs : (#locale.language == 'eo' ? item.descriptionEo : item.description))}"></dd>
+				<dd th:text="${item.getDescription(#locale.language)}"></dd>
 			</dl>
 		</div>
 		<div class="detail_button_area">

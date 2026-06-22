@@ -186,4 +186,22 @@ public class OrderItemBean {
 	public void setOrderNum(Integer orderNum) {
 		this.orderNum = orderNum;
 	}
+
+	/**
+	 * ロケールに応じた商品名の取得（フォールバック付き）
+	 * @param lang 言語コード
+	 * @return ロケールに応じた商品名
+	 */
+	public String getName(String lang) {
+		if ("en".equals(lang) && nameEn != null && !nameEn.isEmpty()) {
+			return nameEn;
+		}
+		if ("es".equals(lang) && nameEs != null && !nameEs.isEmpty()) {
+			return nameEs;
+		}
+		if ("eo".equals(lang) && nameEo != null && !nameEo.isEmpty()) {
+			return nameEo;
+		}
+		return name;
+	}
 }

@@ -19,6 +19,21 @@ public class BasketBean {
 	private String name;
 
 	/**
+	 * 商品名(英語)
+	 */
+	private String nameEn;
+
+	/**
+	 * 商品名(スペイン語)
+	 */
+	private String nameEs;
+
+	/**
+	 * 商品名(エスペラント語)
+	 */
+	private String nameEo;
+
+	/**
 	 * 商品在庫数
 	 */
 	private Integer stock;
@@ -126,6 +141,71 @@ public class BasketBean {
 		this.orderNum = orderNum;
 	}
 
+	/**
+	 * 商品名(英語)の取得
+	 * @return 商品名(英語)
+	 */
+	public String getNameEn() {
+		return nameEn;
+	}
+
+	/**
+	 * 商品名(英語)のセット
+	 * @param nameEn 商品名(英語)
+	 */
+	public void setNameEn(String nameEn) {
+		this.nameEn = nameEn;
+	}
+
+	/**
+	 * 商品名(スペイン語)の取得
+	 * @return 商品名(スペイン語)
+	 */
+	public String getNameEs() {
+		return nameEs;
+	}
+
+	/**
+	 * 商品名(スペイン語)のセット
+	 * @param nameEs 商品名(スペイン語)
+	 */
+	public void setNameEs(String nameEs) {
+		this.nameEs = nameEs;
+	}
+
+	/**
+	 * 商品名(エスペラント語)の取得
+	 * @return 商品名(エスペラント語)
+	 */
+	public String getNameEo() {
+		return nameEo;
+	}
+
+	/**
+	 * 商品名(エスペラント語)のセット
+	 * @param nameEo 商品名(エスペラント語)
+	 */
+	public void setNameEo(String nameEo) {
+		this.nameEo = nameEo;
+	}
+
+	/**
+	 * ロケールに応じた商品名の取得（フォールバック付き）
+	 * @param lang 言語コード
+	 * @return ロケールに応じた商品名
+	 */
+	public String getName(String lang) {
+		if ("en".equals(lang) && nameEn != null && !nameEn.isEmpty()) {
+			return nameEn;
+		}
+		if ("es".equals(lang) && nameEs != null && !nameEs.isEmpty()) {
+			return nameEs;
+		}
+		if ("eo".equals(lang) && nameEo != null && !nameEo.isEmpty()) {
+			return nameEo;
+		}
+		return name;
+	}
 }
 
 //ii

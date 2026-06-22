@@ -37,7 +37,7 @@
 			<th>[[#{data.subtotal}]]</th>
 		</tr>
 		<tr th:each="orderItem: ${orderItemBeans}">
-			<td th:text="${#locale.language == 'en' ? orderItem.nameEn : (#locale.language == 'es' ? orderItem.nameEs : (#locale.language == 'eo' ? orderItem.nameEo : orderItem.name))}"></td>
+			<td th:text="${orderItem.getName(#locale.language)}"></td>
 			<td>
 				<img th:src="@{/images/{image}(image=${orderItem.image})}" th:if="${orderItem.image != null}" />
 				<img th:src="@{/images/common/no_image.jpg}" th:if="${orderItem.image == null}" />
