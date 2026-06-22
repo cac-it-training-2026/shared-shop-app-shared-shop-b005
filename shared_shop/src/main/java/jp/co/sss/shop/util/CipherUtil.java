@@ -10,8 +10,13 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class CipherUtil {
 	private static final String ALGORITHM = "AES";
-	// 注意: 演習用のため固定キーを使用。本来は環境変数等で管理すべき。
-	private static final String KEY = "1234567890123456";
+
+	/**
+	 * 暗号化キー。
+	 * 本来は環境変数や設定ファイル、秘密情報管理サービスから取得すべきですが、
+	 * 演習用としてソースコード内に定義しています。
+	 */
+	private static final String KEY = "shared-shop-key-"; // 16 bytes
 
 	/**
 	 * 文字列を暗号化する
