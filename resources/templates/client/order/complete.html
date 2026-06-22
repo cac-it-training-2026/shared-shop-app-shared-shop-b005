@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+
+<head>
+	<title th:text="#{title.order.complete}+' | '+ #{shop.title}"> </title>
+	<meta charset="UTF-8" />
+</head>
+
+<body class="user order_complete">
+	<h2 th:class="title" th:text="#{title.order.complete}"></h2>
+	<p th:class="complete_message">
+		<span th:text="#{msg.order.complete1}"></span>
+		<br />
+		<span th:text="#{msg.order.complete2}"></span>
+	</p>
+	<div th:if="${order != null}">
+		<table class="detail_table">
+			<tr>
+				<th>[[#{data.point.used}]]</th>
+				<td th:text="${usedPoint}"></td>
+			</tr>
+			<tr>
+				<th>[[#{data.point.earned}]]</th>
+				<td th:text="${earnedPoint}"></td>
+			</tr>
+		</table>
+
+		<div class="lottery_area">
+			<p th:if="${lotteryMessage != null}" th:text="${lotteryMessage}"></p>
+			<form th:action="@{/client/order/lottery}" method="post" th:if="${lotteryExecuted == 0}">
+				<input class="send_button" type="submit" value="くじに挑戦" />
+			</form>
+			<div th:if="${lotteryExecuted == 1}">
+				<p>くじは実行済みです。</p>
+				<p>抽選結果：<span th:text="${lotteryRank}"></span></p>
+				<p>くじ獲得ポイント：<span th:text="${lotteryPoint}"></span>ポイント</p>
+			</div>
+		</div>
+	</div>
+
+	<p class="complete_link"><a th:href="@{/}" th:text="#{msg.back.to.top}"></a></p>
+</body>
+
+</html>
