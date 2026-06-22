@@ -4,7 +4,7 @@ CREATE TABLE reviews (
     user_id     NUMBER(10)      NOT NULL REFERENCES users(id),
     item_id     NUMBER(10)      NOT NULL REFERENCES items(id),
     rating      NUMBER(1)       NOT NULL CHECK (rating BETWEEN 1 AND 5),
-    comment     VARCHAR2(1000)   NOT NULL,
+    review_comment     VARCHAR2(1000)   NOT NULL,
     insert_date DATE            DEFAULT SYSDATE NOT NULL,
     CONSTRAINT unique_user_item_review UNIQUE (user_id, item_id)
 );

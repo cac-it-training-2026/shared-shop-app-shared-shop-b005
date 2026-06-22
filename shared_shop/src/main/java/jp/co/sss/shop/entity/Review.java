@@ -35,8 +35,8 @@ public class Review {
 	/**
 	 * コメント
 	 */
-	@Column
-	private String comment;
+	@Column(name = "review_comment")
+	private String reviewComment;
 
 	/**
 	 * 登録日付
@@ -74,12 +74,12 @@ public class Review {
 		this.rating = rating;
 	}
 
-	public String getComment() {
-		return comment;
+	public String getReviewComment() {
+		return reviewComment;
 	}
 
-	public void setComment(String comment) {
-		this.comment = comment;
+	public void setReviewComment(String reviewComment) {
+		this.reviewComment = reviewComment;
 	}
 
 	public Date getInsertDate() {

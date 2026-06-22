@@ -69,7 +69,7 @@ public class ClientReviewController {
 		Review review = reviewRepository.findByUserIdAndItemId(userBean.getId(), itemId);
 		if (review != null) {
 			form.setRating(review.getRating());
-			form.setComment(review.getComment());
+			form.setReviewComment(review.getReviewComment());
 		}
 
 		model.addAttribute("reviewForm", form);
@@ -111,7 +111,7 @@ public class ClientReviewController {
 		}
 
 		review.setRating(form.getRating());
-		review.setComment(form.getComment());
+		review.setReviewComment(form.getReviewComment());
 
 		reviewRepository.save(review);
 

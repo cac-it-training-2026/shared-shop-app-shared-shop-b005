@@ -184,6 +184,7 @@ public class BeanTools {
 		// オーダー商品情報の作成とリスト追加
 		OrderItemBean orderItemBean = new OrderItemBean();
 		BeanUtils.copyProperties(item, orderItemBean);
+		orderItemBean.setItemId(item.getId());
 		orderItemBean.setOrderNum(basketBean.getOrderNum());
 		int subtotal = orderItemBean.getPrice() * orderItemBean.getOrderNum();
 		orderItemBean.setSubtotal(subtotal);

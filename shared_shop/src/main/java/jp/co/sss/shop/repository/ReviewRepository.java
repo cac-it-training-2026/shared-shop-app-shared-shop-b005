@@ -28,7 +28,7 @@ public interface ReviewRepository extends JpaRepository<Review, Integer> {
 	/**
 	 * 商品IDに紐づく平均評価を取得
 	 */
-	@Query("SELECT AVG(CAST(r.rating AS double)) FROM Review r WHERE r.item.id = :itemId")
+	@Query("SELECT AVG(r.rating) FROM Review r WHERE r.item.id = :itemId")
 	Double getAverageRating(@Param("itemId") Integer itemId);
 
 	/**

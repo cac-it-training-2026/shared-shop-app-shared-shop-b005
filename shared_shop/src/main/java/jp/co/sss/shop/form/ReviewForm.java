@@ -30,7 +30,7 @@ public class ReviewForm {
 	 */
 	@NotBlank
 	@Size(max = 400)
-	private String comment;
+	private String reviewComment;
 
 	public Integer getItemId() {
 		return itemId;
@@ -48,11 +48,11 @@ public class ReviewForm {
 		this.rating = rating;
 	}
 
-	public String getComment() {
-		return comment;
+	public String getReviewComment() {
+		return reviewComment;
 	}
 
-	public void setComment(String comment) {
-		this.comment = comment;
+	public void setReviewComment(String reviewComment) {
+		this.reviewComment = reviewComment;
 	}
 }

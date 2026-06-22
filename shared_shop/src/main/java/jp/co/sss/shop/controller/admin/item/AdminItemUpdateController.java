@@ -238,7 +238,10 @@ public class AdminItemUpdateController {
 
 		// 在庫が0から1以上になったかチェック
 		Item oldItem = itemRepository.findByIdAndDeleteFlag(itemForm.getId(), Constant.NOT_DELETED);
-		boolean isStockRecovered = (oldItem.getStock() == 0 && itemForm.getStock() > 0);
+		boolean isStockRecovered = false;
+		if (oldItem != null) {
+			isStockRecovered = (oldItem.getStock() == 0 && itemForm.getStock() > 0);
+		}
 
 		// 商品情報を保存
 		itemRepository.save(item);

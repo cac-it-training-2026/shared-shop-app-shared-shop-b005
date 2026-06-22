@@ -37,8 +37,8 @@
 				</li>
 				<li>
 					<span class="input_title">コメント</span>
-					<textarea th:field="*{comment}" rows="5" cols="40"></textarea>
-					<span th:if="${#fields.hasErrors('comment')}" th:errors="*{comment}" class="error"></span>
+					<textarea th:field="*{reviewComment}" rows="5" cols="40"></textarea>
+					<span th:if="${#fields.hasErrors('reviewComment')}" th:errors="*{reviewComment}" class="error"></span>
 				</li>
 			</ul>
 			<input type="hidden" th:field="*{itemId}" />
