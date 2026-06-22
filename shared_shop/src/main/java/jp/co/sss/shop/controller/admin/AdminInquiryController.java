@@ -1,6 +1,5 @@
 package jp.co.sss.shop.controller.admin;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,8 +16,15 @@ public class AdminInquiryController {
 	/**
 	 * 問い合わせ情報レポジトリ
 	 */
-	@Autowired
-	InquiryRepository inquiryRepository;
+	private final InquiryRepository inquiryRepository;
+
+	/**
+	 * コンストラクタ注入
+	 * @param inquiryRepository 問い合わせ情報レポジトリ
+	 */
+	public AdminInquiryController(InquiryRepository inquiryRepository) {
+		this.inquiryRepository = inquiryRepository;
+	}
 
 	/**
 	 * 問い合わせ一覧画面を表示
