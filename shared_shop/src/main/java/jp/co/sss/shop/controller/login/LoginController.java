@@ -46,9 +46,10 @@ public class LoginController {
 	 */
 	@RequestMapping(path = "/login", method = RequestMethod.GET)
 	public String login(@ModelAttribute LoginForm form) {
-
-		// セッション情報を無効にする
-		session.invalidate();
+		// ログイン済みユーザー情報を削除（ロケールは維持するため invalidate はしない）
+		session.removeAttribute("user");
+		session.removeAttribute("tempUser");
+		session.removeAttribute("authCode");
 
 		return "login";
 	}
@@ -67,11 +68,14 @@ public class LoginController {
 
 		if (result.hasErrors()) {
 			updateLoginFailure(form.getEmail());
-			session.invalidate();
 			return "login";
 		}
 
 		User user = userRepository.findByEmailAndDeleteFlag(form.getEmail(), Constant.NOT_DELETED);
+
+		if (user == null) {
+			return "login";
+		}
 
 		// ロック自動解除
 		if (user.getAccountLocked() != null && user.getAccountLocked() == 1

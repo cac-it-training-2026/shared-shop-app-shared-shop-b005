@@ -38,6 +38,9 @@ CREATE TABLE users (
 CREATE TABLE categories (
     id          NUMBER(10)      PRIMARY KEY,
     name        VARCHAR2(255)   NOT NULL,
+    name_en     VARCHAR2(255),
+    name_es     VARCHAR2(255),
+    name_eo     VARCHAR2(255),
     description VARCHAR2(255),
     delete_flag NUMBER(1)       DEFAULT 0 NOT NULL,
     insert_date DATE            DEFAULT SYSDATE NOT NULL
@@ -46,8 +49,14 @@ CREATE TABLE categories (
 CREATE TABLE items (
     id          NUMBER(10)      PRIMARY KEY,
     name        VARCHAR2(255)   NOT NULL,
+    name_en     VARCHAR2(255),
+    name_es     VARCHAR2(255),
+    name_eo     VARCHAR2(255),
     price       NUMBER(10)      NOT NULL,
     description VARCHAR2(255),
+    description_en VARCHAR2(255),
+    description_es VARCHAR2(255),
+    description_eo VARCHAR2(255),
     stock       NUMBER(10)      NOT NULL,
     image       VARCHAR2(255),
     category_id NUMBER(10)      REFERENCES categories(id),
@@ -71,7 +80,10 @@ CREATE TABLE order_items (
     quantity    NUMBER(10)      NOT NULL,
     order_id    NUMBER(10)      REFERENCES orders(id),
     item_id     NUMBER(10)      REFERENCES items(id),
-    price       NUMBER(10)      NOT NULL
+    price       NUMBER(10)      NOT NULL,
+    name_en     VARCHAR2(255),
+    name_es     VARCHAR2(255),
+    name_eo     VARCHAR2(255)
 );
 
 -- 3. データ (パスワード 'password' のハッシュ: 5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8)

@@ -10,12 +10,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.servlet.http.HttpSession;
 import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.util.Constant;
+import org.springframework.context.MessageSource;
+import java.util.Locale;
 
 @Controller
 public class TwoFactorAuthController {
 
     @Autowired
     HttpSession session;
+
+    @Autowired
+    MessageSource messageSource;
 
     @RequestMapping(path = "/login/2fa", method = RequestMethod.GET)
     public String show2fa() {
@@ -26,7 +31,7 @@ public class TwoFactorAuthController {
     }
 
     @RequestMapping(path = "/login/2fa", method = RequestMethod.POST)
-    public String verify2fa(@RequestParam String authCode, Model model) {
+    public String verify2fa(@RequestParam String authCode, Model model, Locale locale) {
         UserBean tempUser = (UserBean) session.getAttribute("tempUser");
         String correctCode = (String) session.getAttribute("authCode");
         Long codeTime = (Long) session.getAttribute("authCodeTime");
@@ -36,8 +41,7 @@ public class TwoFactorAuthController {
         }
 
         if (System.currentTimeMillis() - codeTime > 5 * 60 * 1000) {
-            model.addAttribute("errorMessage", "認証コードの有効期限が切れています。再度ログインしてください。");
-            session.invalidate();
+            model.addAttribute("errorMessage", messageSource.getMessage("msg.login.2fa.error.expire", null, locale));
             return "login";
         }
 
@@ -53,7 +57,7 @@ public class TwoFactorAuthController {
                 return "redirect:/admin/menu";
             }
         } else {
-            model.addAttribute("errorMessage", "認証コードが正しくありません。");
+            model.addAttribute("errorMessage", messageSource.getMessage("msg.login.2fa.error.invalid", null, locale));
             return "login/two_factor_auth";
         }
     }

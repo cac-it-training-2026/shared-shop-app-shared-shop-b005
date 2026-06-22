@@ -3,13 +3,13 @@
     th:replace="~{common/layout_3block :: layout(~{::title},~{::body/content()})}">
 <head>
     <meta charset="UTF-8" />
-    <title>二段階認証 | シェアードショップ</title>
+    <title th:text="#{title.login.2fa} + ' | ' + #{shop.title}"></title>
 </head>
 <body class="user_login">
 <div class="user_container">
-    <h2 class="page_title">二段階認証</h2>
+    <h2 class="page_title" th:text="#{title.login.2fa}"></h2>
     <div class="login_content">
-        <p class="description">4桁の認証コードを入力してください。</p>
+        <p class="description" th:text="#{msg.login.2fa.input}"></p>
         <form th:action="@{/login/2fa}" method="post" class="login_form">
             <div th:if="${errorMessage}" class="error_list">
                 <ul><li th:text="${errorMessage}"></li></ul>
@@ -17,12 +17,12 @@
             <table>
                 <tbody>
                     <tr>
-                        <th class="label">認証コード</th>
+                        <th class="label" th:text="#{label.login.2fa.code}"></th>
                         <td class="input"><input type="text" name="authCode" maxlength="4" required /></td>
                     </tr>
                     <tr>
                         <th class="label"></th>
-                        <td class="input"><input type="submit" value="認証" /></td>
+                        <td class="input"><input type="submit" th:value="#{label.login.2fa.button}" /></td>
                     </tr>
                 </tbody>
             </table>

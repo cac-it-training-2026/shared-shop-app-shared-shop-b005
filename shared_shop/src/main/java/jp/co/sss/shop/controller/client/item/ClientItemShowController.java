@@ -60,6 +60,10 @@ public class ClientItemShowController {
 		// 商品情報をViewへ渡す
 		model.addAttribute("items", itemBeanList);
 
+		// HTMLのサイドバーにcategoriesを渡す。
+		model.addAttribute("categories",
+				beanTools.copyEntityListToCategoryBeanList(categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0)));
+
 		return "index";
 	}
 
@@ -88,6 +92,10 @@ public class ClientItemShowController {
 
 		// 商品情報をViewへ渡す
 		model.addAttribute("item", itemBean);
+
+		// HTMLのサイドバーにcategoriesを渡す。
+		model.addAttribute("categories",
+				beanTools.copyEntityListToCategoryBeanList(categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0)));
 
 		model.addAttribute("sortType", sortType);
 		model.addAttribute("categoryId", categoryId);
@@ -156,7 +164,7 @@ public class ClientItemShowController {
 
 		// HTMLのサイドバーにcategoriesを渡す。
 		model.addAttribute("categories",
-				categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0));
+				beanTools.copyEntityListToCategoryBeanList(categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0)));
 
 		// 選択したカテゴリIDをHTMLへ渡す。
 		model.addAttribute("categoryId", categoryId);
