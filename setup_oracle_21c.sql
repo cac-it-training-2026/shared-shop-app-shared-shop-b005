@@ -59,14 +59,15 @@ CREATE TABLE items (
 );
 
 CREATE TABLE orders (
-    id           NUMBER(10)      PRIMARY KEY,
-    postal_code  VARCHAR2(7)     NOT NULL,
-    address      VARCHAR2(255)   NOT NULL,
-    name         VARCHAR2(255)   NOT NULL,
-    phone_number VARCHAR2(15)    NOT NULL,
-    pay_method   NUMBER(1)       NOT NULL,
-    user_id      NUMBER(10)      REFERENCES users(id),
-    insert_date  DATE            DEFAULT SYSDATE NOT NULL
+    id             NUMBER(10)      PRIMARY KEY,
+    postal_code    VARCHAR2(7)     NOT NULL,
+    address        VARCHAR2(255)   NOT NULL,
+    name           VARCHAR2(255)   NOT NULL,
+    phone_number   VARCHAR2(15)    NOT NULL,
+    pay_method     NUMBER(1)       NOT NULL,
+    user_id        NUMBER(10)      REFERENCES users(id),
+    credit_card_id NUMBER(10)      REFERENCES credit_cards(id),
+    insert_date    DATE            DEFAULT SYSDATE NOT NULL
 );
 
 CREATE TABLE order_items (

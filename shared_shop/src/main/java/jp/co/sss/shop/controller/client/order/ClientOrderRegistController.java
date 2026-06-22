@@ -233,8 +233,42 @@ public class ClientOrderRegistController {
 		OrderForm orderForm = (OrderForm) orderFormObject;
 		orderForm.setPayMethod(payMethod);
 		session.setAttribute("orderForm", orderForm);
-		session.setAttribute("creditCardId", creditCardId);
 
+		// 支払い方法がクレジットカード(1)の場合は、カード選択画面へリダイレクト
+		if (payMethod == 1) {
+			return "redirect:/client/order/card/select";
+		}
+
+		return "redirect:/client/order/check";
+	}
+
+	/**
+	 * クレジットカード選択画面を表示する
+	 */
+	@RequestMapping(path = "/client/order/card/select", method = RequestMethod.GET)
+	public String cardSelect(Model model, HttpSession session) {
+		UserBean userBean = (UserBean) session.getAttribute("user");
+		List<CreditCard> cards = creditCardRepository.findByUserIdOrderByInsertDateDescIdDesc(userBean.getId());
+		List<CreditCardBean> cardBeans = new ArrayList<>();
+		for (CreditCard card : cards) {
+			CreditCardBean bean = new CreditCardBean();
+			BeanUtils.copyProperties(card, bean);
+			String number = CipherUtil.decrypt(card.getCardNumber());
+			if (number != null && number.length() >= 4) {
+				bean.setCardNumber("****-****-****-" + number.substring(number.length() - 4));
+			}
+			cardBeans.add(bean);
+		}
+		model.addAttribute("creditCards", cardBeans);
+		return "client/order/card_selection";
+	}
+
+	/**
+	 * クレジットカード選択を処理する
+	 */
+	@RequestMapping(path = "/client/order/card/select", method = RequestMethod.POST)
+	public String cardSelectProcess(Integer creditCardId, HttpSession session) {
+		session.setAttribute("creditCardId", creditCardId);
 		return "redirect:/client/order/check";
 	}
 
@@ -244,9 +278,23 @@ public class ClientOrderRegistController {
 	 * @return "redirect:/client/order/address/input" 届け先入力画面へのリダイレクト
 	 **/
 	@RequestMapping(path = "/client/order/payment/back", method = RequestMethod.POST)
-	public String paymentBack() {
-
+	public String paymentBack(HttpSession session) {
+		OrderForm orderForm = (OrderForm) session.getAttribute("orderForm");
+		if (orderForm != null && orderForm.getPayMethod() == 1) {
+			// 確認画面から戻る時、クレジットカードならカード選択へ
+			// ただし、どの画面から戻るかによって制御が必要
+			// ここでは単純化のため、常に住所入力へ戻る元の動作を維持しつつ、
+			// 確認画面からの戻り先は check.html 内の form action で調整します。
+		}
 		return "redirect:/client/order/address/input";
+	}
+
+	/**
+	 * 支払い方法入力画面へ戻る (カード選択画面から)
+	 */
+	@RequestMapping(path = "/client/order/card/back", method = RequestMethod.POST)
+	public String cardBack() {
+		return "redirect:/client/order/payment/input";
 	}
 
 	/**
@@ -473,6 +521,15 @@ public class ClientOrderRegistController {
 		User user = userRepository.getReferenceById(userId);
 		order.setUser(user);
 
+		// クレジットカード情報を注文情報エンティティにセット
+		if (order.getPayMethod() == 1) {
+			Integer creditCardId = (Integer) session.getAttribute("creditCardId");
+			if (creditCardId != null) {
+				CreditCard card = creditCardRepository.getReferenceById(creditCardId);
+				order.setCreditCard(card);
+			}
+		}
+
 		// 注文情報を保存
 		orderRepository.save(order);
 
@@ -488,7 +545,12 @@ public class ClientOrderRegistController {
 			orderItem.setQuantity(orderItemBean.getOrderNum());
 			orderItem.setOrder(order);
 			orderItem.setItem(item);
-			orderItem.setPrice(orderItemBean.getPrice());
+
+			// 割引計算を行い、割引後の単価を保存
+			int discount = DiscountCalcUtil.calculateDiscount(orderItemBean.getPrice(), orderItemBean.getOrderNum());
+			int discountedUnitPrice = (orderItemBean.getPrice() * orderItemBean.getOrderNum() - discount) / orderItemBean.getOrderNum();
+			orderItem.setPrice(discountedUnitPrice);
+
 			orderItemRepository.save(orderItem);
 
 			orderItems.add(orderItem);
