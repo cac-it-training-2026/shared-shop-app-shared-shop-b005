@@ -11,6 +11,10 @@ public class OrderItemBean {
 	 */
 	private Integer id;
 	/**
+	 * 商品ID
+	 */
+	private Integer itemId;
+	/**
 	 * 注文商品名
 	 */
 	private String name;
@@ -45,6 +49,22 @@ public class OrderItemBean {
 	 */
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	/**
+	 * 商品IDの取得
+	 * @return 商品ID
+	 */
+	public Integer getItemId() {
+		return itemId;
+	}
+
+	/**
+	 * 商品IDのセット
+	 * @param itemId 商品ID
+	 */
+	public void setItemId(Integer itemId) {
+		this.itemId = itemId;
 	}
 
 	/**

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -22,6 +23,7 @@ import jp.co.sss.shop.entity.Order;
 import jp.co.sss.shop.entity.OrderItem;
 import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.form.OrderForm;
+import jp.co.sss.shop.util.Constant;
 import jp.co.sss.shop.repository.ItemRepository;
 import jp.co.sss.shop.repository.OrderItemRepository;
 import jp.co.sss.shop.repository.OrderRepository;
@@ -326,6 +328,7 @@ public class ClientOrderRegistController {
 
 			Item item = itemRepository.getReferenceById(basketBean.getId());
 			orderItemBean.setId(item.getId());
+				orderItemBean.setItemId(item.getId());
 			orderItemBean.setName(item.getName());
 			orderItemBean.setPrice(item.getPrice());
 			orderItemBean.setImage(item.getImage());
@@ -461,6 +464,20 @@ public class ClientOrderRegistController {
 		order.setOrderItemsList(orderItems);
 		orderRepository.save(order);
 
+		// レコメンド商品取得用（最後の1商品から取得）
+		if (!orderItemBeans.isEmpty()) {
+			OrderItemBean lastItem = orderItemBeans.get(0);
+			Integer itemId = (lastItem.getItemId() != null) ? lastItem.getItemId() : lastItem.getId();
+			if (itemId != null) {
+				Item item = itemRepository.findByIdAndDeleteFlag(itemId, Constant.NOT_DELETED);
+				if (item != null && item.getCategory() != null) {
+					List<Item> recommendItems = itemRepository.findRecommendItems(
+							item.getCategory().getId(), item.getId(), PageRequest.of(0, 5));
+					session.setAttribute("recommendItems", recommendItems);
+				}
+			}
+		}
+
 		// セッションスコープに保存している各注文情報を破棄
 		session.removeAttribute("orderForm");
 		session.removeAttribute("basketBeans");
@@ -475,7 +492,13 @@ public class ClientOrderRegistController {
 	 * @return "client/order/complete" 注文完了画面
 	 **/
 	@RequestMapping(path = "/client/order/complete", method = RequestMethod.GET)
-	public String orderComplete() {
+	public String orderComplete(Model model, HttpSession session) {
+		@SuppressWarnings("unchecked")
+		List<Item> recommendItems = (List<Item>) session.getAttribute("recommendItems");
+		if (recommendItems != null) {
+			model.addAttribute("recommendItems", recommendItems);
+			session.removeAttribute("recommendItems");
+		}
 		return "client/order/complete";
 	}
 

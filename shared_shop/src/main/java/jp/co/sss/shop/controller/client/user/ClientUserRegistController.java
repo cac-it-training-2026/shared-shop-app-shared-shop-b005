@@ -75,7 +75,12 @@ public class ClientUserRegistController {
 			userform = new UserForm();
 
 			// 権限をコピー
-			userform.setAuthority(((UserBean) session.getAttribute("user")).getAuthority());
+			UserBean userBean = (UserBean) session.getAttribute("user");
+			if (userBean != null) {
+				userform.setAuthority(userBean.getAuthority());
+			} else {
+				userform.setAuthority(2); // デフォルト権限
+			}
 
 			// セッションに保存
 			session.setAttribute("userForm", userform);
@@ -140,6 +145,9 @@ public class ClientUserRegistController {
 			// セッション情報がない場合エラー
 			return "redirect:/syserror";
 		}
+
+		// 新規登録のためIDをnullに設定 (既存IDの持ち込みを防止)
+		form.setId(null);
 
 		// 権限情報がない場合、セッション情報から値をセット
 		if (form.getAuthority() == null) {

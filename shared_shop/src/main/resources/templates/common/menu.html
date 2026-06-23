@@ -12,6 +12,7 @@
 		<li><a th:href="@{/client/basket/list}" th:text="#{basket}"></a></li>
 		<th:block th:if="${session.user != null}">
 			<li><a th:href="@{/client/order/list}" th:text="#{order}+#{title.list}"></a></li>
+			<li th:if="${session.user.authority == 2}"><a th:href="@{/client/favorite/list}">お気に入り</a></li>
 		</th:block>
 	</ul>
 </body>

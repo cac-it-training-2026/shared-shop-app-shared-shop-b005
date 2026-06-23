@@ -18,6 +18,8 @@
 		<span th:if="${sortType==2}" th:text="#{sort.hotsell.str}"></span>
 		<a th:unless="${sortType==2}" th:href="@{/client/item/list/2(categoryId=${categoryId})}"
 			th:text="#{sort.hotsell.str}"></a>
+		<span th:if="${sortType==3}">お気に入り順</span>
+		<a th:unless="${sortType==3}" th:href="@{/client/item/list/3(categoryId=${categoryId})}">お気に入り順</a>
 
 		<p th:text="#{msg.client.item.list.none}" th:if="${#lists.isEmpty(items)}"></p>
 
