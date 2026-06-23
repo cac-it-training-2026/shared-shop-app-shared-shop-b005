@@ -14,14 +14,37 @@
 	</div>
 	<th:block th:if="${orderItemBeans != null}">
 		<table class="list_table item_detail">
-			<tr><th>[[#{data.item.name}]]</th><th>[[#{data.item.image}]]</th><th>[[#{data.unit.price}]]</th><th>[[#{data.order.num}]]</th><th>[[#{data.subtotal}]]</th></tr>
+			<tr>
+				<th>[[#{data.item.name}]]</th>
+				<th>[[#{data.item.image}]]</th>
+				<th>[[#{data.unit.price}]]</th>
+				<th>[[#{data.order.num}]]</th>
+				<th>割引前小計</th>
+				<th>割引金額</th>
+				<th>割引後小計</th>
+			</tr>
 			<tr th:each="orderItem: ${orderItemBeans}">
 				<td th:text="${orderItem.name}"></td>
-				<td><img th:src="@{/images/{image}(image=${orderItem.image})}" th:if="${orderItem.image != null}" /><img th:src="@{/images/common/no_image.jpg}" th:if="${orderItem.image == null}" /></td>
-				<td th:text="${orderItem.price}"></td><td th:text="${orderItem.orderNum}"></td><td th:text="${orderItem.subtotal}"></td>
+				<td>
+					<img th:src="@{/images/{image}(image=${orderItem.image})}" th:if="${orderItem.image != null}" />
+					<img th:src="@{/images/common/no_image.jpg}" th:if="${orderItem.image == null}" />
+				</td>
+				<td th:text="${orderItem.price}"></td>
+				<td th:text="${orderItem.orderNum}"></td>
+				<td th:text="${orderItem.price * orderItem.orderNum}"></td>
+				<td th:text="${(orderItem.price * orderItem.orderNum) - orderItem.subtotal}"></td>
+				<td th:text="${orderItem.subtotal}"></td>
 			</tr>
-			<tr><td colspan="3"></td><td class="total">[[#{data.total}]]</td><td class="total" th:text="${total}"></td></tr>
-			<tr th:if="${totalDiscount > 0}"><td colspan="3"></td><td class="total">割引額合計</td><td class="total" th:text="'- ' + ${totalDiscount}"></td></tr>
+			<tr>
+				<td colspan="5"></td>
+				<td class="total">[[#{data.total}]]</td>
+				<td class="total" th:text="${total}"></td>
+			</tr>
+			<tr th:if="${totalDiscount > 0}">
+				<td colspan="5"></td>
+				<td class="total">割引額合計</td>
+				<td class="total" th:text="'- ' + ${totalDiscount}"></td>
+			</tr>
 		</table>
 		<div class="user_info_form_area">
 			<table class="detail_table address">
