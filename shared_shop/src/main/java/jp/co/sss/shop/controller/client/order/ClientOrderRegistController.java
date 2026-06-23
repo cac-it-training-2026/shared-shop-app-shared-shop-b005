@@ -223,7 +223,7 @@ public class ClientOrderRegistController {
 		}
 
 		Order order = new Order();
-		BeanUtils.copyProperties(of, order);
+		BeanUtils.copyProperties(of, order, "id");
 		order.setUser(userRepository.getReferenceById(ub.getId()));
 		if (order.getPayMethod() == 1) {
 			Integer cardId = (Integer) session.getAttribute("creditCardId");
