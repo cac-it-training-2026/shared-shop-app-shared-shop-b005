@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+<head>
+	<title>登録内容確認 | [[#{shop.title}]]</title>
+</head>
+<body class="user credit_card_regist_check">
+	<h2 class="title">登録内容確認</h2>
+	<div class="user_info_form_area">
+		<form th:action="@{/client/creditcard/regist/complete}" method="post" th:object="${creditCardForm}">
+			<ul class="input_list">
+				<li><span class="input_title">ブランド</span><span class="input_value" th:text="*{brand}"></span></li>
+				<li><span class="input_title">カード番号</span><span class="input_value" th:text="${maskedCardNumber}"></span></li>
+				<li><span class="input_title">名義人</span><span class="input_value" th:text="*{holderName}"></span></li>
+				<li><span class="input_title">有効期限</span><span class="input_value" th:text="*{expirationDate}"></span></li>
+			</ul>
+			<input type="hidden" th:field="*{brand}" /><input type="hidden" th:field="*{cardNumber}" /><input type="hidden" th:field="*{holderName}" /><input type="hidden" th:field="*{expirationDate}" />
+			<div class="detail_button_area">
+				<input type="submit" value="登録" class="send_button" />
+				<input type="button" value="戻る" class="back_button" onclick="history.back();" />
+			</div>
+		</form>
+	</div>
+</body>
+</html>

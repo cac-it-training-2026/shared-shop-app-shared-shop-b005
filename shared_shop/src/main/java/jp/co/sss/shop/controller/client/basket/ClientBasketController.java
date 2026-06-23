@@ -269,7 +269,7 @@ public class ClientBasketController {
 
 			// 買い物かごに商品が入っている場合は、更新後の買い物かごをセッションスコープに保存
 		} else {
-			session.setAttribute("basketBean", basketBeans);
+			session.setAttribute("basketBeans", basketBeans);
 		}
 
 		return "redirect:/client/basket/list";
