@@ -35,7 +35,7 @@
 			</li>
 			<li>
 				<span class="input_title">[[#{data.category}]]</span>
-				<span class="input_value" th:text="*{categoryName}"></span>
+				<span class="input_value" th:text="${#messages.msgOrNull('category.' + itemForm.categoryId) ?: itemForm.getCategoryName(#locale.language)}"></span>
 			</li>
 			<li>
 				<span class="input_title">[[#{itemForm.stock}]]</span>

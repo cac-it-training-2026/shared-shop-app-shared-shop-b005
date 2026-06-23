@@ -34,7 +34,7 @@
 				<dt>[[#{itemForm.stock}]]</dt>
 				<dd th:text="*{stock}"></dd>
 				<dt>[[#{data.category}]]</dt>
-				<dd th:text="*{categoryName}"></dd>
+				<dd th:text="${#messages.msgOrNull('category.' + item.categoryId) ?: item.getCategoryName(#locale.language)}"></dd>
 				<dt>[[#{itemForm.description}]]</dt>
 				<dd th:text="*{description}"></dd>
 				<dt>[[#{itemForm.description}]] ([[#{label.english}]])</dt>

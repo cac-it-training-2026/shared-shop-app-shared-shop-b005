@@ -44,7 +44,7 @@
 						th:text="${item.getName(#locale.language)}"></a>
 				</td>
 				<td th:text="${item.price}"></td>
-				<td th:text="${item.getCategoryName(#locale.language)}"></td>
+				<td th:text="${#messages.msgOrNull('category.' + item.categoryId) ?: item.getCategoryName(#locale.language)}"></td>
 			</tr>
 		</table>
 	</th:block>

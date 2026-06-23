@@ -27,7 +27,7 @@
 				<dd th:if="*{stock >= 1 and 5 >= stock }" th:text="*{stock}"></dd>
 				<dd th:if="*{stock == 0}" th:text="#{data.out.of.stock}"></dd>
 				<dt>[[#{data.category}]]</dt>
-				<dd th:text="${item.getCategoryName(#locale.language)}"></dd>
+				<dd th:text="${#messages.msgOrNull('category.' + item.categoryId) ?: item.getCategoryName(#locale.language)}"></dd>
 				<dt>[[#{data.description}]]</dt>
 				<dd th:text="${item.getDescription(#locale.language)}"></dd>
 			</dl>

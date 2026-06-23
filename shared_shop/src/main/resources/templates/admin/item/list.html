@@ -44,7 +44,7 @@
 			</td>
 			<td th:text="${item.price}"></td>
 			<td
-				th:text="${item.category.getName(#locale.language)}">
+				th:text="${#messages.msgOrNull('category.' + item.category.id) ?: item.category.getName(#locale.language)}">
 			</td>
 			<td>
 				<form th:action="@{/admin/item/update/input/{id}(id=${item.id})}" method="post">
