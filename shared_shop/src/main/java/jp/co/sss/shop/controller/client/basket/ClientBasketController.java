@@ -158,6 +158,9 @@ public class ClientBasketController {
 			BasketBean addItemBean = new BasketBean();
 			addItemBean.setId(addItem.getId());
 			addItemBean.setName(addItem.getName());
+			addItemBean.setNameEn(addItem.getNameEn());
+			addItemBean.setNameEs(addItem.getNameEs());
+			addItemBean.setNameEo(addItem.getNameEo());
 			addItemBean.setStock(addItem.getStock());
 			basketBeans.add(addItemBean);
 
@@ -192,6 +195,9 @@ public class ClientBasketController {
 			BasketBean addItemBean = new BasketBean();
 			addItemBean.setId(addItem.getId());
 			addItemBean.setName(addItem.getName());
+			addItemBean.setNameEn(addItem.getNameEn());
+			addItemBean.setNameEs(addItem.getNameEs());
+			addItemBean.setNameEo(addItem.getNameEo());
 			addItemBean.setStock(addItem.getStock());
 			basketBeans.add(0, addItemBean);
 		}

@@ -91,6 +91,9 @@ public class BeanTools {
 
 		bean.setCategoryId(entity.getCategory().getId());
 		bean.setCategoryName(entity.getCategory().getName());
+		bean.setCategoryNameEn(entity.getCategory().getNameEn());
+		bean.setCategoryNameEs(entity.getCategory().getNameEs());
+		bean.setCategoryNameEo(entity.getCategory().getNameEo());
 
 		return bean;
 	}
@@ -148,6 +151,9 @@ public class BeanTools {
 
 			if (entity.getCategory() != null) {
 				bean.setCategoryName(entity.getCategory().getName());
+				bean.setCategoryNameEn(entity.getCategory().getNameEn());
+				bean.setCategoryNameEs(entity.getCategory().getNameEs());
+				bean.setCategoryNameEo(entity.getCategory().getNameEo());
 			}
 
 			beanList.add(bean);
@@ -206,6 +212,9 @@ public class BeanTools {
 			OrderItemBean orderItemBean = new OrderItemBean();
 
 			orderItemBean.setName(orderItem.getItem().getName());
+			orderItemBean.setNameEn(orderItem.getItem().getNameEn());
+			orderItemBean.setNameEs(orderItem.getItem().getNameEs());
+			orderItemBean.setNameEo(orderItem.getItem().getNameEo());
 			orderItemBean.setPrice(orderItem.getPrice());
 			orderItemBean.setOrderNum(orderItem.getQuantity());
 

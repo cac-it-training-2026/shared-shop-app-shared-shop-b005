@@ -54,6 +54,24 @@ public class OrderItem {
 	private int price;
 
 	/**
+	 * 注文時点商品名(英語)
+	 */
+	@Column
+	private String nameEn;
+
+	/**
+	 * 注文時点商品名(スペイン語)
+	 */
+	@Column
+	private String nameEs;
+
+	/**
+	 * 注文時点商品名(エスペラント語)
+	 */
+	@Column
+	private String nameEo;
+
+	/**
 	 * 注文商品IDの取得
 	 * @return 注文商品ID
 	 */
@@ -131,6 +149,54 @@ public class OrderItem {
 	 */
 	public void setPrice(int price) {
 		this.price = price;
+	}
+
+	/**
+	 * 注文時点商品名(英語)の取得
+	 * @return 注文時点商品名(英語)
+	 */
+	public String getNameEn() {
+		return nameEn;
+	}
+
+	/**
+	 * 注文時点商品名(英語)のセット
+	 * @param nameEn 注文時点商品名(英語)
+	 */
+	public void setNameEn(String nameEn) {
+		this.nameEn = nameEn;
+	}
+
+	/**
+	 * 注文時点商品名(スペイン語)の取得
+	 * @return 注文時点商品名(スペイン語)
+	 */
+	public String getNameEs() {
+		return nameEs;
+	}
+
+	/**
+	 * 注文時点商品名(スペイン語)のセット
+	 * @param nameEs 注文時点商品名(スペイン語)
+	 */
+	public void setNameEs(String nameEs) {
+		this.nameEs = nameEs;
+	}
+
+	/**
+	 * 注文時点商品名(エスペラント語)の取得
+	 * @return 注文時点商品名(エスペラント語)
+	 */
+	public String getNameEo() {
+		return nameEo;
+	}
+
+	/**
+	 * 注文時点商品名(エスペラント語)のセット
+	 * @param nameEo 注文時点商品名(エスペラント語)
+	 */
+	public void setNameEo(String nameEo) {
+		this.nameEo = nameEo;
 	}
 
 }

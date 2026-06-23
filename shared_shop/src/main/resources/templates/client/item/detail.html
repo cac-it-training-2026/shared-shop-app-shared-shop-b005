@@ -19,7 +19,7 @@
 			</div>
 			<dl class="item_detail_list">
 				<dt>[[#{data.item.name}]]</dt>
-				<dd th:text="*{name}"></dd>
+				<dd th:text="${item.getName(#locale.language)}"></dd>
 				<dt>[[#{data.item.price}]]</dt>
 				<dd th:text="*{price}"></dd>
 				<dt>[[#{data.item.stock}]]</dt>
@@ -27,18 +27,18 @@
 				<dd th:if="*{stock >= 1 and 5 >= stock }" th:text="*{stock}"></dd>
 				<dd th:if="*{stock == 0}" th:text="#{data.out.of.stock}"></dd>
 				<dt>[[#{data.category}]]</dt>
-				<dd th:text="*{categoryName}"></dd>
+				<dd th:text="${#messages.msgOrNull('category.' + item.categoryId) ?: item.getCategoryName(#locale.language)}"></dd>
 				<dt>[[#{data.description}]]</dt>
-				<dd th:text="*{description}"></dd>
+				<dd th:text="${item.getDescription(#locale.language)}"></dd>
 			</dl>
 		</div>
 		<div class="detail_button_area">
 			<form th:action="@{/client/basket/add}" method="post" class="user_info_form" th:if="*{stock > 0}">
 				<input type="hidden" th:field="*{id}" />
-				<input type="submit" value="買い物かごに入れる" class="send_button" />
+				<input type="submit" th:value="#{basket}+#{msg.regist.input}" class="send_button" />
 			</form>
 			<form th:action="@{/client/item/list/{sortType}(sortType=${sortType}, categoryId=${categoryId})}" method="get">
-				<input type="submit" value="戻る" class="back_button" />
+				<input type="submit" th:value="#{msg.back.to.list}" class="back_button" />
 			</form>
 		</div>
 	</div>

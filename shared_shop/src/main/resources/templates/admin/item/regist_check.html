@@ -18,12 +18,24 @@
 				<span class="input_value" th:text="*{name}"></span>
 			</li>
 			<li>
+				<span class="input_title">[[#{itemForm.name}]] ([[#{label.english}]])</span>
+				<span class="input_value" th:text="*{nameEn}"></span>
+			</li>
+			<li>
+				<span class="input_title">[[#{itemForm.name}]] ([[#{label.spanish}]])</span>
+				<span class="input_value" th:text="*{nameEs}"></span>
+			</li>
+			<li>
+				<span class="input_title">[[#{itemForm.name}]] ([[#{label.esperanto}]])</span>
+				<span class="input_value" th:text="*{nameEo}"></span>
+			</li>
+			<li>
 				<span class="input_title">[[#{itemForm.price}]]</span>
 				<span class="input_value" th:text="*{price}"></span>
 			</li>
 			<li>
 				<span class="input_title">[[#{data.category}]]</span>
-				<span class="input_value" th:text="*{categoryName}"></span>
+				<span class="input_value" th:text="${#messages.msgOrNull('category.' + itemForm.categoryId) ?: itemForm.getCategoryName(#locale.language)}"></span>
 			</li>
 			<li>
 				<span class="input_title">[[#{itemForm.stock}]]</span>
@@ -32,6 +44,18 @@
 			<li>
 				<span class="input_title">[[#{itemForm.description}]]</span>
 				<span class="input_value" th:text="*{description}"></span>
+			</li>
+			<li>
+				<span class="input_title">[[#{itemForm.description}]] ([[#{label.english}]])</span>
+				<span class="input_value" th:text="*{descriptionEn}"></span>
+			</li>
+			<li>
+				<span class="input_title">[[#{itemForm.description}]] ([[#{label.spanish}]])</span>
+				<span class="input_value" th:text="*{descriptionEs}"></span>
+			</li>
+			<li>
+				<span class="input_title">[[#{itemForm.description}]] ([[#{label.esperanto}]])</span>
+				<span class="input_value" th:text="*{descriptionEo}"></span>
 			</li>
 			<li>
 				<span class="input_title">[[#{data.item.image}]]</span>
@@ -43,10 +67,10 @@
 		</ul>
 
 		<form th:action="@{/admin/item/regist/complete}" method="post" class="user_info_form">
-			<input type="submit" value="登録" class="send_button" />
+			<input type="submit" th:value="#{title.input}" class="send_button" />
 		</form>
 		<form th:action="@{/admin/item/regist/input}" method="post">
-			<input type="submit" value="戻る" class="back_button" />
+			<input type="submit" th:value="#{msg.back.to.list}" class="back_button" />
 		</form>
 	</div>
 </body>

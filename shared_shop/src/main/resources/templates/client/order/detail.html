@@ -51,7 +51,7 @@
 				<th>[[#{data.subtotal}]]</th>
 			</tr>
 			<tr th:each="orderItem: ${orderItemBeans}">
-				<td th:text="${orderItem.name}"></td>
+				<td th:text="${orderItem.getName(#locale.language)}"></td>
 				<td th:text="${orderItem.price}"></td>
 				<td th:text="${orderItem.orderNum}"></td>
 				<td th:text="${orderItem.subtotal}"></td>
@@ -63,7 +63,7 @@
 			</tr>
 		</table>
 		<form th:action="@{/client/order/list}" method="post" class="detail_button_area">
-			<input type="submit" value="戻る" class="back_button" />
+			<input type="submit" th:value="#{msg.back.to.list}" class="back_button" />
 		</form>
 	</div>
 </body>

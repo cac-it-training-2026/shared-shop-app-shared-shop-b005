@@ -154,10 +154,6 @@ public class ClientItemShowController {
 		// 選択したsortTypeをHTMLへ渡す。
 		model.addAttribute("sortType", sortType);
 
-		// HTMLのサイドバーにcategoriesを渡す。
-		model.addAttribute("categories",
-				categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(0));
-
 		// 選択したカテゴリIDをHTMLへ渡す。
 		model.addAttribute("categoryId", categoryId);
 

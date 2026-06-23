@@ -327,6 +327,9 @@ public class ClientOrderRegistController {
 			Item item = itemRepository.getReferenceById(basketBean.getId());
 			orderItemBean.setId(item.getId());
 			orderItemBean.setName(item.getName());
+			orderItemBean.setNameEn(item.getNameEn());
+			orderItemBean.setNameEs(item.getNameEs());
+			orderItemBean.setNameEo(item.getNameEo());
 			orderItemBean.setPrice(item.getPrice());
 			orderItemBean.setImage(item.getImage());
 			orderItemBean.setOrderNum(basketBean.getOrderNum());
@@ -449,6 +452,9 @@ public class ClientOrderRegistController {
 			orderItem.setOrder(order);
 			orderItem.setItem(item);
 			orderItem.setPrice(orderItemBean.getPrice());
+			orderItem.setNameEn(item.getNameEn());
+			orderItem.setNameEs(item.getNameEs());
+			orderItem.setNameEo(item.getNameEo());
 			orderItemRepository.save(orderItem);
 
 			orderItems.add(orderItem);

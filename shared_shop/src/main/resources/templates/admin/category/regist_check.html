@@ -18,17 +18,29 @@
 				<span class="input_value" th:text="*{name}"></span>
 			</li>
 			<li>
+				<span class="input_title">[[#{categoryForm.name}]] ([[#{label.english}]])</span>
+				<span class="input_value" th:text="*{nameEn}"></span>
+			</li>
+			<li>
+				<span class="input_title">[[#{categoryForm.name}]] ([[#{label.spanish}]])</span>
+				<span class="input_value" th:text="*{nameEs}"></span>
+			</li>
+			<li>
+				<span class="input_title">[[#{categoryForm.name}]] ([[#{label.esperanto}]])</span>
+				<span class="input_value" th:text="*{nameEo}"></span>
+			</li>
+			<li>
 				<span class="input_title">[[#{categoryForm.description}]]</span>
 				<span class="input_value" th:text="*{description}"></span>
 			</li>
 		</ul>
 
 		<form th:action="@{/admin/category/regist/complete}" method="post" class="user_info_form">
-			<input type="submit" value="登録" class="send_button" />
+			<input type="submit" th:value="#{title.input}" class="send_button" />
 		</form>
 
 		<form th:action="@{/admin/category/regist/input}" method="post">
-			<input type="submit" value="戻る" class="back_button" />
+			<input type="submit" th:value="#{msg.back.to.list}" class="back_button" />
 		</form>
 	</div>
 </body>

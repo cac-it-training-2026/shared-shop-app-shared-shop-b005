@@ -39,9 +39,12 @@
 					<img th:src="@{/images/common/no_image.jpg}" th:if="${item.image == null}" />
 
 				</td>
-				<td><a th:href="@{/client/item/detail/{id}(id=${item.id})}" th:text="${item.name}"></a></td>
+				<td>
+					<a th:href="@{/client/item/detail/{id}(id=${item.id})}"
+						th:text="${item.getName(#locale.language)}"></a>
+				</td>
 				<td th:text="${item.price}"></td>
-				<td th:text="${item.categoryName}"></td>
+				<td th:text="${#messages.msgOrNull('category.' + item.categoryId) ?: item.getCategoryName(#locale.language)}"></td>
 			</tr>
 		</table>
 	</th:block>

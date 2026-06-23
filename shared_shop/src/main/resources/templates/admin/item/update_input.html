@@ -26,6 +26,18 @@
 					<input type="text" th:field="*{name}" />
 				</li>
 				<li>
+					<label><span class="input_title">[[#{itemForm.name}]] ([[#{label.english}]])</span></label>
+					<input type="text" th:field="*{nameEn}" />
+				</li>
+				<li>
+					<label><span class="input_title">[[#{itemForm.name}]] ([[#{label.spanish}]])</span></label>
+					<input type="text" th:field="*{nameEs}" />
+				</li>
+				<li>
+					<label><span class="input_title">[[#{itemForm.name}]] ([[#{label.esperanto}]])</span></label>
+					<input type="text" th:field="*{nameEo}" />
+				</li>
+				<li>
 					<label><span class="input_title">[[#{itemForm.price}]]</span></label>
 					<input type="text" th:field="*{price}" />
 				</li>
@@ -37,13 +49,31 @@
 					<label><span class="input_title">[[#{data.category}]]</span></label>
 					<select name="categoryId">
 						<option th:each="category: ${categories}" th:value="${category.id}"
-							th:selected="${category.id == itemForm.categoryId}" th:text="${category.name}"></option>
+							th:selected="${category.id == itemForm.categoryId}" th:text="${#messages.msgOrNull('category.' + category.id) ?: category.getName(#locale.language)}"></option>
 					</select>
 				</li>
 				<li>
 					<label>
 						<span class="input_title">[[#{itemForm.description}]]</span>
 						<textarea rows="6" th:field="*{description}"></textarea>
+					</label>
+				</li>
+				<li>
+					<label>
+						<span class="input_title">[[#{itemForm.description}]] ([[#{label.english}]])</span>
+						<textarea rows="6" th:field="*{descriptionEn}"></textarea>
+					</label>
+				</li>
+				<li>
+					<label>
+						<span class="input_title">[[#{itemForm.description}]] ([[#{label.spanish}]])</span>
+						<textarea rows="6" th:field="*{descriptionEs}"></textarea>
+					</label>
+				</li>
+				<li>
+					<label>
+						<span class="input_title">[[#{itemForm.description}]] ([[#{label.esperanto}]])</span>
+						<textarea rows="6" th:field="*{descriptionEo}"></textarea>
 					</label>
 				</li>
 				<li>
@@ -58,10 +88,10 @@
 				</li>
 			</ul>
 			<input type="hidden" th:field="*{id}" />
-			<input type="submit" value="確認" class="send_button" />
+			<input type="submit" th:value="#{title.input.check}" class="send_button" />
 		</form>
 		<form th:action="@{/admin/item/detail/{id}(id=${itemForm.id})}" method="post">
-			<input type="submit" value="戻る" class="back_button" />
+			<input type="submit" th:value="#{msg.back.to.detail}" class="back_button" />
 		</form>
 	</div>
 </body>

@@ -169,6 +169,9 @@ public class AdminItemUpdateController {
 		if (form.getCategoryId() != null) {
 			Category category = categoryRepository.findById(form.getCategoryId()).orElse(null);
 			form.setCategoryName(category.getName());
+			form.setCategoryNameEn(category.getNameEn());
+			form.setCategoryNameEs(category.getNameEs());
+			form.setCategoryNameEo(category.getNameEo());
 		}
 
 		// 変更入力確認画面　表示処理
