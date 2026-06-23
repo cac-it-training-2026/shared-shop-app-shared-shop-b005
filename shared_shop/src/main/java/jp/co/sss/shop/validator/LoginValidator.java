@@ -45,26 +45,32 @@ public class LoginValidator implements ConstraintValidator<LoginCheck, Object> {
 		String emailProp = (String) beanWrapper.getPropertyValue(this.email);
 		String passwordProp = (String) beanWrapper.getPropertyValue(this.password);
 
-		User user = userRepository.findByEmailAndDeleteFlag(emailProp, Constant.NOT_DELETED);
+		User user = null;
+		try {
+			user = userRepository.findByEmailAndDeleteFlag(emailProp, Constant.NOT_DELETED);
+		} catch (Exception e) {
+			// リポジトリが利用できない場合などの例外ハンドリング
+			return false;
+		}
 
-		if (user != null) {
-			// アカウントロック状態の確認
-			if (user.getAccountLocked() != null && user.getAccountLocked() == 1) {
-				if (user.getAccountLockedUntil() != null && user.getAccountLockedUntil().before(new Timestamp(System.currentTimeMillis()))) {
-					// ロック期限を過ぎている場合はここでは何もしない（Controllerでリセットする）
-				} else {
-					// ロック中
-					return false;
-				}
-			}
+		if (user == null) {
+			return false;
+		}
 
-			String hashedInputPassword = PasswordHashUtil.hash(passwordProp);
-			// 互換性のため平文もチェック
-			if (hashedInputPassword.equals(user.getPassword()) || passwordProp.equals(user.getPassword())) {
-				isValidFlg = true;
+		// アカウントロック状態の確認
+		if (user.getAccountLocked() != null && user.getAccountLocked() == 1) {
+			if (user.getAccountLockedUntil() != null && user.getAccountLockedUntil().before(new Timestamp(System.currentTimeMillis()))) {
+				// ロック期限を過ぎている場合はここでは何もしない（Controllerでリセットする）
 			} else {
-				isValidFlg = false;
+				// ロック中
+				return false;
 			}
+		}
+
+		String hashedInputPassword = PasswordHashUtil.hash(passwordProp);
+		// 互換性のため平文もチェック
+		if (user.getPassword() != null && (hashedInputPassword.equals(user.getPassword()) || passwordProp.equals(user.getPassword()))) {
+			isValidFlg = true;
 		} else {
 			isValidFlg = false;
 		}

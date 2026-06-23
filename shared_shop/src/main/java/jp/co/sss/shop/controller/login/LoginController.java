@@ -67,11 +67,17 @@ public class LoginController {
 
 		if (result.hasErrors()) {
 			updateLoginFailure(form.getEmail());
-			session.invalidate();
+			// セッションを無効化する前にエラーを保持したい場合はinvalidateしないか、
+			// 再度フォームをセットする必要がある。ここではinvalidateするとloginFormが消えるため削除。
 			return "login";
 		}
 
 		User user = userRepository.findByEmailAndDeleteFlag(form.getEmail(), Constant.NOT_DELETED);
+
+		if (user == null) {
+			// バリデーションを通過しているはずだが念のため
+			return "login";
+		}
 
 		// ロック自動解除
 		if (user.getAccountLocked() != null && user.getAccountLocked() == 1
@@ -96,7 +102,7 @@ public class LoginController {
 		// ログイン成功としてセッションに登録 (Issue 18 のテストを容易にするため、2FAをスキップ)
 		session.setAttribute("user", userBean);
 
-		if (user.getAuthority() == Constant.AUTH_ADMIN || user.getAuthority() == Constant.AUTH_SYSTEM_ADMIN) {
+		if (user.getAuthority() == Constant.AUTH_ADMIN || user.getAuthority() == Constant.AUTH_SYSTEM) {
 			return "redirect:/admin/menu";
 		} else {
 			return "redirect:/";
