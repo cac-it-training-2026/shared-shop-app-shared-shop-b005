@@ -93,7 +93,8 @@ VALUES (1, 'user@example.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd6
 INSERT INTO users (id, email, password, name, postal_code, address, phone_number, authority, secret_question, secret_answer)
 VALUES (2, 'admin@example.com', '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8', '管理者 一郎', '9876543', '東京都千代田区', '0312345678', 0, '最初のペットの名前は？', 'ポチ');
 
-INSERT INTO categories (id, name) VALUES (1, '食品');
-INSERT INTO items (id, name, price, stock, category_id) VALUES (1, 'りんご', 100, 50, 1);
+INSERT INTO categories (id, name, name_en, name_es, name_eo) VALUES (1, '食品', 'Food', 'Alimento', 'Manĝaĵo');
+INSERT INTO items (id, name, name_en, name_es, name_eo, price, description, description_en, description_es, description_eo, stock, category_id)
+VALUES (1, 'りんご', 'Apple', 'Manzana', 'Pomo', 100, '甘くて美味しいりんごです。', 'A sweet and delicious apple.', 'Una manzana dulce y deliciosa.', 'Dolĉa kaj bongusta pomo.', 50, 1);
 
 COMMIT;

@@ -51,7 +51,7 @@
 					<label><span class="input_title">[[#{data.category}]]</span></label>
 					<select name="categoryId">
 						<option th:each="category: ${categories}" th:value="${category.id}"
-							th:text="${category.getName(#locale.language)}" th:selected="${category.id} == *{categoryId}">
+							th:text="#{${category.name}}" th:selected="${category.id} == *{categoryId}">
 						</option>
 					</select>
 				</li>
