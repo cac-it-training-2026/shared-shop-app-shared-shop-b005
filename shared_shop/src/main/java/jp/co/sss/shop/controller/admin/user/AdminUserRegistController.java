@@ -113,6 +113,10 @@ public class AdminUserRegistController {
 			// セッション情報が無い場合、エラー
 			return "redirect:/syserror";
 		}
+
+		// 新規登録のためIDをnullに設定
+		form.setId(null);
+
 		if (form.getAuthority() == null) {
 			//権限情報がない場合、セッション情報から値をセット
 			form.setAuthority(lastUserForm.getAuthority());
