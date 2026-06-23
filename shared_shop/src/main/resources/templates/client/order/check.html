@@ -51,11 +51,6 @@
 			<td class="total">[[#{data.total}]]</td>
 			<td class="total" th:text="${total}"></td>
 		</tr>
-		<tr th:if="${totalDiscount > 0}">
-			<td colspan="3"></td>
-			<td class="total">割引額合計</td>
-			<td class="total" th:text="'- ' + ${totalDiscount}"></td>
-		</tr>
 	</table>
 	<div class="user_info_form_area">
 		<table class="detail_table address">
@@ -82,7 +77,7 @@
 			<tr>
 				<th>[[#{paymethod.str}]]</th>
 				<td th:switch="${orderForm.payMethod}">
-					<span th:case="1">[[#{paymethod.credit.str}]] <br/> (カード番号: [[${selectedCardNumber}]])</span>
+					<span th:case="1">[[#{paymethod.credit.str}]]</span>
 					<span th:case="2">[[#{paymethod.bank.str}]]</span>
 					<span th:case="3">[[#{paymethod.onarrival.str}]]</span>
 					<span th:case="4">[[#{paymethod.emoney.str}]]</span>
@@ -93,12 +88,7 @@
 		<form th:action="@{/client/order/complete}" method="post">
 			<input class="send_button" type="submit" value="ご注文の確定" th:if="${orderItemBeans != null}"/>
 		</form>
-
-		<!-- 戻るボタンの分岐: クレジットカードならカード選択へ、それ以外なら支払い方法選択へ -->
-		<form th:if="${orderForm.payMethod == 1}" th:action="@{/client/order/card/select}" method="get" class="update">
-			<input type="submit" value="戻る" class="back_button" />
-		</form>
-		<form th:if="${orderForm.payMethod != 1}" th:action="@{/client/order/payment/input}" method="get" class="update">
+		<form th:action="@{/client/order/payment/back}" method="post" class="update">
 			<input type="submit" value="戻る" class="back_button" />
 		</form>
 	</div>

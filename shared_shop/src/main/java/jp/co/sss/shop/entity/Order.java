@@ -74,13 +74,6 @@ public class Order {
 	private User user;
 
 	/**
-	 * クレジットカード情報
-	 */
-	@ManyToOne
-	@JoinColumn(name = "credit_card_id", referencedColumnName = "id")
-	private CreditCard creditCard;
-
-	/**
 	 * 注文商品リスト
 	 */
 	@OneToMany(mappedBy = "order")
@@ -92,22 +85,6 @@ public class Order {
 	 */
 	public Integer getId() {
 		return id;
-	}
-
-	/**
-	 * クレジットカードエンティティの取得
-	 * @return クレジットカードエンティティ
-	 */
-	public CreditCard getCreditCard() {
-		return creditCard;
-	}
-
-	/**
-	 * クレジットカードエンティティのセット
-	 * @param creditCard クレジットカードエンティティ
-	 */
-	public void setCreditCard(CreditCard creditCard) {
-		this.creditCard = creditCard;
 	}
 
 	/**

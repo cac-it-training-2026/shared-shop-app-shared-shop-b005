@@ -1,6 +1,6 @@
 -- ======================================================
 -- チーム開発演習 セットアップ用 SQL (Oracle 21c用)
--- 対応Issue: #20, #18
+-- 対応Issue: #20
 -- ======================================================
 
 -- 1. シーケンス
@@ -14,8 +14,6 @@ DROP SEQUENCE seq_orders;
 CREATE SEQUENCE seq_orders START WITH 1000 INCREMENT BY 1;
 DROP SEQUENCE seq_order_items;
 CREATE SEQUENCE seq_order_items START WITH 5000 INCREMENT BY 1;
-DROP SEQUENCE seq_credit_cards;
-CREATE SEQUENCE seq_credit_cards START WITH 1 INCREMENT BY 1;
 
 -- 2. テーブル
 CREATE TABLE users (
@@ -58,16 +56,6 @@ CREATE TABLE items (
     insert_date DATE            DEFAULT SYSDATE NOT NULL
 );
 
-CREATE TABLE credit_cards (
-    id              NUMBER(10)      PRIMARY KEY,
-    holder_name     VARCHAR2(255)   NOT NULL,
-    card_number     VARCHAR2(255)   NOT NULL,
-    expiration_date VARCHAR2(5)     NOT NULL,
-    brand           VARCHAR2(50)    NOT NULL,
-    user_id         NUMBER(10)      REFERENCES users(id),
-    insert_date     DATE            DEFAULT SYSDATE NOT NULL
-);
-
 CREATE TABLE orders (
     id             NUMBER(10)      PRIMARY KEY,
     postal_code    VARCHAR2(7)     NOT NULL,
@@ -76,7 +64,6 @@ CREATE TABLE orders (
     phone_number   VARCHAR2(15)    NOT NULL,
     pay_method     NUMBER(1)       NOT NULL,
     user_id        NUMBER(10)      REFERENCES users(id),
-    credit_card_id NUMBER(10)      REFERENCES credit_cards(id),
     insert_date    DATE            DEFAULT SYSDATE NOT NULL
 );
 

@@ -159,9 +159,7 @@ public class URLCheck {
 						|| requestURL.indexOf("/client/user/detail") != -1
 						|| requestURL.indexOf("/client/user/regist") != -1
 						|| requestURL.indexOf("/client/user/update") != -1
-						|| requestURL.indexOf("/client/user/delete") != -1
-						|| requestURL.indexOf("/client/creditcard") != -1
-						|| requestURL.indexOf("/client/order/card/select") != -1)) {
+						|| requestURL.indexOf("/client/user/delete") != -1)) {
 
 			// URLのリクエスト先がフィルタ実行対象である場合
 			isCheckURLOK = true;
