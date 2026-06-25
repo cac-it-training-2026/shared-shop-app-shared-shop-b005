@@ -36,14 +36,18 @@ public class TwoFactorAuthController {
 	 *
 	 * 仮ログイン情報が存在しない場合はログイン画面へリダイレクトする。
 	 *
+	 * @param model Viewとの値受渡し
 	 * @return 二段階認証画面またはログイン画面へのリダイレクト
 	 */
 	@RequestMapping(path = "/login/2fa", method = RequestMethod.GET)
-	public String show2fa() {
+	public String show2fa(Model model) {
 
 		if (session.getAttribute("tempUser") == null) {
 			return "redirect:/login";
 		}
+
+		String authCode = (String) session.getAttribute("authCode");
+		model.addAttribute("popupAuthCode", authCode);
 
 		return "login/two_factor_auth";
 	}
@@ -92,6 +96,7 @@ public class TwoFactorAuthController {
 		}
 
 		model.addAttribute("errorMessage", "認証コードが正しくありません。");
+		model.addAttribute("popupAuthCode", correctCode);
 
 		return "login/two_factor_auth";
 	}

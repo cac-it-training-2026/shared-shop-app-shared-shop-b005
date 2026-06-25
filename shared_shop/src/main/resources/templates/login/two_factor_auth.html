@@ -6,6 +6,102 @@
     <title>二段階認証 | シェアードショップ</title>
 </head>
 <body class="user_login">
+<style>
+    /*
+     * 認証コード入力画面用ポップアップ
+     * alert() のように入力を止めず、表示中でも認証コードを入力できる。
+     */
+    .auth-code-floating-popup {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        min-width: 320px;
+        max-width: calc(100% - 32px);
+        padding: 14px 48px 14px 22px;
+        background: #fff7fb;
+        border: 2px solid #f2a6c9;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(120, 80, 100, 0.18);
+        color: #5f514b;
+        font-size: 16px;
+        line-height: 1.4;
+        white-space: nowrap;
+        writing-mode: horizontal-tb;
+        text-orientation: mixed;
+        box-sizing: border-box;
+    }
+
+    .auth-code-floating-popup.is-hidden {
+        display: none;
+    }
+
+    .auth-code-floating-popup__label,
+    .auth-code-floating-popup__message {
+        font-weight: 700;
+        color: #806d63;
+        white-space: nowrap;
+    }
+
+    .auth-code-floating-popup__code {
+        padding: 2px 12px;
+        background: #ffffff;
+        border: 2px dashed #e785b3;
+        border-radius: 10px;
+        color: #d94f8f;
+        font-size: 24px;
+        letter-spacing: 0.12em;
+        line-height: 1.2;
+        white-space: nowrap;
+        writing-mode: horizontal-tb;
+        text-orientation: mixed;
+    }
+
+    .auth-code-floating-popup__close {
+        position: absolute;
+        top: 8px;
+        right: 10px;
+        width: 24px;
+        height: 24px;
+        border: none;
+        background: transparent;
+        color: #a98799;
+        font-size: 20px;
+        font-weight: 700;
+        line-height: 24px;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    @media (max-width: 480px) {
+        .auth-code-floating-popup {
+            top: 10px;
+            min-width: 0;
+            width: calc(100% - 20px);
+            padding: 12px 40px 12px 14px;
+            font-size: 14px;
+        }
+
+        .auth-code-floating-popup__code {
+            padding: 2px 8px;
+            font-size: 20px;
+            letter-spacing: 0.08em;
+        }
+    }
+</style>
+
+<div th:if="${popupAuthCode != null}" class="auth-code-floating-popup" id="authCodeFloatingPopup">
+    <span class="auth-code-floating-popup__label">認証コード</span>
+    <strong class="auth-code-floating-popup__code" th:text="${popupAuthCode}">1234</strong>
+    <span class="auth-code-floating-popup__message">を入力してください</span>
+    <button type="button" class="auth-code-floating-popup__close" aria-label="認証コード表示を閉じる">×</button>
+</div>
+
 <div class="user_container">
     <h2 class="page_title">二段階認証</h2>
     <div class="login_content">
@@ -18,16 +114,41 @@
                 <tbody>
                     <tr>
                         <th class="label">認証コード</th>
-                        <td class="input"><input type="text" name="authCode" maxlength="4" required /></td>
+                        <td class="input">
+                            <input type="text" name="authCode" maxlength="4" required autofocus />
+                        </td>
                     </tr>
                     <tr>
                         <th class="label"></th>
-                        <td class="input"><input type="submit" value="認証" /></td>
+                        <td class="input">
+                            <input type="submit" value="認証" />
+                        </td>
                     </tr>
                 </tbody>
             </table>
         </form>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const popup = document.getElementById('authCodeFloatingPopup');
+        const closeButton = popup ? popup.querySelector('.auth-code-floating-popup__close') : null;
+        const authCodeInput = document.querySelector('input[name="authCode"]');
+
+        if (authCodeInput) {
+            authCodeInput.focus();
+        }
+
+        if (popup && closeButton) {
+            closeButton.addEventListener('click', function() {
+                popup.classList.add('is-hidden');
+                if (authCodeInput) {
+                    authCodeInput.focus();
+                }
+            });
+        }
+    });
+</script>
 </body>
 </html>

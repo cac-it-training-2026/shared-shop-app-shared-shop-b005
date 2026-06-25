@@ -4621,3 +4621,116 @@ small.copyright,
 	text-align: right;
 	flex-shrink: 0;
 }
+
+/* =========================================================
+   二段階認証コードのサイト内ポップアップ表示
+   ※ alert() ではなく、入力可能なまま画面上に表示する
+   ========================================================= */
+.auth-code-popup-root {
+	position: fixed;
+	top: 18px;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 9999;
+	width: auto;
+	max-width: calc(100% - 32px);
+	pointer-events: none;
+}
+
+.auth-code-site-popup {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	min-width: 320px;
+	padding: 14px 48px 14px 22px;
+	background: #fff7fb;
+	border: 2px solid #f2a6c9;
+	border-radius: 16px;
+	box-shadow: 0 8px 24px rgba(120, 80, 100, 0.18);
+	color: #5f514b;
+	font-size: 16px;
+	line-height: 1.4;
+	white-space: nowrap;
+	writing-mode: horizontal-tb;
+	text-orientation: mixed;
+	pointer-events: auto;
+}
+
+.auth-code-site-popup.is-hidden {
+	display: none;
+}
+
+.auth-code-site-popup__body {
+	display: flex;
+	align-items: baseline;
+	justify-content: center;
+	gap: 8px;
+	min-width: 0;
+	white-space: nowrap;
+	writing-mode: horizontal-tb;
+	text-orientation: mixed;
+}
+
+.auth-code-site-popup__label,
+.auth-code-site-popup__message {
+	font-weight: 700;
+	color: #806d63;
+	white-space: nowrap;
+}
+
+.auth-code-site-popup__code {
+	padding: 2px 12px;
+	background: #ffffff;
+	border: 2px dashed #e785b3;
+	border-radius: 10px;
+	color: #d94f8f;
+	font-size: 24px;
+	letter-spacing: 0.12em;
+	line-height: 1.2;
+	white-space: nowrap;
+	writing-mode: horizontal-tb;
+	text-orientation: mixed;
+}
+
+.auth-code-site-popup__close {
+	position: absolute;
+	top: 8px;
+	right: 10px;
+	width: 24px;
+	height: 24px;
+	border: none;
+	background: transparent;
+	color: #a98799;
+	font-size: 20px;
+	font-weight: 700;
+	line-height: 24px;
+	text-align: center;
+	cursor: pointer;
+}
+
+@media (max-width: 480px) {
+	.auth-code-popup-root {
+		top: 10px;
+		width: calc(100% - 20px);
+		max-width: none;
+	}
+
+	.auth-code-site-popup {
+		min-width: 0;
+		width: 100%;
+		padding: 12px 40px 12px 14px;
+		font-size: 14px;
+		box-sizing: border-box;
+	}
+
+	.auth-code-site-popup__body {
+		gap: 6px;
+	}
+
+	.auth-code-site-popup__code {
+		padding: 2px 8px;
+		font-size: 20px;
+		letter-spacing: 0.08em;
+	}
+}
