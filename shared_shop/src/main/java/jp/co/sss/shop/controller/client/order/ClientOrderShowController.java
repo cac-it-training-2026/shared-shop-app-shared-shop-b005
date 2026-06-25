@@ -1,7 +1,9 @@
 package jp.co.sss.shop.controller.client.order;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,7 @@ import jp.co.sss.shop.entity.OrderItem;
 import jp.co.sss.shop.repository.OrderRepository;
 import jp.co.sss.shop.service.BeanTools;
 import jp.co.sss.shop.service.PriceCalc;
+import jp.co.sss.shop.util.PointCalcUtil;
 
 /**
  * 注文管理 一覧表示機能のコントローラクラス
@@ -76,6 +79,8 @@ public class ClientOrderShowController {
 
 		// 注文情報リストを生成
 		List<OrderBean> orderBeanList = new ArrayList<OrderBean>();
+		Map<Integer, List<OrderItemBean>> orderPreviewMap = new HashMap<>();
+		Map<Integer, Integer> orderItemCountMap = new HashMap<>();
 		for (Order order : orderList) {
 
 			// BeanToolsクラスのcopyEntityToOrderBeanメソッドを使用して表示する注文情報を生成
@@ -90,11 +95,18 @@ public class ClientOrderShowController {
 			// 合計金額のセット
 			orderBean.setTotal(total);
 
+			List<OrderItemBean> orderItemBeanList = beanTools.generateOrderItemBeanList(orderItemList);
+			int previewSize = Math.min(orderItemBeanList.size(), 3);
+			orderPreviewMap.put(order.getId(), new ArrayList<OrderItemBean>(orderItemBeanList.subList(0, previewSize)));
+			orderItemCountMap.put(order.getId(), orderItemBeanList.size());
+
 			orderBeanList.add(orderBean);
 		}
 
 		// 注文情報リストをViewへ渡す
 		model.addAttribute("orders", orderBeanList);
+		model.addAttribute("orderPreviewMap", orderPreviewMap);
+		model.addAttribute("orderItemCountMap", orderItemCountMap);
 
 		return "client/order/list";
 
@@ -135,6 +147,7 @@ public class ClientOrderShowController {
 		model.addAttribute("order", orderBean);
 		model.addAttribute("orderItemBeans", orderItemBeanList);
 		model.addAttribute("total", total);
+		model.addAttribute("paymentTotal", PointCalcUtil.calcPaymentTotal(total, order.getUsedPoint()));
 
 		return "client/order/detail";
 

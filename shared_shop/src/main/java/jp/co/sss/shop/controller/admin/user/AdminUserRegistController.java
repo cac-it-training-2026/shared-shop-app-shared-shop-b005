@@ -174,6 +174,8 @@ public class AdminUserRegistController {
 
 		// 入力フォーム情報をエンティティに設定
 		BeanUtils.copyProperties(userForm, user);
+		// 新規登録時に既存IDを引き継がないようにする
+		user.setId(null);
 
 		// パスワードをハッシュ化
 		user.setPassword(PasswordHashUtil.hash(userForm.getPassword()));

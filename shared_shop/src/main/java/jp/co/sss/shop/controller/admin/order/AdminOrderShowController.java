@@ -21,6 +21,7 @@ import jp.co.sss.shop.entity.OrderItem;
 import jp.co.sss.shop.repository.OrderRepository;
 import jp.co.sss.shop.service.BeanTools;
 import jp.co.sss.shop.service.PriceCalc;
+import jp.co.sss.shop.util.PointCalcUtil;
 
 /**
  * 注文管理 一覧表示機能(運用管理者用)のコントローラクラス
@@ -120,6 +121,7 @@ public class AdminOrderShowController {
 		model.addAttribute("order", orderBean);
 		model.addAttribute("orderItemBeans", orderItemBeanList);
 		model.addAttribute("total", total);
+		model.addAttribute("paymentTotal", PointCalcUtil.calcPaymentTotal(total, order.getUsedPoint()));
 
 		return "admin/order/detail";
 	}

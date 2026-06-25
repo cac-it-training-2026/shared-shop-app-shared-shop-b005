@@ -125,6 +125,25 @@ public class User {
 	private Timestamp resetTokenExpire;
 
 	/**
+	 * 現在の保有ポイント
+	 */
+	@Column
+	private Integer currentPoint = 0;
+
+	/**
+	 * 累計獲得ポイント
+	 */
+	@Column
+	private Integer totalPoint = 0;
+
+	/**
+	 * 会員ランク
+	 */
+	@Column
+	private String rank = "ブロンズ";
+
+
+	/**
 	 * 会員IDの取得
 	 * @return 会員ID
 	 */
@@ -338,5 +357,29 @@ public class User {
 
 	public void setResetTokenExpire(Timestamp resetTokenExpire) {
 		this.resetTokenExpire = resetTokenExpire;
+	}
+
+	public Integer getCurrentPoint() {
+		return currentPoint;
+	}
+
+	public void setCurrentPoint(Integer currentPoint) {
+		this.currentPoint = currentPoint;
+	}
+
+	public Integer getTotalPoint() {
+		return totalPoint;
+	}
+
+	public void setTotalPoint(Integer totalPoint) {
+		this.totalPoint = totalPoint;
+	}
+
+	public String getRank() {
+		return rank;
+	}
+
+	public void setRank(String rank) {
+		this.rank = rank;
 	}
 }

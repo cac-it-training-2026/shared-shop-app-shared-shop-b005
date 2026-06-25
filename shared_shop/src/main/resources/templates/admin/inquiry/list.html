@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_4block :: layout(~{::title},~{::body/content()})}">
+
+<head>
+	<title th:text="#{title.inquiry.list} + ' | ' + #{shop.title}"></title>
+	<meta charset="UTF-8" />
+</head>
+
+<body class="admin inquiry_list">
+	<h2 class="title" th:text="#{title.inquiry.list}"></h2>
+
+	<table class="list_table" th:if="!${#lists.isEmpty(inquiries)}">
+		<tr>
+			<th th:text="#{data.inquiry.date}"></th>
+			<th th:text="#{inquiryForm.name}"></th>
+			<th th:text="#{inquiryForm.email}"></th>
+		</tr>
+		<tr th:each="inquiry: ${inquiries}">
+			<td th:text="${#dates.format(inquiry.insertDate, 'yyyy/MM/dd HH:mm:ss')}"></td>
+			<td><a th:href="@{/admin/inquiry/detail/{id}(id=${inquiry.id})}" th:text="${inquiry.name}"></a></td>
+			<td th:text="${inquiry.email}"></td>
+		</tr>
+	</table>
+
+	<p th:if="${#lists.isEmpty(inquiries)}" th:text="#{msg.inquiry.list.none}"></p>
+</body>
+
+</html>

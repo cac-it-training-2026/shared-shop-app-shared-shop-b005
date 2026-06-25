@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+<head>
+	<title>削除確認 | [[#{shop.title}]]</title>
+</head>
+<body class="user credit_card_delete_check">
+	<h2 class="title">削除確認</h2>
+	<div class="user_info_form_area">
+		<p>以下のクレジットカードを削除しますか？</p>
+		<ul class="input_list" th:object="${creditCard}">
+			<li><span class="input_title">ブランド</span><span class="input_value" th:text="*{brand}"></span></li>
+			<li><span class="input_title">カード番号</span><span class="input_value" th:text="*{cardNumber}"></span></li>
+			<li><span class="input_title">名義人</span><span class="input_value" th:text="*{holderName}"></span></li>
+			<li><span class="input_title">有効期限</span><span class="input_value" th:text="*{expirationDate}"></span></li>
+		</ul>
+		<form th:action="@{/client/creditcard/delete/complete}" method="post">
+			<input type="hidden" name="id" th:value="${creditCard.id}" />
+			<div class="detail_button_area">
+				<input type="submit" value="削除" class="delete" />
+				<a th:href="@{/client/creditcard/list}" class="back_button">戻る</a>
+			</div>
+		</form>
+	</div>
+</body>
+</html>

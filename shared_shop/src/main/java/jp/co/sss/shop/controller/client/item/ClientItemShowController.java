@@ -10,10 +10,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import jakarta.servlet.http.HttpSession;
+
 import jp.co.sss.shop.bean.ItemBean;
+import jp.co.sss.shop.bean.UserBean;
 import jp.co.sss.shop.entity.Item;
+import jp.co.sss.shop.entity.Review;
 import jp.co.sss.shop.repository.CategoryRepository;
+import jp.co.sss.shop.repository.FavoriteRepository;
 import jp.co.sss.shop.repository.ItemRepository;
+import jp.co.sss.shop.repository.OrderItemRepository;
+import jp.co.sss.shop.repository.ReviewRepository;
 import jp.co.sss.shop.service.BeanTools;
 import jp.co.sss.shop.util.Constant;
 
@@ -39,6 +46,18 @@ public class ClientItemShowController {
 	@Autowired
 	CategoryRepository categoryRepository;
 
+	@Autowired
+	ReviewRepository reviewRepository;
+
+	@Autowired
+	OrderItemRepository orderItemRepository;
+
+	@Autowired
+	FavoriteRepository favoriteRepository;
+
+	@Autowired
+	HttpSession session;
+
 	/**
 	 * トップ画面 表示処理
 	 *
@@ -56,6 +75,9 @@ public class ClientItemShowController {
 
 		// エンティティ内の検索結果をJavaBeansにコピー
 		List<ItemBean> itemBeanList = beanTools.copyEntityListToItemBeanList(itemList);
+
+		// ログイン中の一般会員がお気に入り登録済みの商品に印を付ける
+		markFavoriteItems(itemBeanList);
 
 		// 商品情報をViewへ渡す
 		model.addAttribute("items", itemBeanList);
@@ -75,6 +97,7 @@ public class ClientItemShowController {
 			@PathVariable int id,
 			@RequestParam(required = false, defaultValue = "1") Integer sortType,
 			@RequestParam(required = false, defaultValue = "0") Integer categoryId,
+			@RequestParam(required = false, defaultValue = "1") Integer reviewSortType,
 			Model model) {
 
 		// 商品IDに該当する商品情報を取得する
@@ -85,6 +108,36 @@ public class ClientItemShowController {
 
 		// Itemエンティティの各フィールドの値をItemBeanにコピー
 		ItemBean itemBean = beanTools.copyEntityToItemBean(item);
+
+		// お気に入り数
+		itemBean.setFavoriteCount(favoriteRepository.countByItemId(id));
+
+		// レビュー一覧
+		List<Review> reviewList;
+		if (reviewSortType == 2) {
+			reviewList = reviewRepository.findTop5ByItemIdOrderByRatingDescInsertDateDesc(id);
+		} else {
+			reviewList = reviewRepository.findTop5ByItemIdOrderByInsertDateDesc(id);
+		}
+		model.addAttribute("reviews", reviewList);
+		model.addAttribute("reviewSortType", reviewSortType);
+
+		// 平均評価
+		Double avgRating = reviewRepository.getAverageRating(id);
+		model.addAttribute("avgRating", avgRating);
+
+		// お気に入り登録済み判定
+		UserBean userBean = (UserBean) session.getAttribute("user");
+		boolean isFavorite = false;
+		boolean canReview = false;
+		if (userBean != null) {
+			isFavorite = (favoriteRepository.findByUserIdAndItemId(userBean.getId(), id) != null);
+			if (userBean.getAuthority() != null && userBean.getAuthority() == 2) {
+				canReview = orderItemRepository.existsByUserIdAndItemId(userBean.getId(), id);
+			}
+		}
+		model.addAttribute("isFavorite", isFavorite);
+		model.addAttribute("canReview", canReview);
 
 		// 商品情報をViewへ渡す
 		model.addAttribute("item", itemBean);
@@ -143,10 +196,21 @@ public class ClientItemShowController {
 				// itemListにカテゴリ別の売れ筋順商品を格納する。
 				itemList = itemRepository.findHotItemsByCategory(categoryId, 0);
 			}
+
+			// もしsortType == 3(お気に入り順)の場合
+		} else if (sortType == 3) {
+			if (categoryId == null || categoryId == 0) {
+				itemList = itemRepository.findItemsByFavorite(0);
+			} else {
+				itemList = itemRepository.findItemsByCategoryByFavorite(categoryId, 0);
+			}
 		}
 
 		// itemListのRepositoryデータをEntityからBean形式リストへコピー
 		List<ItemBean> itemBeanList = beanTools.copyEntityListToItemBeanList(itemList);
+
+		// ログイン中の一般会員がお気に入り登録済みの商品に印を付ける
+		markFavoriteItems(itemBeanList);
 
 		// HTMLへの一覧表示ようにモデルスコープへ格納
 		model.addAttribute("items", itemBeanList);
@@ -162,6 +226,21 @@ public class ClientItemShowController {
 		model.addAttribute("categoryId", categoryId);
 
 		return "client/item/list";
+	}
+
+	/**
+	 * 商品一覧用のお気に入り登録済み判定をItemBeanへセットする。
+	 * @param itemBeanList 商品Beanリスト
+	 */
+	private void markFavoriteItems(List<ItemBean> itemBeanList) {
+		UserBean userBean = (UserBean) session.getAttribute("user");
+		if (userBean == null || userBean.getAuthority() == null || userBean.getAuthority() != 2) {
+			return;
+		}
+
+		for (ItemBean itemBean : itemBeanList) {
+			itemBean.setFavorite(favoriteRepository.findByUserIdAndItemId(userBean.getId(), itemBean.getId()) != null);
+		}
 	}
 
 	// 詳細画面戻るボタン

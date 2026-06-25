@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head>
 	<meta charset="UTF-8" />
 </head>
-
 <body>
-	<ul th:fragment="layout-menu" th:class="navi_menu">
-		<li><a th:href="@{/}" th:text="#{top}"></a></li>
-		<li><a th:href="@{/client/item/list/1}" th:text="#{item}+#{title.list}"></a></li>
-		<li><a th:href="@{/client/basket/list}" th:text="#{basket}"></a></li>
+	<ul th:fragment="layout-menu" class="navi_menu">
+		<li><a th:href="@{/}"><span class="nav-icon" aria-hidden="true">🏠</span><span th:text="#{top}">トップ</span></a></li>
+		<li><a th:href="@{/client/item/list/1}"><span class="nav-icon" aria-hidden="true">🧀</span><span th:text="#{item}+#{title.list}">商品一覧</span></a></li>
+		<li><a th:href="@{/client/basket/list}"><span class="nav-icon" aria-hidden="true">🛒</span><span th:text="#{basket}">買い物かご</span></a></li>
 		<th:block th:if="${session.user != null}">
-			<li><a th:href="@{/client/order/list}" th:text="#{order}+#{title.list}"></a></li>
+			<li><a th:href="@{/client/order/list}"><span class="nav-icon" aria-hidden="true">📋</span><span th:text="#{order}+#{title.list}">注文一覧</span></a></li>
+			<li><a th:href="@{/client/favorite/list}"><span class="nav-icon" aria-hidden="true">💗</span><span th:text="#{title.favorite.list}">お気に入り商品</span></a></li>
 		</th:block>
 	</ul>
 </body>
-
 </html>

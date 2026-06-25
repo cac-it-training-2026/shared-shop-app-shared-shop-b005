@@ -40,6 +40,7 @@ public class URLCheck {
 				|| requestURL.indexOf("admin/menu") != -1
 				|| requestURL.indexOf("/admin/admin_menu") != -1
 				|| requestURL.indexOf("admin/user") != -1
+				|| requestURL.indexOf("admin/inquiry") != -1
 				|| requestURL.endsWith("/logout")) {
 			// URLのリクエスト先がフィルタ実行対象である場合
 			isCheckURLOK = true;
@@ -122,7 +123,8 @@ public class URLCheck {
 				&& !requestURL.endsWith("/client/user/regist/input/check")
 				&& !requestURL.endsWith("/client/user/regist/check")
 				&& !requestURL.endsWith("/client/user/regist/check/back")
-				&& !requestURL.endsWith("/client/user/regist/complete")) {
+				&& !requestURL.endsWith("/client/user/regist/complete")
+				&& requestURL.indexOf("/inquiry") == -1) {
 			// URLのリクエスト先がフィルタ実行対象である場合
 			isCheckURLOK = true;
 		} else {
@@ -152,6 +154,10 @@ public class URLCheck {
 						|| requestURL.indexOf("/client/basket") != -1
 						|| requestURL.indexOf("/client/order/address") != -1
 						|| requestURL.indexOf("/client/order/payment/input") != -1
+						|| requestURL.indexOf("/client/order/card/select") != -1
+						|| requestURL.indexOf("/client/creditcard") != -1
+						|| requestURL.indexOf("/client/favorite") != -1
+						|| requestURL.indexOf("/client/review") != -1
 						|| requestURL.indexOf("/order/list") != -1
 						|| requestURL.indexOf("/client/order/check") != -1
 						|| requestURL.indexOf("/order/detail") != -1
@@ -159,7 +165,8 @@ public class URLCheck {
 						|| requestURL.indexOf("/client/user/detail") != -1
 						|| requestURL.indexOf("/client/user/regist") != -1
 						|| requestURL.indexOf("/client/user/update") != -1
-						|| requestURL.indexOf("/client/user/delete") != -1)) {
+						|| requestURL.indexOf("/client/user/delete") != -1
+						|| requestURL.indexOf("/inquiry") != -1)) {
 
 			// URLのリクエスト先がフィルタ実行対象である場合
 			isCheckURLOK = true;

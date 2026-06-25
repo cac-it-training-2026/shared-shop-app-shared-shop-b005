@@ -13,6 +13,12 @@
 	<h2 th:class="page_title" th:text="#{login}"></h2>
 	<div class="login_content">
 	<p th:class="description" th:text="#{msg.login.input}"></p>
+	<div class="auth-message-area">
+		<div th:if="${errorMessage}" class="error_list"><ul><li th:text="${errorMessage}"></li></ul></div>
+		<div th:if="${message}" class="message_list"><ul><li th:text="${message}"></li></ul></div>
+		<p th:if="${loginLockNotice}" class="login-lock-notice" th:text="${loginLockNotice}">パスワードを5回間違えるとアカウントが30分間ロックされます。</p>
+		<p th:unless="${loginLockNotice}" class="login-lock-notice">パスワードを5回間違えるとアカウントが30分間ロックされます。</p>
+	</div>
 	<div class="login_form_area">
 		<form th:action="@{/login}" method="post" class="login_form" th:object="${loginForm}">
 			<th:block th:if="${#fields.hasErrors()}">
@@ -35,7 +41,7 @@
 					</tr>
 					<tr>
 						<th class="label"></th>
-						<td class="input"><a th:href="@{/password_reset/request}">パスワードを忘れた方はこちら</a></td>
+						<td class="input"><a th:href="@{/password_reset/request}" th:text="#{msg.login.password.reset}">パスワードを忘れた方はこちら</a></td>
 					</tr>
 					<tr>
 						<th class="label"></th>

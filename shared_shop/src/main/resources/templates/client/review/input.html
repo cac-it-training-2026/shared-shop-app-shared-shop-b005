@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+<head>
+	<title th:text="#{title.review.input} + ' | ' + #{shop.title}">レビュー投稿</title>
+	<meta charset="UTF-8" />
+</head>
+<body>
+	<section class="shop-page review-input-page">
+		<div class="page-heading-row">
+			<h2 class="shop-page-title"><span aria-hidden="true">✏️</span><span th:text="#{title.review.input}">レビュー投稿</span></h2>
+			<div class="speech-mascot-area"><div class="speech-bubble" th:utext="#{design.speech.review}">感想を<br />教えてね♪</div><img class="speech-mascot" th:src="@{/images/common/mascot_pc.png}" alt="" /></div>
+		</div>
+
+		<div class="review-input-card">
+			<div class="review-target-item">
+				<div class="detail-main-image small">
+					<img th:if="${item.image != null}" th:src="@{/images/{image}(image=${item.image})}" alt="" />
+					<img th:if="${item.image == null}" th:src="@{/images/common/no_image.jpg}" alt="" />
+				</div>
+				<h3 th:text="${item.getName(#locale.language)}">商品名</h3>
+			</div>
+
+			<form th:action="@{/client/review/complete}" method="post" th:object="${reviewForm}" class="cute-form">
+				<div class="form-row">
+					<label th:text="#{data.review.rating}">評価</label>
+					<select th:field="*{rating}" class="cute-select">
+						<option value="5">★★★★★ 5</option>
+						<option value="4">★★★★☆ 4</option>
+						<option value="3">★★★☆☆ 3</option>
+						<option value="2">★★☆☆☆ 2</option>
+						<option value="1">★☆☆☆☆ 1</option>
+					</select>
+					<span th:if="${#fields.hasErrors('rating')}" th:errors="*{rating}" class="error"></span>
+				</div>
+				<div class="form-row">
+					<label th:text="#{data.review.comment}">コメント</label>
+					<textarea th:field="*{reviewComment}" rows="6" th:placeholder="#{design.review.placeholder}"></textarea>
+					<span th:if="${#fields.hasErrors('reviewComment')}" th:errors="*{reviewComment}" class="error"></span>
+				</div>
+				<input type="hidden" th:field="*{itemId}" />
+				<div class="detail-action-panel centered">
+					<input type="submit" th:value="#{button.post}" class="cute-button yellow" />
+					<a th:href="@{/client/item/detail/{id}(id=*{itemId})}" class="cute-button blue" th:text="#{button.back}">戻る</a>
+				</div>
+			</form>
+		</div>
+	</section>
+</body>
+</html>

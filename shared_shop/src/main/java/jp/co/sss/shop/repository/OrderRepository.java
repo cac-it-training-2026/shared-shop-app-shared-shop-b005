@@ -32,4 +32,6 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
 	Order findByIdAndUserId(Integer id, Integer userId);
 
+	List<Order> findByCreditCard_Id(Integer creditCardId);
+
 }

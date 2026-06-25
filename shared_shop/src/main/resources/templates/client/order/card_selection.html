@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+<head>
+	<title>クレジットカード選択 | [[#{shop.title}]]</title>
+</head>
+<body class="user card_selection">
+	<h2 class="title">クレジットカード選択</h2>
+	<div class="user_info_form_area">
+		<div th:if="${#lists.isEmpty(creditCards)}">
+			<p>登録されているクレジットカードはありません。マイページから登録してください。</p>
+			<div class="detail_button_area">
+				<a th:href="@{/client/user/detail}" class="back_button">マイページへ</a>
+				<form th:action="@{/client/order/card/back}" method="post"><input type="submit" value="戻る" class="back_button" /></form>
+			</div>
+		</div>
+		<form th:unless="${#lists.isEmpty(creditCards)}" th:action="@{/client/order/card/select}" method="post">
+			<ul class="payment_method_select">
+				<li th:each="card : ${creditCards}">
+					<label class="radio_label">
+						<input type="radio" name="creditCardId" th:value="${card.id}" required />
+						[[${card.brand}]] : [[${card.cardNumber}]] ([[${card.holderName}]])
+					</label>
+				</li>
+			</ul>
+			<div class="detail_button_area">
+				<input type="submit" value="次へ" class="send_button" />
+				<input type="button" value="戻る" class="back_button" onclick="history.back();" />
+			</div>
+		</form>
+	</div>
+</body>
+</html>

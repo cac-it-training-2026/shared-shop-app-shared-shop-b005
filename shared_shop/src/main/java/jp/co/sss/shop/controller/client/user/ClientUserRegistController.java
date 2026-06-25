@@ -214,6 +214,8 @@ public class ClientUserRegistController {
 
 		// 入力フォーム情報をエンティティに設定
 		BeanUtils.copyProperties(userform, user);
+		// 新規登録時に既存IDを引き継がないようにする
+		user.setId(null);
 
 		// パスワードをハッシュ化
 		user.setPassword(PasswordHashUtil.hash(userform.getPassword()));

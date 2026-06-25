@@ -1,20 +1,256 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
-
 <head>
-	<title th:text="#{title.order.complete}+' | '+ #{shop.title}"> </title>
+	<title th:text="#{title.order.complete}+' | '+ #{shop.title}">注文完了</title>
 	<meta charset="UTF-8" />
 </head>
-
 <body class="user order_complete">
-	<h2 th:class="title" th:text="#{title.order.complete}"></h2>
-	<p th:class="complete_message">
-		<span th:text="#{msg.order.complete1}"></span>
-		<br />
-		<span th:text="#{msg.order.complete2}"></span>
-	</p>
-	<p class="complete_link"><a th:href="@{/}" th:text="#{msg.back.to.top}"></a></p>
-</body>
+	<section class="shop-page order-complete-page">
+		<h2 class="shop-page-title centered-title"><span aria-hidden="true">🐾</span><span th:text="#{title.order.complete}">ご注文完了</span></h2>
 
+		<div class="complete-card">
+			<div class="complete-message-area">
+				<h3>ご注文ありがとうございました！</h3>
+				<p class="order-number" th:if="${order != null}">注文番号：<span th:text="${'SH' + order.id}">SH0000</span></p>
+				<p class="complete_message">[[#{msg.order.complete1}]]<br />[[#{msg.order.complete2}]]</p>
+
+				<div class="complete-summary" th:if="${order != null}">
+					<div><span class="summary-icon">🏠</span><strong>お届け先</strong><span><span th:text="${order.postalCode}">0000000</span>　<span th:text="${order.address}">住所</span><br /><span th:text="${order.name}">お名前</span>さん</span></div>
+					<div><span class="summary-icon">💳</span><strong>お支払い方法</strong><span th:switch="${order.payMethod}"><span th:case="1">[[#{paymethod.credit.str}]]</span><span th:case="2">[[#{paymethod.bank.str}]]</span><span th:case="3">[[#{paymethod.onarrival.str}]]</span><span th:case="4">[[#{paymethod.emoney.str}]]</span><span th:case="5">[[#{paymethod.convenience.str}]]</span></span></div>
+					<div><span class="summary-icon">¥</span><strong>ご注文合計</strong><span class="complete-total" th:text="${'¥' + #numbers.formatInteger(completePaymentTotal, 1, 'COMMA') + '（税込）'}">¥0（税込）</span></div>
+				</div>
+			</div>
+			<div class="complete-mascot-area">
+				<img th:src="@{/images/common/mascot_box.png}" alt="" />
+			</div>
+
+			<div class="kuji-mini-result" th:if="${order != null and lotteryRank != null}">
+				<span class="kuji-mini-label">🎁 ミッキスごほうびチャンス結果</span>
+				<strong th:text="${lotteryRank}">3等</strong>
+				<span th:text="${lotteryPoint} + 'ポイント獲得'">100ポイント獲得</span>
+			</div>
+
+			<div class="kuji-modal-overlay" th:if="${order != null}" th:classappend="${lotteryJustDrawn} ? ' is-open' : ''" th:attr="data-open=${lotteryJustDrawn}">
+				<div class="kuji-modal-backdrop" aria-hidden="true"></div>
+				<div class="kuji-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="kujiModalTitle">
+					<button type="button" class="kuji-modal-close" aria-label="くじポップアップを閉じる">閉じる ×</button>
+					<section class="mikkis-kuji-stage" th:classappend="${lotteryJustDrawn} ? ' is-auto' : ' is-viewed'" th:attr="data-auto=${lotteryJustDrawn}">
+				<div class="kuji-head">
+					<div>
+						<span class="kuji-label">🎁 注文完了特典</span>
+						<h3 id="kujiModalTitle">ミッキスごほうびチャンス</h3>
+						<p>ご注文ありがとうございます。4つのBOXから1つ選ぶと、結果がオープンします♪</p>
+					</div>
+					<div class="kuji-chance-badge">BOXを選択</div>
+				</div>
+
+				<div class="kuji-layout">
+					<div class="kuji-board" aria-label="ごほうびチャンス抽選演出">
+						<div class="kuji-status"><span class="kuji-status-dot" aria-hidden="true"></span><span class="kuji-status-text">プレゼントBOXを1つ選んでください♪</span></div>
+						<div class="kuji-tickets">
+							<div class="kuji-ticket" role="button" tabindex="0"><div class="kuji-ticket-inner"><span class="kuji-ticket-gift"></span><span class="kuji-question">?</span><strong>BOX A</strong></div></div>
+							<div class="kuji-ticket" role="button" tabindex="0"><div class="kuji-ticket-inner"><span class="kuji-ticket-gift"></span><span class="kuji-question">?</span><strong>BOX B</strong></div></div>
+							<div class="kuji-ticket" role="button" tabindex="0"><div class="kuji-ticket-inner"><span class="kuji-ticket-gift"></span><span class="kuji-question">?</span><strong>BOX C</strong></div></div>
+							<div class="kuji-ticket" role="button" tabindex="0"><div class="kuji-ticket-inner"><span class="kuji-ticket-gift"></span><span class="kuji-question">?</span><strong>BOX D</strong></div></div>
+						</div>
+						<div class="kuji-prize-list" aria-label="くじ賞品一覧">
+							<div class="kuji-prize-chip first">1等<span>1000pt</span></div>
+							<div class="kuji-prize-chip second">2等<span>500pt</span></div>
+							<div class="kuji-prize-chip third">3等<span>100pt</span></div>
+							<div class="kuji-prize-chip miss">はずれ<span>0pt</span></div>
+						</div>
+					</div>
+
+					<aside class="kuji-result-card" th:classappend="${lotteryResultClass}" aria-live="polite">
+						<span class="kuji-result-kicker" th:text="${lotteryRank}">3等</span>
+						<h4 th:text="${lotteryTitle}">3等 ラッキー！</h4>
+						<p class="kuji-result-message" th:text="${lotteryResultMessage}">お買い物のお礼にポイントをプレゼントします。</p>
+						<div class="kuji-point-box">
+							<span>くじ獲得ポイント</span>
+							<strong th:text="${lotteryPoint} + 'ポイント'">100ポイント</strong>
+						</div>
+						<img class="kuji-result-mascot" th:src="@{/images/common/{image}(image=${lotteryMascotImage})}" alt="" />
+						<p class="kuji-result-note">ポイントは会員情報へ自動で反映されています。</p>
+					</aside>
+				</div>
+
+				<div class="complete-point-lottery">
+					<div class="point-grid compact">
+						<div><span>利用ポイント</span><strong class="point-used" th:text="${usedPoint}">0</strong></div>
+						<div><span>通常獲得ポイント</span><strong class="point-earned" th:text="${earnedPoint}">0</strong></div>
+					</div>
+					<p class="complete_message" th:if="${lotteryMessage != null}" th:text="${lotteryMessage}"></p>
+				</div>
+					</section>
+				</div>
+			</div>
+
+			<div class="complete-actions">
+				<a class="cute-button blue large" th:href="@{/client/order/list}">注文一覧へ</a>
+				<a class="cute-button primary large" th:href="@{/client/item/list/1}">商品一覧へ</a>
+			</div>
+		</div>
+
+		<section class="recommend-section" th:if="${recommendItems != null}">
+			<div class="review-header">
+				<h3 class="shop-page-title small"><span aria-hidden="true">🧀</span>こちらの商品もおすすめです</h3>
+			</div>
+			<div class="product-grid compact">
+				<article class="product-card" th:each="item : ${recommendItems}">
+					<a class="product-card-link" th:href="@{/client/item/detail/{id}(id=${item.id})}">
+						<div class="product-image-wrap"><img th:src="@{/images/{image}(image=${item.image})}" th:if="${item.image != null}" alt="" /><img th:src="@{/images/common/no_image.jpg}" th:if="${item.image == null}" alt="" /></div>
+						<h3 class="product-name" th:text="${item.getName(#locale.language)}">商品名</h3>
+						<p class="product-price"><span th:text="${'¥' + #numbers.formatInteger(item.price, 1, 'COMMA')}">¥0</span><small th:text="#{label.tax.included}">（税込）</small></p>
+					</a>
+				</article>
+			</div>
+		</section>
+	</section>
+
+	<script>
+	(function() {
+		const overlay = document.querySelector('.kuji-modal-overlay');
+		const stage = document.querySelector('.mikkis-kuji-stage');
+		if (!stage) {
+			return;
+		}
+
+		function isKujiModalOpen() {
+			return overlay && overlay.classList.contains('is-open');
+		}
+
+		function closeKujiModal() {
+			if (overlay) {
+				overlay.classList.remove('is-open');
+			}
+			document.body.classList.remove('kuji-modal-lock');
+		}
+
+		if (overlay && overlay.classList.contains('is-open')) {
+			document.body.classList.add('kuji-modal-lock');
+		}
+
+		if (overlay) {
+			const closeButton = overlay.querySelector('.kuji-modal-close');
+			const backdrop = overlay.querySelector('.kuji-modal-backdrop');
+			if (closeButton) {
+				closeButton.addEventListener('click', closeKujiModal);
+			}
+			if (backdrop) {
+				backdrop.addEventListener('click', closeKujiModal);
+			}
+			overlay.addEventListener('click', function(event) {
+				if (event.target === overlay) {
+					closeKujiModal();
+				}
+			});
+			document.addEventListener('keydown', function(event) {
+				if (event.key === 'Escape') {
+					closeKujiModal();
+				}
+			});
+		}
+
+		const isAuto = stage.dataset.auto === 'true';
+		const tickets = Array.from(stage.querySelectorAll('.kuji-ticket'));
+		const statusText = stage.querySelector('.kuji-status-text');
+		const chanceBadge = stage.querySelector('.kuji-chance-badge');
+		const resultCard = stage.querySelector('.kuji-result-card');
+
+		function setStatus(text) {
+			if (statusText) {
+				statusText.textContent = text;
+			}
+		}
+
+		function finish() {
+			stage.classList.remove('kuji-rolling');
+			stage.classList.add('kuji-finished');
+			if (resultCard) {
+				resultCard.classList.add('show');
+			}
+			if (chanceBadge) {
+				chanceBadge.textContent = '結果発表';
+			}
+			setStatus('結果が出ました！ポイントを確認してください♪');
+			if (resultCard && !resultCard.classList.contains('rank-miss') && isKujiModalOpen()) {
+				launchKujiConfetti();
+			}
+		}
+
+		if (!isAuto) {
+			finish();
+			return;
+		}
+
+		stage.classList.add('js-kuji');
+		stage.classList.add('kuji-waiting');
+		setStatus('4つのBOXから1つ選んでクリックしてください♪');
+		if (chanceBadge) {
+			chanceBadge.textContent = '選んでね';
+		}
+
+		if (tickets.length === 0) {
+			finish();
+			return;
+		}
+
+		let opened = false;
+		function openTicket(selectedIndex) {
+			if (opened) {
+				return;
+			}
+			opened = true;
+			stage.classList.remove('kuji-waiting');
+			tickets.forEach(function(ticket, index) {
+				ticket.classList.remove('is-hop');
+				ticket.setAttribute('aria-disabled', 'true');
+				ticket.setAttribute('tabindex', '-1');
+				if (index !== selectedIndex) {
+					ticket.classList.add('is-dim');
+				}
+			});
+			tickets[selectedIndex].classList.add('is-selected');
+			setStatus('このBOXに決定！ドキドキ…');
+			if (chanceBadge) {
+				chanceBadge.textContent = 'OPEN!';
+			}
+
+			window.setTimeout(function() {
+				tickets[selectedIndex].classList.add('is-opening');
+				setStatus('BOXをオープンしています…');
+			}, 550);
+
+			window.setTimeout(finish, 1650);
+		}
+
+		tickets.forEach(function(ticket, index) {
+			ticket.addEventListener('click', function() {
+				openTicket(index);
+			});
+			ticket.addEventListener('keydown', function(event) {
+				if (event.key === 'Enter' || event.key === ' ') {
+					event.preventDefault();
+					openTicket(index);
+				}
+			});
+		});
+
+		function launchKujiConfetti() {
+			const colors = ['#ffd86e', '#9fbee9', '#ffc6c6', '#91c954', '#fff0a8'];
+			for (let i = 0; i < 44; i++) {
+				const piece = document.createElement('span');
+				piece.className = 'kuji-confetti';
+				piece.style.left = Math.random() * 100 + 'vw';
+				piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+				piece.style.animationDelay = Math.random() * 0.45 + 's';
+				piece.style.animationDuration = (1.4 + Math.random() * 1.1) + 's';
+				document.body.appendChild(piece);
+				window.setTimeout(function() { piece.remove(); }, 3200);
+			}
+		}
+	})();
+	</script>
+</body>
 </html>

@@ -83,4 +83,22 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 	@Override
 	Item getReferenceById(Integer id);
 
+	/**
+	 * お気に入り数順の商品一覧取得
+	 */
+	@Query("SELECT i FROM Item i LEFT JOIN Favorite f ON i.id = f.item.id WHERE i.deleteFlag = :deleteFlag GROUP BY i ORDER BY COUNT(f.id) DESC, i.id ASC")
+	List<Item> findItemsByFavorite(@Param("deleteFlag") int deleteFlag);
+
+	/**
+	 * カテゴリ指定ありのお気に入り数順の商品一覧取得
+	 */
+	@Query("SELECT i FROM Item i LEFT JOIN Favorite f ON i.id = f.item.id WHERE i.deleteFlag = :deleteFlag AND i.category.id = :categoryId GROUP BY i ORDER BY COUNT(f.id) DESC, i.id ASC")
+	List<Item> findItemsByCategoryByFavorite(@Param("categoryId") Integer categoryId, @Param("deleteFlag") int deleteFlag);
+
+	/**
+	 * 同一カテゴリのレコメンド商品を取得（購入商品自身を除外、最大5件）
+	 */
+	@Query("SELECT i FROM Item i WHERE i.category.id = :categoryId AND i.id != :itemId AND i.deleteFlag = 0 ORDER BY i.insertDate DESC")
+	List<Item> findRecommendItems(@Param("categoryId") Integer categoryId, @Param("itemId") Integer itemId, Pageable pageable);
+
 }

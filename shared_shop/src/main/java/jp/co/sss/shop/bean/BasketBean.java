@@ -19,6 +19,21 @@ public class BasketBean {
 	private String name;
 
 	/**
+	 * 商品名(英語)
+	 */
+	private String nameEn;
+
+	/**
+	 * 商品名(スペイン語)
+	 */
+	private String nameEs;
+
+	/**
+	 * 商品名(エスペラント語)
+	 */
+	private String nameEo;
+
+	/**
 	 * 商品在庫数
 	 */
 	private Integer stock;
@@ -27,6 +42,21 @@ public class BasketBean {
 	 * 商品注文個数 初期値 1
 	 */
 	private Integer orderNum = 1;
+
+	/**
+	 * 商品単価
+	 */
+	private Integer price;
+
+	/**
+	 * 商品画像ファイル名
+	 */
+	private String image;
+
+	/**
+	 * 小計
+	 */
+	private Integer subtotal;
 
 	/**
 	 * コンストラクタ
@@ -124,6 +154,120 @@ public class BasketBean {
 	 */
 	public void setOrderNum(Integer orderNum) {
 		this.orderNum = orderNum;
+	}
+
+	/**
+	 * 商品名(英語)の取得
+	 * @return 商品名(英語)
+	 */
+	public String getNameEn() {
+		return nameEn;
+	}
+
+	/**
+	 * 商品名(英語)のセット
+	 * @param nameEn 商品名(英語)
+	 */
+	public void setNameEn(String nameEn) {
+		this.nameEn = nameEn;
+	}
+
+	/**
+	 * 商品名(スペイン語)の取得
+	 * @return 商品名(スペイン語)
+	 */
+	public String getNameEs() {
+		return nameEs;
+	}
+
+	/**
+	 * 商品名(スペイン語)のセット
+	 * @param nameEs 商品名(スペイン語)
+	 */
+	public void setNameEs(String nameEs) {
+		this.nameEs = nameEs;
+	}
+
+	/**
+	 * 商品名(エスペラント語)の取得
+	 * @return 商品名(エスペラント語)
+	 */
+	public String getNameEo() {
+		return nameEo;
+	}
+
+	/**
+	 * 商品名(エスペラント語)のセット
+	 * @param nameEo 商品名(エスペラント語)
+	 */
+	public void setNameEo(String nameEo) {
+		this.nameEo = nameEo;
+	}
+
+	/**
+	 * ロケールに応じた商品名の取得（フォールバック付き）
+	 * @param lang 言語コード
+	 * @return ロケールに応じた商品名
+	 */
+	public String getName(String lang) {
+		if ("en".equals(lang) && nameEn != null && !nameEn.isEmpty()) {
+			return nameEn;
+		}
+		if ("es".equals(lang) && nameEs != null && !nameEs.isEmpty()) {
+			return nameEs;
+		}
+		if ("eo".equals(lang) && nameEo != null && !nameEo.isEmpty()) {
+			return nameEo;
+		}
+		return name;
+	}
+
+	/**
+	 * 商品単価の取得
+	 * @return 商品単価
+	 */
+	public Integer getPrice() {
+		return price;
+	}
+
+	/**
+	 * 商品単価のセット
+	 * @param price 商品単価
+	 */
+	public void setPrice(Integer price) {
+		this.price = price;
+	}
+
+	/**
+	 * 商品画像ファイル名の取得
+	 * @return 商品画像ファイル名
+	 */
+	public String getImage() {
+		return image;
+	}
+
+	/**
+	 * 商品画像ファイル名のセット
+	 * @param image 商品画像ファイル名
+	 */
+	public void setImage(String image) {
+		this.image = image;
+	}
+
+	/**
+	 * 商品ごとの小計額の取得
+	 * @return 小計
+	 */
+	public Integer getSubtotal() {
+		return subtotal;
+	}
+
+	/**
+	 * 商品ごとの小計額のセット
+	 * @param subtotal 小計
+	 */
+	public void setSubtotal(Integer subtotal) {
+		this.subtotal = subtotal;
 	}
 
 }
