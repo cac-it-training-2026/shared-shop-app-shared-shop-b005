@@ -623,17 +623,17 @@ public class ClientOrderRegistController {
 		if (LotteryUtil.LOTTERY_FIRST.equals(lotteryRank)) {
 			resultClass = "rank-first";
 			title = "1等 大当たり！";
-			message = "ミッキスもびっくりの特賞です。1000ポイントをプレゼント！";
+			message = "mikkisくんもびっくりの特賞です。購入金額の20%分のポイントをプレゼント！";
 			mascotImage = "mascot_luxury.png";
 		} else if (LotteryUtil.LOTTERY_SECOND.equals(lotteryRank)) {
 			resultClass = "rank-second";
 			title = "2等 おめでとう！";
-			message = "とってもラッキーです。500ポイントをプレゼント！";
+			message = "mikkisくんも喜んでいます。購入金額の10%分のポイントをプレゼント！";
 			mascotImage = "mascot_box.png";
 		} else if (LotteryUtil.LOTTERY_THIRD.equals(lotteryRank)) {
 			resultClass = "rank-third";
 			title = "3等 ラッキー！";
-			message = "お買い物のお礼に100ポイントをプレゼントします♪";
+			message = "mikkisくんからお買い物のお礼です。購入金額の5%分のポイントをプレゼント！";
 			mascotImage = "mascot_wave.png";
 		}
 
