@@ -72,7 +72,7 @@
 					<input type="number" id="orderNum" name="orderNum" value="1" min="1" th:max="*{stock}" th:attr="data-max=*{stock}" class="qty_input" />
 					<button type="button" class="qty_btn" onclick="changeDetailQuantity(1)">＋</button>
 				</div>
-				<input type="submit" th:value="#{basket}+#{msg.regist.input}" class="cute-button primary" />
+				<input type="submit" th:value="#{msg.basket.add}" class="cute-button primary" />
 			</form>
 			<p th:if="*{stock == 0}" class="empty-message" th:text="#{data.out.of.stock}">在庫なし</p>
 
