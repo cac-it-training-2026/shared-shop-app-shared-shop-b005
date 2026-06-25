@@ -28,7 +28,7 @@
 			<div class="kuji-mini-result" th:if="${order != null and lotteryRank != null}">
 				<span class="kuji-mini-label">🎁 ミッキスごほうびチャンス結果</span>
 				<strong th:text="${lotteryRank}">3等</strong>
-				<span th:text="${lotteryPoint} + 'ポイント獲得'">100ポイント獲得</span>
+				<span th:text="${#numbers.formatInteger(lotteryPoint, 1, 'COMMA') + 'ポイント獲得'}">100ポイント獲得</span>
 			</div>
 
 			<div class="kuji-modal-overlay" th:if="${order != null}" th:classappend="${lotteryJustDrawn} ? ' is-open' : ''" th:attr="data-open=${lotteryJustDrawn}">
@@ -68,7 +68,7 @@
 						<p class="kuji-result-message" th:text="${lotteryResultMessage}">お買い物のお礼にポイントをプレゼントします。</p>
 						<div class="kuji-point-box">
 							<span>くじ獲得ポイント</span>
-							<strong th:text="${lotteryPoint} + 'ポイント'">100ポイント</strong>
+							<strong th:text="${#numbers.formatInteger(lotteryPoint, 1, 'COMMA') + 'ポイント'}">100ポイント</strong>
 						</div>
 						<img class="kuji-result-mascot" th:src="@{/images/common/{image}(image=${lotteryMascotImage})}" alt="" />
 						<p class="kuji-result-note">ポイントは会員情報へ自動で反映されています。</p>
@@ -77,8 +77,8 @@
 
 				<div class="complete-point-lottery">
 					<div class="point-grid compact">
-						<div><span>利用ポイント</span><strong class="point-used" th:text="${usedPoint}">0</strong></div>
-						<div><span>通常獲得ポイント</span><strong class="point-earned" th:text="${earnedPoint}">0</strong></div>
+						<div><span>利用ポイント</span><strong class="point-used" th:text="${#numbers.formatInteger(usedPoint, 1, 'COMMA')}">0</strong></div>
+						<div><span>通常獲得ポイント</span><strong class="point-earned" th:text="${#numbers.formatInteger(earnedPoint, 1, 'COMMA')}">0</strong></div>
 					</div>
 					<p class="complete_message" th:if="${lotteryMessage != null}" th:text="${lotteryMessage}"></p>
 				</div>

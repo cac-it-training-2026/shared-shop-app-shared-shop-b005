@@ -145,55 +145,59 @@
 							</h3>
 						</div>
 
-						<dl class="cute-check-list point-check-list">
-							<div>
-								<dt>保有ポイント</dt>
-								<dd>
-									<strong class="point-blue" th:text="${currentPoint}">0</strong>
-									<span>ポイント</span>
-								</dd>
+						<div class="point-section-layout">
+							<div class="point-output-area">
+								<dl class="cute-check-list point-check-list point-output-list">
+									<div>
+										<dt>保有ポイント</dt>
+										<dd class="point-value-text">
+											<strong class="point-blue" th:text="${#numbers.formatInteger(currentPoint, 1, 'COMMA')}">0</strong>
+											<span>ポイント</span>
+										</dd>
+									</div>
+
+									<div>
+										<dt>利用ポイント</dt>
+										<dd class="point-value-text">
+											<strong class="point-pink" th:text="${#numbers.formatInteger(usedPoint, 1, 'COMMA')}">0</strong>
+											<span>ポイント</span>
+										</dd>
+									</div>
+
+									<div>
+										<dt>獲得予定ポイント</dt>
+										<dd class="point-value-text">
+											<strong class="point-blue" th:text="${#numbers.formatInteger(earnedPoint, 1, 'COMMA')}">0</strong>
+											<span>ポイント</span>
+										</dd>
+									</div>
+								</dl>
 							</div>
 
-							<div>
-								<dt>利用ポイント</dt>
-								<dd>
-									<strong class="point-pink" th:text="${usedPoint}">0</strong>
-									<span>ポイント</span>
-								</dd>
+							<div class="point-input-area">
+								<div class="point-input-title">今回利用するポイント</div>
+								<form th:action="@{/client/order/check/point}"
+									  method="post"
+									  class="cute-point-form">
+									<input type="number"
+										   name="usedPoint"
+										   min="0"
+										   th:value="${usedPoint}" />
+
+									<input type="submit"
+										   value="ポイントを反映"
+										   class="cute-button mini yellow" />
+								</form>
+
+								<div class="point-error-area">
+									<p class="error point-error"
+									   th:if="${pointError != null}"
+									   th:text="${pointError}">
+										ポイントエラー
+									</p>
+								</div>
 							</div>
-
-							<div>
-								<dt>獲得予定ポイント</dt>
-								<dd>
-									<strong class="point-blue" th:text="${earnedPoint}">0</strong>
-									<span>ポイント</span>
-								</dd>
-							</div>
-
-							<div class="point-form-row">
-								<dt>今回利用するポイント</dt>
-								<dd>
-									<form th:action="@{/client/order/check/point}"
-										  method="post"
-										  class="cute-point-form">
-										<input type="number"
-											   name="usedPoint"
-											   min="0"
-											   th:value="${usedPoint}" />
-
-										<input type="submit"
-											   value="ポイントを反映"
-											   class="cute-button mini yellow" />
-									</form>
-								</dd>
-							</div>
-						</dl>
-
-						<p class="error point-error"
-						   th:if="${pointError != null}"
-						   th:text="${pointError}">
-							ポイントエラー
-						</p>
+						</div>
 					</section>
 
 					<!-- ご注文商品 -->
@@ -301,7 +305,7 @@
 						<div>
 							<dt>獲得予定ポイント</dt>
 							<dd class="point-earned"
-								th:text="${earnedPoint + 'ポイント'}">
+								th:text="${#numbers.formatInteger(earnedPoint, 1, 'COMMA') + 'ポイント'}">
 								0ポイント
 							</dd>
 						</div>

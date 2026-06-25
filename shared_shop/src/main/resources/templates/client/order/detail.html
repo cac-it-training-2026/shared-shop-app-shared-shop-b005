@@ -57,11 +57,11 @@
 				<h3><span aria-hidden="true">🧀</span>お支払い情報</h3>
 				<dl>
 					<div><dt th:text="#{data.total}">合計</dt><dd th:text="${'¥' + #numbers.formatInteger(total, 1, 'COMMA')}">¥0</dd></div>
-					<div><dt th:text="#{data.point.used}">利用ポイント</dt><dd class="minus" th:text="${'-' + order.usedPoint + 'ポイント'}">0ポイント</dd></div>
+					<div><dt th:text="#{data.point.used}">利用ポイント</dt><dd class="minus" th:text="${'-' + #numbers.formatInteger(order.usedPoint, 1, 'COMMA') + 'ポイント'}">0ポイント</dd></div>
 					<div class="summary-total"><dt th:text="#{data.payment.total}">お支払い合計</dt><dd th:text="${'¥' + #numbers.formatInteger(paymentTotal, 1, 'COMMA')}">¥0</dd></div>
-					<div><dt th:text="#{data.point.earned}">獲得ポイント</dt><dd class="point-earned" th:text="${order.earnedPoint + 'ポイント'}">0ポイント</dd></div>
+					<div><dt th:text="#{data.point.earned}">獲得ポイント</dt><dd class="point-earned" th:text="${#numbers.formatInteger(order.earnedPoint, 1, 'COMMA') + 'ポイント'}">0ポイント</dd></div>
 					<div><dt th:text="#{data.lottery.result}">くじ結果</dt><dd th:text="${order.lotteryRank == null ? '未実施' : order.lotteryRank}">未実施</dd></div>
-					<div><dt th:text="#{data.lottery.point}">くじ獲得ポイント</dt><dd th:text="${order.lotteryPoint + 'ポイント'}">0ポイント</dd></div>
+					<div><dt th:text="#{data.lottery.point}">くじ獲得ポイント</dt><dd th:text="${#numbers.formatInteger(order.lotteryPoint, 1, 'COMMA') + 'ポイント'}">0ポイント</dd></div>
 				</dl>
 				<img class="checkout-mascot solo" th:src="@{/images/common/mascot_box.png}" alt="" />
 			</aside>

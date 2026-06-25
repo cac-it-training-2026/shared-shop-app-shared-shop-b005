@@ -4458,3 +4458,153 @@ small.copyright,
 		width: 100%;
 	}
 }
+
+/* =========================================================
+   ポイント表示の折り返し・縦表示対策
+   ポイント出力欄とエラー表示欄を分離
+   ========================================================= */
+.order_check .point-section-layout {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: 16px;
+}
+
+.order_check .point-output-area,
+.order_check .point-input-area {
+	min-width: 0;
+}
+
+.order_check .point-output-list > div {
+	grid-template-columns: 190px minmax(160px, 1fr);
+}
+
+.order_check .point-output-list dt {
+	white-space: nowrap;
+	word-break: keep-all;
+	overflow-wrap: normal;
+	writing-mode: horizontal-tb;
+	text-orientation: mixed;
+}
+
+.order_check .point-output-list .point-value-text {
+	display: inline-flex;
+	align-items: baseline;
+	gap: 4px;
+	width: fit-content;
+	max-width: 100%;
+	flex-wrap: nowrap;
+	white-space: nowrap;
+	word-break: keep-all;
+	overflow-wrap: normal;
+	writing-mode: horizontal-tb;
+	text-orientation: mixed;
+}
+
+.order_check .point-output-list .point-value-text strong,
+.order_check .point-output-list .point-value-text span,
+.order_check .checkout-point-value,
+.order_check .point-card .point-grid strong,
+.order_check .checkout-summary dd.point-earned,
+.order_check .checkout-summary dd.minus {
+	white-space: nowrap;
+	word-break: keep-all;
+	overflow-wrap: normal;
+	flex-shrink: 0;
+	writing-mode: horizontal-tb;
+	text-orientation: mixed;
+}
+
+.order_check .point-input-area {
+	display: grid;
+	grid-template-columns: 190px minmax(0, 1fr);
+	gap: 10px 14px;
+	align-items: start;
+	padding-top: 14px;
+	border-top: 1px dashed rgba(226, 199, 151, 0.8);
+}
+
+.order_check .point-input-title {
+	margin: 0;
+	padding: 7px 10px;
+	border-radius: 10px;
+	background: #f6f1ea;
+	color: #806d63;
+	font-weight: 900;
+	line-height: 1.45;
+	text-align: center;
+	white-space: nowrap;
+	writing-mode: horizontal-tb;
+	text-orientation: mixed;
+	box-sizing: border-box;
+}
+
+.order_check .point-input-area .cute-point-form {
+	min-width: 0;
+	width: 100%;
+}
+
+.order_check .point-error-area {
+	grid-column: 2;
+	min-width: 0;
+}
+
+.order_check .point-error-area .point-error {
+	width: 100%;
+	margin: 0;
+	box-sizing: border-box;
+	white-space: normal;
+	word-break: keep-all;
+	overflow-wrap: break-word;
+}
+
+.order_check .checkout-summary dl > div {
+	align-items: baseline;
+}
+
+.order_check .checkout-summary dt {
+	min-width: 0;
+}
+
+.order_check .checkout-summary dd {
+	text-align: right;
+}
+
+@media (max-width: 760px) {
+	.order_check .point-output-list > div,
+	.order_check .point-input-area {
+		grid-template-columns: 1fr;
+	}
+
+	.order_check .point-output-list .point-value-text {
+		width: 100%;
+		overflow-x: auto;
+	}
+
+	.order_check .point-error-area {
+		grid-column: 1;
+	}
+
+	.order_check .point-input-title {
+		width: fit-content;
+		text-align: left;
+	}
+}
+
+/* 注文完了・注文詳細のポイント数も横書きで固定 */
+.complete-point-lottery .point-grid strong,
+.kuji-mini-result span:last-child,
+.kuji-point-box strong,
+.order-detail-page .checkout-summary dd {
+	white-space: nowrap;
+	word-break: keep-all;
+	overflow-wrap: normal;
+}
+
+.order-detail-page .checkout-summary dl > div {
+	align-items: baseline;
+}
+
+.order-detail-page .checkout-summary dd {
+	text-align: right;
+	flex-shrink: 0;
+}
