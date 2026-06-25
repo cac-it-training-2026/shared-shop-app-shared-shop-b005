@@ -57,6 +57,19 @@ p {
 	justify-content:center;
 }
 
+.login_form_area {
+    display: flex;
+    align-items: center;   /* 上揃えなら flex-start */
+    gap: 40px;             /* フォームと画像の間隔 */
+}
+
+/* ---- ログイン画面 ---- */
+
+.login-image {
+    width: 350px;
+    height: auto;
+}
+
 /* ---- ページタイトル ---- */
 .page_title {
 	margin: 0;

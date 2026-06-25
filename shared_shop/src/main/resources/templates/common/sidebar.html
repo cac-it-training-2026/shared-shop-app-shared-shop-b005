@@ -7,7 +7,7 @@
 <aside th:fragment="layout-sidebar" th:class="${session.user == null or session.user.authority == 2} ? ${'search cute-sidebar'} : ${'admin_menu'}" >
 	<!--/* 検索メニュー(非会員、一般会員用) */-->
 	<div class="search_area" th:if="${session.user == null or session.user.authority == 2}">
-		<img class="sidebar-mascot" th:src="@{/images/common/mascot_box.png}" alt="" aria-hidden="true" />
+		<img class="sidebar-mascot" th:src="@{/images/common/mascot_lense.png}" alt="" aria-hidden="true" />
 		<h2 class="title"><span aria-hidden="true">🐾</span><span th:text="#{category.select.title}">カテゴリー検索</span></h2>
 		<nav class="category-card-list" aria-label="カテゴリー検索">
 			<a class="category-card" th:href="@{/client/item/list/1(categoryId=0)}">
