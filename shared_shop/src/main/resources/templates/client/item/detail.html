@@ -1,48 +1,132 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
-
 <head>
-	<title th:text="#{item}+#{title.detail}+' | '+ #{shop.title}"> </title>
+	<title th:text="#{item}+#{title.detail}+' | '+ #{shop.title}">商品詳細</title>
 	<meta charset="UTF-8" />
 </head>
+<body>
+	<section class="shop-page item-detail-page" th:object="${item}">
+		<nav class="breadcrumb" aria-label="breadcrumb">
+			<a th:href="@{/}" th:text="#{top}">トップ</a><span>›</span>
+			<a th:href="@{/client/item/list/{sortType}(sortType=${sortType}, categoryId=${categoryId})}" th:text="#{item}+#{title.list}">商品一覧</a><span>›</span>
+			<span th:text="#{item}+#{title.detail}">商品詳細</span>
+		</nav>
 
-<body class="user">
-
-	<h2 th:class="title" th:text="#{item}+#{title.detail}"></h2>
-
-	<div class="info_form_area" th:object="${item}">
-		<div class="item_detail_area">
-			<div class="item_image_area">
-				<img th:if="*{image != null}" th:src="@{/images/{image}(image=*{image})}"></img>
-				<img th:if="*{image == null}" th:src="@{/images/common/no_image.jpg}"></img>
+		<div class="detail-hero">
+			<div class="detail-gallery">
+				<div class="detail-main-image">
+					<img th:if="*{image != null}" th:src="@{/images/{image}(image=*{image})}" alt="" />
+					<img th:if="*{image == null}" th:src="@{/images/common/no_image.jpg}" alt="" />
+				</div>
+				<div class="detail-thumbs">
+					<span class="thumb-arrow" aria-hidden="true">‹</span>
+					<span class="thumb-box selected"><img th:if="*{image != null}" th:src="@{/images/{image}(image=*{image})}" alt="" /><img th:if="*{image == null}" th:src="@{/images/common/no_image.jpg}" alt="" /></span>
+					<span class="thumb-box"><img th:if="*{image != null}" th:src="@{/images/{image}(image=*{image})}" alt="" /><img th:if="*{image == null}" th:src="@{/images/common/no_image.jpg}" alt="" /></span>
+					<span class="thumb-box"><img th:if="*{image != null}" th:src="@{/images/{image}(image=*{image})}" alt="" /><img th:if="*{image == null}" th:src="@{/images/common/no_image.jpg}" alt="" /></span>
+					<span class="thumb-arrow" aria-hidden="true">›</span>
+				</div>
 			</div>
-			<dl class="item_detail_list">
-				<dt>[[#{data.item.name}]]</dt>
-				<dd th:text="*{name}"></dd>
-				<dt>[[#{data.item.price}]]</dt>
-				<dd th:text="*{price}"></dd>
-				<dt>[[#{data.item.stock}]]</dt>
-				<dd th:if="*{stock > 5}" th:text="#{data.in.stock}"></dd>
-				<dd th:if="*{stock >= 1 and 5 >= stock }" th:text="*{stock}"></dd>
-				<dd th:if="*{stock == 0}" th:text="#{data.out.of.stock}"></dd>
-				<dt>[[#{data.category}]]</dt>
-				<dd th:text="*{categoryName}"></dd>
-				<dt>[[#{data.description}]]</dt>
-				<dd th:text="*{description}"></dd>
-			</dl>
+
+			<div class="detail-info-card">
+				<h2 class="detail-name" th:text="${item.getName(#locale.language)}">商品名</h2>
+				<dl class="cute-detail-list">
+					<div>
+						<dt th:text="#{data.item.price}">価格</dt>
+						<dd class="detail-price"><span th:text="${'¥' + #numbers.formatInteger(item.price, 1, 'COMMA')}">¥0</span><small th:text="#{label.tax.included}">（税込）</small></dd>
+					</div>
+					<div>
+						<dt th:text="#{data.item.stock}">在庫数</dt>
+						<dd>
+							<span class="stock-pill" th:if="*{stock > 5}" th:text="#{data.in.stock}">在庫あり</span>
+							<span class="stock-pill low" th:if="*{stock >= 1 and 5 >= stock }" th:text="${'残り' + item.stock + '点'}">残り1点</span>
+							<span class="stock-pill out" th:if="*{stock == 0}" th:text="#{data.out.of.stock}">在庫なし</span>
+						</dd>
+					</div>
+					<div>
+						<dt th:text="#{data.category}">カテゴリ</dt>
+						<dd th:text="${item.getCategoryName(#locale.language)}">カテゴリ</dd>
+					</div>
+					<div>
+						<dt th:text="#{data.description}">説明</dt>
+						<dd class="detail-description" th:text="${item.getDescription(#locale.language)}">説明</dd>
+					</div>
+					<div>
+						<dt th:text="#{data.review.average}">平均評価</dt>
+						<dd><span class="stars rating-stars" aria-hidden="true" th:if="${avgRating != null}"><span th:each="i : ${#numbers.sequence(1, 5)}" th:class="${avgRating >= i ? 'star-filled' : 'star-empty'}" th:text="${avgRating >= i ? '★' : '☆'}">★</span></span><span th:if="${avgRating != null}" th:text="${#numbers.formatDecimal(avgRating, 1, 1)}">0.0</span><span th:if="${avgRating == null}" th:text="#{msg.review.none}">レビューなし</span></dd>
+					</div>
+					<div>
+						<dt th:text="#{data.favorite.count}">お気に入り数</dt>
+						<dd><span class="heart-inline" aria-hidden="true">♡</span><span th:text="*{favoriteCount}">0</span></dd>
+					</div>
+				</dl>
+				<img class="detail-mascot-img" th:src="@{/images/common/mascot_luxury.png}" alt="" aria-hidden="true" />
+			</div>
 		</div>
-		<div class="detail_button_area">
-			<form th:action="@{/client/basket/add}" method="post" class="user_info_form" th:if="*{stock > 0}">
+
+		<div class="detail-action-panel">
+			<form th:action="@{/client/basket/add}" method="post" class="detail-cart-form" th:if="*{stock > 0}">
 				<input type="hidden" th:field="*{id}" />
-				<input type="submit" value="買い物かごに入れる" class="send_button" />
+				<div class="quantity_control detail-quantity">
+					<button type="button" class="qty_btn" onclick="changeDetailQuantity(-1)">−</button>
+					<input type="number" id="orderNum" name="orderNum" value="1" min="1" th:max="*{stock}" th:attr="data-max=*{stock}" class="qty_input" />
+					<button type="button" class="qty_btn" onclick="changeDetailQuantity(1)">＋</button>
+				</div>
+				<input type="submit" th:value="#{basket}+#{msg.regist.input}" class="cute-button primary" />
 			</form>
-			<form th:action="@{/client/item/list/{sortType}(sortType=${sortType}, categoryId=${categoryId})}" method="get">
-				<input type="submit" value="戻る" class="back_button" />
-			</form>
+			<p th:if="*{stock == 0}" class="empty-message" th:text="#{data.out.of.stock}">在庫なし</p>
+
+			<th:block th:if="${session.user != null and session.user.authority == 2}">
+				<form th:action="@{/client/favorite/toggle/{itemId}(itemId=*{id})}" method="post" class="inline-action-form">
+					<input th:if="${isFavorite}" type="submit" th:value="#{button.favorite.remove}" class="cute-button pink" />
+					<input th:unless="${isFavorite}" type="submit" th:value="#{button.favorite.add}" class="cute-button pink" />
+				</form>
+				<form th:if="${canReview}" th:action="@{/client/review/input/{itemId}(itemId=*{id})}" method="get" class="inline-action-form">
+					<input type="submit" th:value="#{title.review.input}" class="cute-button yellow" />
+				</form>
+				<p th:unless="${canReview}" class="review_notice" th:text="#{msg.review.after.purchase}">購入後にレビューできます</p>
+			</th:block>
+			<a th:href="@{/client/item/list/{sortType}(sortType=${sortType}, categoryId=${categoryId})}" class="cute-button blue" th:text="#{msg.back.to.list}">一覧に戻る</a>
 		</div>
-	</div>
 
+		<section class="review-section">
+			<div class="review-header">
+				<h3 class="shop-page-title small"><span aria-hidden="true">🐾</span><span th:text="#{title.review.list}">レビュー一覧</span></h3>
+				<div class="sort-tabs compact review-sort-tabs">
+					<span>並び替え：</span>
+					<span th:if="${reviewSortType == 1}" class="sort-tab current" th:text="#{sort.latest.str}">新着順</span>
+					<a th:unless="${reviewSortType == 1}" class="sort-tab" th:href="@{/client/item/detail/{id}(id=*{id}, sortType=${sortType}, categoryId=${categoryId}, reviewSortType=1)}" th:text="#{sort.latest.str}">新着順</a>
+					<span th:if="${reviewSortType == 2}" class="sort-tab current" th:text="#{sort.rating.str}">評価順</span>
+					<a th:unless="${reviewSortType == 2}" class="sort-tab" th:href="@{/client/item/detail/{id}(id=*{id}, sortType=${sortType}, categoryId=${categoryId}, reviewSortType=2)}" th:text="#{sort.rating.str}">評価順</a>
+				</div>
+			</div>
+			<p class="empty-message" th:if="${#lists.isEmpty(reviews)}" th:text="#{msg.review.none}">レビューはありません。</p>
+			<div class="review-list" th:if="!${#lists.isEmpty(reviews)}">
+				<article class="review-card" th:each="review : ${reviews}">
+					<div class="review-avatar"><img th:src="@{/images/common/mascot_sit.png}" alt="" /></div>
+					<div>
+						<div class="review-meta">
+							<span class="stars rating-stars" aria-hidden="true"><span th:each="i : ${#numbers.sequence(1, 5)}" th:class="${review.rating != null and i <= review.rating ? 'star-filled' : 'star-empty'}" th:text="${review.rating != null and i <= review.rating ? '★' : '☆'}">★</span></span>
+							<strong th:text="${review.rating}">5</strong>
+							<span class="review-date" th:text="${#dates.format(review.insertDate, 'yyyy/MM/dd')}">2024/05/01</span>
+						</div>
+						<p class="review-user"><span th:text="#{data.review.user}">投稿者</span>：<span th:text="${review.user.name}">ユーザー</span></p>
+						<p class="review-comment" th:text="${review.reviewComment}">コメント</p>
+					</div>
+				</article>
+			</div>
+			<img class="review-section-mascot" th:src="@{/images/common/mascot_pc.png}" alt="" aria-hidden="true" />
+		</section>
+	</section>
+	<script>
+		function changeDetailQuantity(delta) {
+			const input = document.getElementById('orderNum');
+			if (!input) return;
+			const max = Number(input.dataset.max || input.max || 9999);
+			const current = Number(input.value || 1);
+			const next = Math.min(max, Math.max(1, current + delta));
+			input.value = next;
+		}
+	</script>
 </body>
-
 </html>

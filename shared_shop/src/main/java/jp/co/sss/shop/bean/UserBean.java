@@ -40,6 +40,21 @@ public class UserBean {
 	private Integer authority;
 
 	/**
+	 * 現在の保有ポイント
+	 */
+	private Integer currentPoint;
+
+	/**
+	 * 累計獲得ポイント
+	 */
+	private Integer totalPoint;
+
+	/**
+	 * 会員ランク
+	 */
+	private String rank;
+
+	/**
 	 * 会員IDの取得
 	 * @return 会員ID
 	 */
@@ -149,6 +164,30 @@ public class UserBean {
 	 */
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+
+	public Integer getCurrentPoint() {
+		return currentPoint;
+	}
+
+	public void setCurrentPoint(Integer currentPoint) {
+		this.currentPoint = currentPoint;
+	}
+
+	public Integer getTotalPoint() {
+		return totalPoint;
+	}
+
+	public void setTotalPoint(Integer totalPoint) {
+		this.totalPoint = totalPoint;
+	}
+
+	public String getRank() {
+		return rank;
+	}
+
+	public void setRank(String rank) {
+		this.rank = rank;
 	}
 
 	/**

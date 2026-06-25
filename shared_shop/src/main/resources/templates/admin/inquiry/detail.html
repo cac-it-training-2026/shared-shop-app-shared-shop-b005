@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_4block :: layout(~{::title},~{::body/content()})}">
+
+<head>
+	<title th:text="#{title.inquiry.detail} + ' | ' + #{shop.title}"></title>
+	<meta charset="UTF-8" />
+</head>
+
+<body class="admin inquiry_detail">
+	<h2 class="title" th:text="#{title.inquiry.detail}"></h2>
+
+	<div class="user_info_form_area">
+		<ul class="input_list" th:if="${inquiry != null}">
+			<li>
+				<span class="input_title" th:text="#{data.inquiry.date}"></span>
+				<span th:text="${#dates.format(inquiry.insertDate, 'yyyy/MM/dd HH:mm:ss')}"></span>
+			</li>
+			<li>
+				<span class="input_title" th:text="#{inquiryForm.name}"></span>
+				<span th:text="${inquiry.name}"></span>
+			</li>
+			<li>
+				<span class="input_title" th:text="#{inquiryForm.email}"></span>
+				<span th:text="${inquiry.email}"></span>
+			</li>
+			<li>
+				<span class="input_title" th:text="#{inquiryForm.content}"></span>
+				<pre th:text="${inquiry.content}"></pre>
+			</li>
+		</ul>
+
+		<p th:if="${inquiry == null}">指定された問い合わせは見つかりませんでした。</p>
+
+		<form th:action="@{/admin/inquiry/list}" method="get">
+			<input type="submit" value="戻る" class="back_button" />
+		</form>
+	</div>
+</body>
+
+</html>

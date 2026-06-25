@@ -1,67 +1,103 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
-
 <head>
-	<title th:text="#{basket}+' | '+ #{shop.title}"> </title>
+	<title th:text="#{basket}+' | '+ #{shop.title}">買い物かご</title>
 	<meta charset="UTF-8" />
 </head>
-
-<body class="user shopping_basket">
-	<h2 th:class="title" th:text="#{basket}"></h2>
-
-	<th:block th:if="${itemNameListLessThan != null || itemNameListZero != null}">
-		<br />
-				<!--/* 在庫不足商品 */-->
-		<ul class="error_list_no_mark" th:if="${itemNameListLessThan != null}">
-			<li th:each="err : ${itemNameListLessThan}" th:text="#{msg.basket.stock.short(${err})}"></li>
-
-		</ul>
-				<!--/* 在庫なし商品 */-->
-		<ul class="error_list_no_mark" th:if="${itemNameListZero != null}">
-			<li th:each="err : ${itemNameListZero}" th:text="#{msg.basket.stock.none(${err})}"></li>
-		</ul>
-		<br />
-	</th:block>
-
-	<div th:if="${session.basketBeans == null}">
-		<!--/* 買い物かごが空のとき */-->
-		<p th:text="#{msg.basket.list.none}"></p>
-	</div>
-
-	<th:block th:if="${session.basketBeans != null}">
-		<table class="list_table basket">
-			<tr>
-				<th>[[#{data.basket.item.name}]]</th>
-				<th>[[#{data.basket.count}]]</th>
-				<th>[[#{data.basket.operate}]]</th>
-				<th>[[#{data.basket.stock.status}]]</th>
-			</tr>
-			<tr th:each="item, status: ${session.basketBeans}">
-				<td><a th:href="@{/client/item/detail/{id}(id=${item.id}, sortType=1, categoryId=0)}" th:text="${item.name}"></a></td>
-				<td th:text="${item.orderNum}"></td>
-				<td>
-					<form th:action="@{/client/basket/delete}" method="post">
-						<input type="hidden" name="id" th:value="${item.id}" /> <input type="submit" value="削除"
-							class="delete" />
-					</form>
-				</td>
-				<td th:if="${item.stock == 0}" th:text="#{data.out.of.stock}"></td>
-				<td th:if="${item.stock > 5}" th:text="#{data.in.stock}"></td>
-				<td th:if="${item.stock >= 1 and 5 >= item.stock }" th:text="${item.stock}"></td>
-			</tr>
-		</table>
-		<div class="user_info_form_area shopping_button">
-			<!--/* 注文手続きフォーム */-->
-			<form th:action="@{/client/order/address/input}" method="post">
-				<input type="submit" value="ご注文のお手続き" />
-			</form>
-			<!--/* 買い物かごを空にするフォーム */-->
-			<form th:action="@{/client/basket/allDelete}" method="post">
-				<input type="submit" value="買い物かごを空にする" class="delete" />
-			</form>
+<body>
+	<section class="shop-page basket-page">
+		<div class="page-heading-row">
+			<div>
+				<h2 class="shop-page-title"><span aria-hidden="true">🛒</span><span th:text="#{basket}">買い物かご</span></h2>
+				<p class="page-lead" th:text="#{design.basket.lead}">現在、カートには以下の商品が入っています。</p>
+			</div>
+			<div class="speech-mascot-area">
+				<div class="speech-bubble cart" th:utext="#{design.speech.basket}">ごゆっくり<br />お選びください♪</div>
+				<img class="speech-mascot cart" th:src="@{/images/common/mascot_cart.png}" alt="" />
+			</div>
 		</div>
-	</th:block>
-</body>
 
+		<th:block th:if="${itemNameListLessThan != null || itemNameListZero != null}">
+			<ul class="error_list_no_mark cute-error" th:if="${itemNameListLessThan != null}">
+				<li th:each="err : ${itemNameListLessThan}" th:text="#{msg.basket.stock.short(${err})}"></li>
+			</ul>
+			<ul class="error_list_no_mark cute-error" th:if="${itemNameListZero != null}">
+				<li th:each="err : ${itemNameListZero}" th:text="#{msg.basket.stock.none(${err})}"></li>
+			</ul>
+		</th:block>
+
+		<div th:if="${session.basketBeans == null}" class="empty-cart-card">
+			<img class="empty-mascot" th:src="@{/images/common/mascot_sleep.png}" alt="" />
+			<p th:text="#{msg.basket.list.none}">買い物かごは空です。</p>
+			<a class="cute-button primary" th:href="@{/client/item/list/1}" th:text="#{design.empty.choose.item}">商品を選ぶ</a>
+		</div>
+
+		<th:block th:if="${session.basketBeans != null}">
+			<div class="cute-table-wrap">
+				<table class="cute-table basket-table">
+					<thead>
+						<tr>
+							<th th:text="#{data.basket.item.name}">商品名</th>
+							<th th:text="#{data.basket.count}">数</th>
+							<th>削除</th>
+							<th th:text="#{data.basket.stock.status}">在庫状況</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="item : ${session.basketBeans}">
+							<td class="basket-product-cell">
+								<a class="basket-product-link" th:href="@{/client/item/detail/{id}(id=${item.id}, sortType=1, categoryId=0)}">
+									<span class="basket-thumb">
+										<img th:src="@{/images/{image}(image=${item.image})}" th:if="${item.image != null}" alt="" />
+										<img th:src="@{/images/common/no_image.jpg}" th:if="${item.image == null}" alt="" />
+									</span>
+									<span th:text="${item.getName(#locale.language)}">商品名</span>
+								</a>
+							</td>
+							<td>
+								<div class="quantity_control basket_quantity_control">
+									<form th:action="@{/client/basket/update}" method="post" class="quantity_form">
+										<input type="hidden" name="id" th:value="${item.id}" />
+										<input type="hidden" name="orderNum" th:value="${item.orderNum - 1}" />
+										<input type="submit" value="−" class="qty_btn" th:disabled="${item.orderNum le 1}" />
+									</form>
+									<form th:action="@{/client/basket/update}" method="post" class="quantity_form number-form">
+										<input type="hidden" name="id" th:value="${item.id}" />
+										<input type="number" name="orderNum" th:value="${item.orderNum}" min="1" th:max="${item.stock}" class="qty_input auto-submit-qty" onchange="this.form.submit()" onkeydown="if(event.key === 'Enter'){event.preventDefault(); this.form.submit();}" />
+									</form>
+									<form th:action="@{/client/basket/update}" method="post" class="quantity_form">
+										<input type="hidden" name="id" th:value="${item.id}" />
+										<input type="hidden" name="orderNum" th:value="${item.orderNum + 1}" />
+										<input type="submit" value="＋" class="qty_btn" th:disabled="${item.stock le item.orderNum}" />
+									</form>
+								</div>
+							</td>
+							<td>
+								<form th:action="@{/client/basket/delete}" method="post">
+									<input type="hidden" name="id" th:value="${item.id}" />
+									<input type="submit" value="削除" class="cute-button mini red" />
+								</form>
+							</td>
+							<td>
+								<span class="stock-dot out" th:if="${item.stock == 0}" th:text="#{data.out.of.stock}">在庫なし</span>
+								<span class="stock-dot" th:if="${item.stock > 5}" th:text="#{data.in.stock}">在庫あり</span>
+								<span class="stock-dot low" th:if="${item.stock >= 1 and 5 >= item.stock }" th:text="${'残り' + item.stock + '点'}">残り1点</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="basket-actions">
+				<form th:action="@{/client/order/address/input}" method="post">
+					<input type="submit" value="ご注文のお手続きへ" class="cute-button primary large" />
+				</form>
+				<form th:action="@{/client/basket/allDelete}" method="post">
+					<input type="submit" value="買い物かごを空にする" class="cute-button blue large" />
+				</form>
+			</div>
+		</th:block>
+	</section>
+</body>
 </html>

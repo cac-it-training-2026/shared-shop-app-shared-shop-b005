@@ -1,6 +1,7 @@
 package jp.co.sss.shop.controller.admin.item;
 
 import java.sql.Date;
+import java.util.List;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -16,8 +17,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import jp.co.sss.shop.entity.Category;
 import jp.co.sss.shop.entity.Item;
+import jp.co.sss.shop.entity.User;
 import jp.co.sss.shop.form.ItemForm;
 import jp.co.sss.shop.repository.CategoryRepository;
+import jp.co.sss.shop.repository.FavoriteRepository;
 import jp.co.sss.shop.repository.ItemRepository;
 import jp.co.sss.shop.service.BeanTools;
 import jp.co.sss.shop.service.UploadFileService;
@@ -60,6 +63,9 @@ public class AdminItemUpdateController {
 	 */
 	@Autowired
 	BeanTools beanTools;
+
+	@Autowired
+	FavoriteRepository favoriteRepository;
 
 	/**
 	 * 変更入力画面　初期表示処理(POST)
@@ -169,6 +175,9 @@ public class AdminItemUpdateController {
 		if (form.getCategoryId() != null) {
 			Category category = categoryRepository.findById(form.getCategoryId()).orElse(null);
 			form.setCategoryName(category.getName());
+				form.setCategoryNameEn(category.getNameEn());
+				form.setCategoryNameEs(category.getNameEs());
+				form.setCategoryNameEo(category.getNameEo());
 		}
 
 		// 変更入力確認画面　表示処理
@@ -219,6 +228,9 @@ public class AdminItemUpdateController {
 			// 対象が無い場合、エラー
 			return "redirect:/syserror";
 		}
+		// 在庫が0から1以上になったかチェック
+		boolean isStockRecovered = item.getStock() == 0 && itemForm.getStock() != null && itemForm.getStock() > 0;
+
 		// 入力値以外の情報を一時退避
 		Integer deleteFlag = item.getDeleteFlag();
 		Date insertDate = item.getInsertDate();
@@ -231,6 +243,12 @@ public class AdminItemUpdateController {
 
 		// 商品情報を保存
 		itemRepository.save(item);
+
+		if (isStockRecovered) {
+			// お気に入り登録ユーザーを取得（通知処理はメール機能追加時に実装）
+			List<User> targetUsers = favoriteRepository.findUsersByItemId(item.getId());
+			// TODO: MailUtil等の通知機能が追加されたら、targetUsersに通知する
+		}
 
 		//セッション情報の削除
 		session.removeAttribute("itemForm");

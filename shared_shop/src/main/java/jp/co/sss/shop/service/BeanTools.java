@@ -89,8 +89,13 @@ public class BeanTools {
 
 		BeanUtils.copyProperties(entity, bean);
 
-		bean.setCategoryId(entity.getCategory().getId());
-		bean.setCategoryName(entity.getCategory().getName());
+		if (entity.getCategory() != null) {
+			bean.setCategoryId(entity.getCategory().getId());
+			bean.setCategoryName(entity.getCategory().getName());
+			bean.setCategoryNameEn(entity.getCategory().getNameEn());
+			bean.setCategoryNameEs(entity.getCategory().getNameEs());
+			bean.setCategoryNameEo(entity.getCategory().getNameEo());
+		}
 
 		return bean;
 	}
@@ -127,6 +132,9 @@ public class BeanTools {
 
 		form.setCategoryId(entity.getCategory().getId());
 		form.setCategoryName(entity.getCategory().getName());
+		form.setCategoryNameEn(entity.getCategory().getNameEn());
+		form.setCategoryNameEs(entity.getCategory().getNameEs());
+		form.setCategoryNameEo(entity.getCategory().getNameEo());
 		//	form.setPrice(entity.getPrice());
 		//	form.setStock(entity.getStock());
 
@@ -148,6 +156,9 @@ public class BeanTools {
 
 			if (entity.getCategory() != null) {
 				bean.setCategoryName(entity.getCategory().getName());
+				bean.setCategoryNameEn(entity.getCategory().getNameEn());
+				bean.setCategoryNameEs(entity.getCategory().getNameEs());
+				bean.setCategoryNameEo(entity.getCategory().getNameEo());
 			}
 
 			beanList.add(bean);
@@ -184,6 +195,7 @@ public class BeanTools {
 		// オーダー商品情報の作成とリスト追加
 		OrderItemBean orderItemBean = new OrderItemBean();
 		BeanUtils.copyProperties(item, orderItemBean);
+		orderItemBean.setItemId(item.getId());
 		orderItemBean.setOrderNum(basketBean.getOrderNum());
 		int subtotal = orderItemBean.getPrice() * orderItemBean.getOrderNum();
 		orderItemBean.setSubtotal(subtotal);
@@ -205,7 +217,12 @@ public class BeanTools {
 		for (OrderItem orderItem : orderItemList) {
 			OrderItemBean orderItemBean = new OrderItemBean();
 
+			orderItemBean.setItemId(orderItem.getItem().getId());
 			orderItemBean.setName(orderItem.getItem().getName());
+			orderItemBean.setNameEn(orderItem.getItem().getNameEn());
+			orderItemBean.setNameEs(orderItem.getItem().getNameEs());
+			orderItemBean.setNameEo(orderItem.getItem().getNameEo());
+			orderItemBean.setImage(orderItem.getItem().getImage());
 			orderItemBean.setPrice(orderItem.getPrice());
 			orderItemBean.setOrderNum(orderItem.getQuantity());
 

@@ -61,9 +61,39 @@ public class Order {
 	private Integer payMethod;
 
 	/**
+	 * 利用ポイント
+	 */
+	@Column
+	private Integer usedPoint = 0;
+
+	/**
+	 * 今回獲得ポイント
+	 */
+	@Column
+	private Integer earnedPoint = 0;
+
+	/**
+	 * 抽選実施フラグ 0:未実施、1:実施済み
+	 */
+	@Column
+	private Integer lotteryExecuted = 0;
+
+	/**
+	 * 抽選結果
+	 */
+	@Column
+	private String lotteryRank;
+
+	/**
+	 * 抽選付与ポイント
+	 */
+	@Column
+	private Integer lotteryPoint = 0;
+
+	/**
 	 * 注文日付
 	 */
-	@Column(insertable = false)
+	@Column(insertable = false, updatable = false)
 	private Date insertDate;
 
 	/**
@@ -72,6 +102,13 @@ public class Order {
 	@ManyToOne
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private User user;
+
+	/**
+	 * クレジットカード情報
+	 */
+	@ManyToOne
+	@JoinColumn(name = "credit_card_id", referencedColumnName = "id")
+	private CreditCard creditCard;
 
 	/**
 	 * 注文商品リスト
@@ -85,6 +122,22 @@ public class Order {
 	 */
 	public Integer getId() {
 		return id;
+	}
+
+	/**
+	 * クレジットカードエンティティの取得
+	 * @return クレジットカードエンティティ
+	 */
+	public CreditCard getCreditCard() {
+		return creditCard;
+	}
+
+	/**
+	 * クレジットカードエンティティのセット
+	 * @param creditCard クレジットカードエンティティ
+	 */
+	public void setCreditCard(CreditCard creditCard) {
+		this.creditCard = creditCard;
 	}
 
 	/**
@@ -173,6 +226,46 @@ public class Order {
 	 */
 	public void setPayMethod(Integer payMethod) {
 		this.payMethod = payMethod;
+	}
+
+	public Integer getUsedPoint() {
+		return usedPoint;
+	}
+
+	public void setUsedPoint(Integer usedPoint) {
+		this.usedPoint = usedPoint;
+	}
+
+	public Integer getEarnedPoint() {
+		return earnedPoint;
+	}
+
+	public void setEarnedPoint(Integer earnedPoint) {
+		this.earnedPoint = earnedPoint;
+	}
+
+	public Integer getLotteryExecuted() {
+		return lotteryExecuted;
+	}
+
+	public void setLotteryExecuted(Integer lotteryExecuted) {
+		this.lotteryExecuted = lotteryExecuted;
+	}
+
+	public String getLotteryRank() {
+		return lotteryRank;
+	}
+
+	public void setLotteryRank(String lotteryRank) {
+		this.lotteryRank = lotteryRank;
+	}
+
+	public Integer getLotteryPoint() {
+		return lotteryPoint;
+	}
+
+	public void setLotteryPoint(Integer lotteryPoint) {
+		this.lotteryPoint = lotteryPoint;
 	}
 
 	/**

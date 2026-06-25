@@ -4,16 +4,49 @@
 <meta charset="UTF-8" />
 </head>
 <body>
-<div th:fragment="layout-header" class="container">
-	<h1 th:class="site_title" th:text="#{shop.title}"></h1>
-	<div th:if="${session.user != null and session.user.authority == 2}" class="user_info">
-		<a th:href="@{/client/user/detail}" th:text="${session.user.name}"></a>さん | <a th:href="@{/logout}" th:text="#{logout}"></a>
-	</div>
-	<div th:if="${session.user != null and (session.user.authority == 0 or session.user.authority == 1)}" class="user_info">
-		<a th:href="@{/admin/user/detail/{id}(id=${session.user.id})}" th:text="${session.user.name}"></a>さん | <a th:href="@{/logout}" th:text="#{logout}"></a>
-	</div>
-	<div th:if="${session.user == null}" class="user_info">
-		<a th:href="@{/login}" th:text="#{login}"></a> | <a th:href="@{/client/user/regist/input/init}" th:text="#{client.regist}"></a>
+<div th:fragment="layout-header" class="shop-header-inner">
+	<a th:href="@{/}" class="shop-logo" aria-label="トップへ">
+		<span class="shop-logo-mascot" aria-hidden="true"><img th:src="@{/images/common/mascot_wave.png}" alt="" /></span>
+		<span class="shop-logo-text" th:text="#{shop.title}">シェアードショップ</span>
+		<span class="shop-logo-cheese" aria-hidden="true">🧀</span>
+	</a>
+
+	<div class="shop-header-decoration" aria-hidden="true"><span>🐾</span><span>･ﾟ･</span><span>🐾</span></div>
+
+	<div class="shop-header-actions">
+		<div class="shop-login-card" th:if="${session.user != null and session.user.authority == 2}">
+			<span class="mini-mascot" aria-hidden="true"><img th:src="@{/images/common/mascot_sit.png}" alt="" /></span>
+			<a th:href="@{/client/user/detail}" th:text="${session.user.name}">ユーザー</a><span th:text="#{label.user.suffix}">さん</span>
+			<span class="separator">|</span>
+			<a th:href="@{/logout}" th:text="#{logout}">ログアウト</a>
+		</div>
+		<div class="shop-login-card" th:if="${session.user != null and (session.user.authority == 0 or session.user.authority == 1)}">
+			<span class="mini-mascot" aria-hidden="true"><img th:src="@{/images/common/mascot_pc.png}" alt="" /></span>
+			<a th:href="@{/admin/user/detail/{id}(id=${session.user.id})}" th:text="${session.user.name}">管理者</a><span th:text="#{label.user.suffix}">さん</span>
+			<span class="separator">|</span>
+			<a th:href="@{/logout}" th:text="#{logout}">ログアウト</a>
+		</div>
+		<div class="shop-login-card" th:if="${session.user == null}">
+			<span class="mini-mascot" aria-hidden="true"><img th:src="@{/images/common/mascot_wave.png}" alt="" /></span>
+			<a th:href="@{/login}" th:text="#{login}">ログイン</a>
+			<span class="separator">|</span>
+			<a th:href="@{/client/user/regist/input/init}" th:text="#{client.regist}">会員登録</a>
+		</div>
+
+		<a class="shop-inquiry-button" th:if="${session.user != null and (session.user.authority == 0 or session.user.authority == 1)}" th:href="@{/admin/inquiry/list}">
+			<span aria-hidden="true">✉️</span><span th:text="#{header.inquiry.list}">お問い合わせ一覧</span>
+		</a>
+		<a class="shop-inquiry-button" th:unless="${session.user != null and (session.user.authority == 0 or session.user.authority == 1)}" th:href="@{/inquiry/input}">
+			<span aria-hidden="true">✉️</span><span th:text="#{header.inquiry}">お問い合わせ</span>
+		</a>
+
+		<div class="language_info shop-language">
+			<span th:text="#{label.language}">言語</span>
+			<a th:href="@{?lang=ja}" th:text="#{label.japanese}">日本語</a>
+			<a th:href="@{?lang=en}" th:text="#{label.english}">English</a>
+			<a th:href="@{?lang=es}" th:text="#{label.spanish}">Español</a>
+			<a th:href="@{?lang=eo}" th:text="#{label.esperanto}">Esperanto</a>
+		</div>
 	</div>
 </div>
 </body>

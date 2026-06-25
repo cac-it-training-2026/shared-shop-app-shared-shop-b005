@@ -28,6 +28,31 @@ public class OrderBean {
 	private Integer total;
 
 	/**
+	 * 利用ポイント
+	 */
+	private Integer usedPoint;
+
+	/**
+	 * 今回獲得ポイント
+	 */
+	private Integer earnedPoint;
+
+	/**
+	 * 抽選実施フラグ
+	 */
+	private Integer lotteryExecuted;
+
+	/**
+	 * 抽選結果
+	 */
+	private String lotteryRank;
+
+	/**
+	 * 抽選付与ポイント
+	 */
+	private Integer lotteryPoint;
+
+	/**
 	 * お届け先郵便番号
 	 */
 	private String postalCode;
@@ -114,6 +139,46 @@ public class OrderBean {
 	 */
 	public void setTotal(Integer total) {
 		this.total = total;
+	}
+
+	public Integer getUsedPoint() {
+		return usedPoint;
+	}
+
+	public void setUsedPoint(Integer usedPoint) {
+		this.usedPoint = usedPoint;
+	}
+
+	public Integer getEarnedPoint() {
+		return earnedPoint;
+	}
+
+	public void setEarnedPoint(Integer earnedPoint) {
+		this.earnedPoint = earnedPoint;
+	}
+
+	public Integer getLotteryExecuted() {
+		return lotteryExecuted;
+	}
+
+	public void setLotteryExecuted(Integer lotteryExecuted) {
+		this.lotteryExecuted = lotteryExecuted;
+	}
+
+	public String getLotteryRank() {
+		return lotteryRank;
+	}
+
+	public void setLotteryRank(String lotteryRank) {
+		this.lotteryRank = lotteryRank;
+	}
+
+	public Integer getLotteryPoint() {
+		return lotteryPoint;
+	}
+
+	public void setLotteryPoint(Integer lotteryPoint) {
+		this.lotteryPoint = lotteryPoint;
 	}
 
 	/**

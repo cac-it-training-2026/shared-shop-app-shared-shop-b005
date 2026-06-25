@@ -2,6 +2,7 @@ package jp.co.sss.shop.form;
 
 import java.io.Serializable;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -55,6 +56,12 @@ public class OrderForm implements Serializable {
 	 * 支払い方法
 	 */
 	private Integer payMethod;
+
+	/**
+	 * 利用ポイント
+	 */
+	@Min(value = 0, message = "利用ポイントは0以上で入力してください。")
+	private Integer usedPoint = 0;
 
 	/**
 	 * 注文するユーザIDの取得
@@ -134,6 +141,14 @@ public class OrderForm implements Serializable {
 	 */
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+
+	public Integer getUsedPoint() {
+		return usedPoint;
+	}
+
+	public void setUsedPoint(Integer usedPoint) {
+		this.usedPoint = usedPoint;
 	}
 
 	/**

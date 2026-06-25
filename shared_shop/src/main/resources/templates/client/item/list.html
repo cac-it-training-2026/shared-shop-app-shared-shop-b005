@@ -1,51 +1,51 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
-
 <head>
-	<title th:text="#{item}+#{title.list}+' | '+ #{shop.title}"> </title>
+	<title th:text="#{item}+#{title.list}+' | '+ #{shop.title}">商品一覧</title>
 	<meta charset="UTF-8" />
 </head>
+<body>
+	<section class="shop-page item-list-page">
+		<div class="page-heading-row">
+			<h2 class="shop-page-title"><span aria-hidden="true">🐾</span><span th:text="#{item}+#{title.list}">商品一覧</span></h2>
+			<div class="speech-mascot-area">
+				<div class="speech-bubble" th:utext="#{design.speech.item.list}">見たい商品を<br />クリックしてね！</div>
+				<img class="speech-mascot" th:src="@{/images/common/mascot_wave.png}" alt="" />
+			</div>
+		</div>
 
-<body th:object="${loginForm}" class="user item_list">
+		<div class="sort-tabs">
+			<span th:if="${sortType==1}" class="sort-tab current" th:text="#{sort.latest.str}">新着順</span>
+			<a th:unless="${sortType==1}" class="sort-tab" th:href="@{/client/item/list/1(categoryId=${categoryId})}" th:text="#{sort.latest.str}">新着順</a>
+			<span th:if="${sortType==2}" class="sort-tab current" th:text="#{sort.hotsell.str}">売れ筋順</span>
+			<a th:unless="${sortType==2}" class="sort-tab" th:href="@{/client/item/list/2(categoryId=${categoryId})}" th:text="#{sort.hotsell.str}">売れ筋順</a>
+			<span th:if="${sortType==3}" class="sort-tab current" th:text="#{sort.favorite.str}">お気に入り順</span>
+			<a th:unless="${sortType==3}" class="sort-tab" th:href="@{/client/item/list/3(categoryId=${categoryId})}" th:text="#{sort.favorite.str}">お気に入り順</a>
+		</div>
 
-	<h2 th:class="title" th:text="#{item}+#{title.list}"></h2>
+		<p class="empty-message" th:text="#{msg.client.item.list.none}" th:if="${#lists.isEmpty(items)}"></p>
 
-	<div class="sorted_by">
-		<span th:if="${sortType==1}" th:text="#{sort.latest.str}"></span>
-		<a th:unless="${sortType==1}" th:href="@{/client/item/list/1(categoryId=${categoryId})}"
-			th:text="#{sort.latest.str}"></a>
-		<span th:if="${sortType==2}" th:text="#{sort.hotsell.str}"></span>
-		<a th:unless="${sortType==2}" th:href="@{/client/item/list/2(categoryId=${categoryId})}"
-			th:text="#{sort.hotsell.str}"></a>
-
-		<p th:text="#{msg.client.item.list.none}" th:if="${#lists.isEmpty(items)}"></p>
-
-	</div>
-
-
-	<th:block th:if="!${#lists.isEmpty(items)}">
-		<table class="list_table item_detail">
-			<tr>
-				<th th:text="#{data.item.image}"></th>
-				<th th:text="#{data.item.name}"></th>
-				<th th:text="#{data.item.price}"></th>
-				<th th:text="#{category}"></th>
-			</tr>
-			<!--/* 商品一覧 */-->
-			<tr th:each="item, status: ${items}">
-				<td class="image">
-					<img th:src="@{/images/{image}(image=${item.image})}" th:if="${item.image != null}" />
-					<img th:src="@{/images/common/no_image.jpg}" th:if="${item.image == null}" />
-
-				</td>
-				<td><a th:href="@{/client/item/detail/{id}(id=${item.id})}" th:text="${item.name}"></a></td>
-				<td th:text="${item.price}"></td>
-				<td th:text="${item.categoryName}"></td>
-			</tr>
-		</table>
-	</th:block>
-
+		<div class="product-grid" th:if="!${#lists.isEmpty(items)}">
+			<article class="product-card" th:each="item : ${items}">
+				<form th:if="${session.user != null and session.user.authority == 2}" th:action="@{/client/favorite/toggle/{itemId}(itemId=${item.id})}" method="post" class="favorite-heart-form">
+					<button type="submit" class="heart-badge favorite-toggle" th:classappend="${item.favorite} ? ' active' : ''" th:attr="aria-label=${item.favorite} ? 'お気に入り解除' : 'お気に入り登録'" th:text="${item.favorite} ? '♥' : '♡'">♡</button>
+				</form>
+				<span th:unless="${session.user != null and session.user.authority == 2}" class="heart-badge readonly" aria-hidden="true">♡</span>
+				<a class="product-card-link" th:href="@{/client/item/detail/{id}(id=${item.id}, sortType=${sortType}, categoryId=${categoryId})}">
+					<div class="product-image-wrap">
+						<img th:src="@{/images/{image}(image=${item.image})}" th:if="${item.image != null}" alt="" />
+						<img th:src="@{/images/common/no_image.jpg}" th:if="${item.image == null}" alt="" />
+					</div>
+					<h3 class="product-name" th:text="${item.getName(#locale.language)}">商品名</h3>
+					<p class="product-price">
+						<span th:text="${'¥' + #numbers.formatInteger(item.price, 1, 'COMMA')}">¥0</span>
+						<small th:text="#{label.tax.included}">（税込）</small>
+					</p>
+					<p class="product-category" th:text="${item.getCategoryName(#locale.language)}">カテゴリ</p>
+				</a>
+			</article>
+		</div>
+	</section>
 </body>
-
 </html>

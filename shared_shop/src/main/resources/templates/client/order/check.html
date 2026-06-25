@@ -1,103 +1,347 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
-
 <head>
-	<title th:text="#{title.order.check}+' | '+ #{shop.title}"> </title>
+	<title th:text="#{title.order.check}+' | '+ #{shop.title}">注文確認</title>
 	<meta charset="UTF-8" />
 </head>
 
 <body class="user order_check">
-	<h2 th:class="title" th:text="#{title.order.check}"></h2>
-	<p th:class="check_message" th:text="#{msg.order.check}" th:if="${orderItemBeans != null}"></p>
-	<p th:class="check_error_message" th:text="#{msg.order.stop}" th:if="${orderItemBeans == null}"></p>
+	<section class="shop-page order-check-page">
 
-	<!-- 在庫不足のメッセージ -->
-	<th:block th:if="${itemNameListLessThan != null || itemNameListZero != null}">
-	<div>
-		<br />
-		<ul class="error_list_no_mark" th:if="${itemNameListLessThan != null}">
-			<li th:each="err : ${itemNameListLessThan}" th:text="#{msg.order.item.stock.short(${err})}"></li>
-		</ul>
-		<ul class="error_list_no_mark" th:if="${itemNameListZero != null}">
-			<li th:each="err : ${itemNameListZero}" th:text="#{msg.order.item.stock.none(${err})}"></li>
-		</ul>
-		<br />
-	</div>
-	</th:block>
+		<div class="step-flow">
+			<span>買い物かご</span>
+			<span>›</span>
+			<span>お届け先・お支払い</span>
+			<span>›</span>
+			<strong>注文内容確認</strong>
+		</div>
 
-	<!-- 注文情報 -->
-	<th:block th:if="${orderItemBeans != null}">
-	<table class="list_table item_detail">
-		<tr>
-			<th>[[#{data.item.name}]]</th>
-			<th>[[#{data.item.image}]]</th>
-			<th>[[#{data.unit.price}]]</th>
-			<th>[[#{data.order.num}]]</th>
-			<th>[[#{data.subtotal}]]</th>
-		</tr>
-		<tr th:each="orderItem: ${orderItemBeans}">
-			<td th:text="${orderItem.name}"></td>
-			<td>
-				<img th:src="@{/images/{image}(image=${orderItem.image})}" th:if="${orderItem.image != null}" />
-				<img th:src="@{/images/common/no_image.jpg}" th:if="${orderItem.image == null}" />
-			</td>
-			<td th:text="${orderItem.price}"></td>
-			<td th:text="${orderItem.orderNum}"></td>
-			<td th:text="${orderItem.subtotal}"></td>
-		</tr>
-		<tr>
-			<td colspan="3"></td>
-			<td class="total">[[#{data.total}]]</td>
-			<td class="total" th:text="${total}"></td>
-		</tr>
-	</table>
-	<div class="user_info_form_area">
-		<table class="detail_table address">
-			<caption class="table_caption">[[#{data.address}]]</caption>
-			<tr>
-				<th>[[#{data.address.postalcode}]]</th>
-				<td th:text="${orderForm.postalCode}"></td>
-			</tr>
-			<tr>
-				<th>[[#{data.address.address}]]</th>
-				<td th:text="${orderForm.address}"></td>
-			</tr>
-			<tr>
-				<th>[[#{data.address.name}]]</th>
-				<td th:text="${orderForm.name}"></td>
-			</tr>
-			<tr>
-				<th>[[#{data.address.phonenumber}]]</th>
-				<td th:text="${orderForm.phoneNumber}"></td>
-			</tr>
-		</table>
-		<table class="detail_table pay">
-			<caption class="table_caption">[[#{paymethod.str}]]</caption>
-			<tr>
-				<th>[[#{paymethod.str}]]</th>
-				<td th:switch="${orderForm.payMethod}">
-					<span th:case="1">[[#{paymethod.credit.str}]]</span>
-					<span th:case="2">[[#{paymethod.bank.str}]]</span>
-					<span th:case="3">[[#{paymethod.onarrival.str}]]</span>
-					<span th:case="4">[[#{paymethod.emoney.str}]]</span>
-					<span th:case="5">[[#{paymethod.convenience.str}]]</span>
-				</td>
-			</tr>
-		</table>
-		<form th:action="@{/client/order/complete}" method="post">
-			<input class="send_button" type="submit" value="ご注文の確定" th:if="${orderItemBeans != null}"/>
-		</form>
-		<form th:action="@{/client/order/payment/back}" method="post" class="update">
-			<input type="submit" value="戻る" class="back_button" />
-		</form>
-	</div>
-	</th:block>
-	
-	<!-- 注文情報がない場合、トップへ戻る -->
-	<th:block  th:unless="${orderItemBeans != null}">
-	<p class="complete_link"><a th:href="@{/}" th:text="#{msg.back.to.top}"></a></p>	
-	</th:block>
+		<div class="page-heading-row compact">
+			<div>
+				<h2 class="shop-page-title">
+					<span aria-hidden="true">🐾</span>
+					<span th:text="#{title.order.check}">注文内容確認</span>
+				</h2>
+
+				<p class="page-lead" th:if="${orderItemBeans != null}">
+					以下の内容でよろしければ、ご注文を確定してください。
+				</p>
+
+				<p class="check_error_message"
+				   th:text="#{msg.order.stop}"
+				   th:if="${orderItemBeans == null}">
+					注文できません。
+				</p>
+			</div>
+		</div>
+
+		<th:block th:if="${itemNameListLessThan != null || itemNameListZero != null}">
+			<ul class="error_list_no_mark cute-error" th:if="${itemNameListLessThan != null}">
+				<li th:each="err : ${itemNameListLessThan}"
+					th:text="#{msg.order.item.stock.short(${err})}">
+				</li>
+			</ul>
+
+			<ul class="error_list_no_mark cute-error" th:if="${itemNameListZero != null}">
+				<li th:each="err : ${itemNameListZero}"
+					th:text="#{msg.order.item.stock.none(${err})}">
+				</li>
+			</ul>
+		</th:block>
+
+		<th:block th:if="${orderItemBeans != null}">
+			<div class="checkout-layout">
+				<div class="checkout-main">
+
+					<!-- お届け先情報 -->
+					<section class="checkout-card cute-check-card">
+						<div class="cute-check-card-head">
+							<h3>
+								<span aria-hidden="true">🏠</span>
+								お届け先情報
+							</h3>
+
+							<form th:action="@{/client/order/address/input}" method="get">
+								<input type="submit" value="変更する" class="cute-button mini blue" />
+							</form>
+						</div>
+
+						<dl class="cute-check-list">
+							<div>
+								<dt>郵便番号</dt>
+								<dd th:text="${orderForm.postalCode}">1111111</dd>
+							</div>
+
+							<div>
+								<dt>住所</dt>
+								<dd th:text="${orderForm.address}">
+									東京都台東区4-5-6 ABCマンション5階
+								</dd>
+							</div>
+
+							<div>
+								<dt>氏名</dt>
+								<dd>
+									<span th:text="${orderForm.name}">一般太郎</span>
+									<span> 様</span>
+								</dd>
+							</div>
+
+							<div>
+								<dt>電話番号</dt>
+								<dd th:text="${orderForm.phoneNumber}">0123456789</dd>
+							</div>
+						</dl>
+					</section>
+
+					<!-- お支払い情報 -->
+					<section class="checkout-card cute-check-card">
+						<div class="cute-check-card-head">
+							<h3>
+								<span aria-hidden="true">💳</span>
+								お支払い情報
+							</h3>
+
+							<form th:action="@{/client/order/payment/input}"
+								  method="get"
+								  th:if="${orderForm.payMethod != 1}">
+								<input type="submit" value="変更する" class="cute-button mini blue" />
+							</form>
+
+							<form th:action="@{/client/order/card/select}"
+								  method="get"
+								  th:if="${orderForm.payMethod == 1}">
+								<input type="submit" value="変更する" class="cute-button mini blue" />
+							</form>
+						</div>
+
+						<dl class="cute-check-list">
+							<div>
+								<dt>お支払い方法</dt>
+								<dd th:switch="${orderForm.payMethod}">
+									<span th:case="1">
+										<span th:text="#{paymethod.credit.str}">クレジットカード</span>
+										<span th:if="${selectedCardNumber != null}">
+											（[[${selectedCardNumber}]]）
+										</span>
+									</span>
+
+									<span th:case="2" th:text="#{paymethod.bank.str}">銀行振込</span>
+									<span th:case="3" th:text="#{paymethod.onarrival.str}">着払い</span>
+									<span th:case="4" th:text="#{paymethod.emoney.str}">電子マネー</span>
+									<span th:case="5" th:text="#{paymethod.convenience.str}">コンビニ決済</span>
+								</dd>
+							</div>
+						</dl>
+					</section>
+
+					<!-- ポイント利用 -->
+					<section class="checkout-card cute-check-card">
+						<div class="cute-check-card-head">
+							<h3>
+								<span aria-hidden="true">💗</span>
+								ポイント利用
+							</h3>
+						</div>
+
+						<dl class="cute-check-list point-check-list">
+							<div>
+								<dt>保有ポイント</dt>
+								<dd>
+									<strong class="point-blue" th:text="${currentPoint}">0</strong>
+									<span>ポイント</span>
+								</dd>
+							</div>
+
+							<div>
+								<dt>利用ポイント</dt>
+								<dd>
+									<strong class="point-pink" th:text="${usedPoint}">0</strong>
+									<span>ポイント</span>
+								</dd>
+							</div>
+
+							<div>
+								<dt>獲得予定ポイント</dt>
+								<dd>
+									<strong class="point-blue" th:text="${earnedPoint}">0</strong>
+									<span>ポイント</span>
+								</dd>
+							</div>
+
+							<div class="point-form-row">
+								<dt>今回利用するポイント</dt>
+								<dd>
+									<form th:action="@{/client/order/check/point}"
+										  method="post"
+										  class="cute-point-form">
+										<input type="number"
+											   name="usedPoint"
+											   min="0"
+											   th:value="${usedPoint}" />
+
+										<input type="submit"
+											   value="ポイントを反映"
+											   class="cute-button mini yellow" />
+									</form>
+								</dd>
+							</div>
+						</dl>
+
+						<p class="error point-error"
+						   th:if="${pointError != null}"
+						   th:text="${pointError}">
+							ポイントエラー
+						</p>
+					</section>
+
+					<!-- ご注文商品 -->
+					<section class="checkout-card cute-check-card order-items-card">
+						<div class="cute-check-card-head">
+							<h3>
+								<span aria-hidden="true">📋</span>
+								ご注文商品
+							</h3>
+						</div>
+
+						<div class="cute-table-wrap compact-table-wrap">
+							<table class="cute-table order-check-table">
+								<thead>
+									<tr>
+										<th>商品名</th>
+										<th>単価（税込）</th>
+										<th>数量</th>
+										<th>割引</th>
+										<th>小計（税込）</th>
+									</tr>
+								</thead>
+
+								<tbody>
+									<tr th:each="orderItem: ${orderItemBeans}">
+										<td class="basket-product-cell">
+											<span class="basket-product-link no-link">
+												<span class="basket-thumb small">
+													<img th:src="@{/images/{image}(image=${orderItem.image})}"
+														 th:if="${orderItem.image != null}"
+														 alt="" />
+
+													<img th:src="@{/images/common/no_image.jpg}"
+														 th:if="${orderItem.image == null}"
+														 alt="" />
+												</span>
+
+												<span th:text="${orderItem.getName(#locale.language)}">
+													商品名
+												</span>
+											</span>
+										</td>
+
+										<td th:text="${'¥' + #numbers.formatInteger(orderItem.price, 1, 'COMMA')}">
+											¥0
+										</td>
+
+										<td th:text="${orderItem.orderNum}">
+											1
+										</td>
+
+										<td class="discount-text"
+											th:text="${'-¥' + #numbers.formatInteger((orderItem.price * orderItem.orderNum) - orderItem.subtotal, 1, 'COMMA')}">
+											-¥0
+										</td>
+
+										<td th:text="${'¥' + #numbers.formatInteger(orderItem.subtotal, 1, 'COMMA')}">
+											¥0
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</section>
+				</div>
+
+				<!-- ご注文金額 -->
+				<aside class="checkout-summary cute-summary-card">
+					<h3>
+						<span aria-hidden="true">🧀</span>
+						ご注文金額
+					</h3>
+
+					<dl>
+						<div>
+							<dt>商品合計（税込）</dt>
+							<dd th:text="${'¥' + #numbers.formatInteger(total, 1, 'COMMA')}">
+								¥0
+							</dd>
+						</div>
+
+						<div th:if="${totalDiscount != null && totalDiscount > 0}">
+							<dt>割引額合計</dt>
+							<dd class="minus"
+								th:text="${'-¥' + #numbers.formatInteger(totalDiscount, 1, 'COMMA')}">
+								-¥0
+							</dd>
+						</div>
+
+						<div>
+							<dt>利用ポイント</dt>
+							<dd class="minus"
+								th:text="${'-¥' + #numbers.formatInteger(usedPoint, 1, 'COMMA')}">
+								-¥0
+							</dd>
+						</div>
+
+						<div class="summary-total">
+							<dt>お支払い合計（税込）</dt>
+							<dd th:text="${'¥' + #numbers.formatInteger(paymentTotal, 1, 'COMMA')}">
+								¥0
+							</dd>
+						</div>
+
+						<div>
+							<dt>獲得予定ポイント</dt>
+							<dd class="point-earned"
+								th:text="${earnedPoint + 'ポイント'}">
+								0ポイント
+							</dd>
+						</div>
+					</dl>
+
+					<div class="speech-mascot-area vertical">
+						<div class="speech-bubble mini">
+							ご注文内容に<br />
+							お間違いがないか<br />
+							確認してね！
+						</div>
+
+						<img class="checkout-mascot"
+							 th:src="@{/images/common/mascot_box.png}"
+							 alt="" />
+					</div>
+				</aside>
+			</div>
+
+			<div class="detail-action-panel checkout-actions">
+				<a th:href="@{/client/basket/list}" class="cute-button blue large">
+					買い物かごに戻る
+				</a>
+
+				<form th:action="@{/client/order/complete}" method="post">
+					<input class="cute-button primary large"
+						   type="submit"
+						   value="注文を確定する" />
+				</form>
+			</div>
+		</th:block>
+
+		<th:block th:unless="${orderItemBeans != null}">
+			<div class="detail-action-panel centered">
+				<a th:href="@{/}" class="cute-button blue" th:text="#{msg.back.to.top}">
+					トップへ戻る
+				</a>
+			</div>
+		</th:block>
+
+	</section>
 </body>
-
 </html>

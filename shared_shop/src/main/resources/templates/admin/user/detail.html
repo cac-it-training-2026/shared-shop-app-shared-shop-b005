@@ -9,6 +9,7 @@
 
 <body class="admin user_detail_admin">
 	<h2 th:class="title" th:text="#{user}+#{title.detail}"></h2>
+
 	<div class="info_form_area" th:object="${userBean}">
 		<div class="detail_area">
 			<ul class="input_list">
@@ -33,6 +34,19 @@
 					<span class="input_value" th:text="*{phoneNumber}"></span>
 				</li>
 				<li>
+					<span class="input_title">[[#{data.point.current}]]</span>
+					<span class="input_value" th:text="*{currentPoint}"></span>
+				</li>
+				<li>
+					<span class="input_title">[[#{data.point.total}]]</span>
+					<span class="input_value" th:text="*{totalPoint}"></span>
+				</li>
+				<li>
+					<span class="input_title">[[#{data.user.rank}]]</span>
+					<span class="input_value" th:text="*{rank}"></span>
+				</li>
+
+				<li>
 					<span class="input_title">[[#{data.authority}]]</span>
 					<span class="input_value" th:switch="*{authority}">
 						<span th:case="0">[[#{auth.system.str}]]</span>
@@ -40,15 +54,31 @@
 						<span th:case="2">[[#{auth.client.str}]]</span>
 					</span>
 				</li>
+
 				<li>
-					<span class="input_title">状態</span>
-					<span class="input_value" th:if="*{accountLocked == 1}">
-						ロック中 (期限: <span th:text="${#dates.format(userBean.accountLockedUntil, 'yyyy/MM/dd HH:mm:ss')}"></span>)
-						<form th:action="@{/admin/user/unlock/{id}(id=*{id})}" method="post" style="display:inline;">
-							<input type="submit" value="解除" />
+					<span class="input_title">ログイン失敗回数</span>
+					<span class="input_value" th:text="${user.loginFailureCount != null ? user.loginFailureCount : 0}"></span>
+				</li>
+
+				<li>
+					<span class="input_title">アカウント状態</span>
+
+					<span class="input_value" th:if="${user.accountLocked != null and user.accountLocked == 1}">
+						ロック中
+						<span th:if="${user.accountLockedUntil != null}">
+							（解除予定時刻：
+							<span th:text="${#dates.format(user.accountLockedUntil, 'yyyy/MM/dd HH:mm:ss')}"></span>
+							）
+						</span>
+
+						<form th:action="@{/admin/user/unlock/{id}(id=${user.id})}" method="post" style="display:inline;">
+							<input type="submit" value="ロック解除" />
 						</form>
 					</span>
-					<span class="input_value" th:unless="*{accountLocked == 1}">通常</span>
+
+					<span class="input_value" th:unless="${user.accountLocked != null and user.accountLocked == 1}">
+						通常
+					</span>
 				</li>
 			</ul>
 		</div>
@@ -57,9 +87,11 @@
 			<form th:action="@{/admin/user/list}" method="post">
 				<input type="submit" value="戻る" class="back_button" />
 			</form>
+
 			<form th:action="@{/admin/user/update/input/{id}(id=*{id})}" method="post">
 				<input type="submit" value="変更" />
 			</form>
+
 			<form th:action="@{/admin/user/delete/check/{id}(id=*{id})}" method="post">
 				<input type="submit" value="削除" class="delete" disabled th:if="${userBean.id==session.user.id}" />
 				<input type="submit" value="削除" class="delete" th:unless="${userBean.id==session.user.id}" />

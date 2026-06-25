@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
+
+<head>
+	<title th:text="#{title.inquiry.check} + ' | ' + #{shop.title}"></title>
+	<meta charset="UTF-8" />
+</head>
+
+<body class="inquiry_check">
+	<h2 class="title" th:text="#{title.inquiry.check}"></h2>
+	<p class="input_message" th:text="#{msg.inquiry.check}"></p>
+
+	<div class="user_info_form_area">
+		<ul class="input_list">
+			<li>
+				<span class="input_title" th:text="#{inquiryForm.name}"></span>
+				<span th:text="${inquiryForm.name}"></span>
+			</li>
+			<li>
+				<span class="input_title" th:text="#{inquiryForm.email}"></span>
+				<span th:text="${inquiryForm.email}"></span>
+			</li>
+			<li>
+				<span class="input_title" th:text="#{inquiryForm.content}"></span>
+				<pre th:text="${inquiryForm.content}"></pre>
+			</li>
+		</ul>
+
+		<form th:action="@{/inquiry/complete}" method="post" class="user_info_form" th:object="${inquiryForm}">
+			<input type="hidden" th:field="*{name}" />
+			<input type="hidden" th:field="*{email}" />
+			<input type="hidden" th:field="*{content}" />
+			<input type="submit" th:value="#{button.send}" class="send_button" />
+		</form>
+		<form th:action="@{/inquiry/input}" method="post" th:object="${inquiryForm}">
+			<input type="hidden" th:field="*{name}" />
+			<input type="hidden" th:field="*{email}" />
+			<input type="hidden" th:field="*{content}" />
+			<input type="submit" th:value="#{button.back}" class="back_button" />
+		</form>
+	</div>
+</body>
+
+</html>

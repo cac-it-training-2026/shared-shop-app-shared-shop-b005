@@ -31,6 +31,24 @@ public class CategoryForm implements Serializable {
 	private String name;
 
 	/**
+	 * カテゴリ名(英語)
+	 */
+	@Size(max = 15, message = "{text.maxsize.message}")
+	private String nameEn;
+
+	/**
+	 * カテゴリ名(スペイン語)
+	 */
+	@Size(max = 15, message = "{text.maxsize.message}")
+	private String nameEs;
+
+	/**
+	 * カテゴリ名(エスペラント語)
+	 */
+	@Size(max = 15, message = "{text.maxsize.message}")
+	private String nameEo;
+
+	/**
 	 * カテゴリ説明
 	 */
 	@Size(max = 30, message = "{text.maxsize.message}")
@@ -66,6 +84,54 @@ public class CategoryForm implements Serializable {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * カテゴリ名(英語)の取得
+	 * @return カテゴリ名(英語)
+	 */
+	public String getNameEn() {
+		return nameEn;
+	}
+
+	/**
+	 * カテゴリ名(英語)のセット
+	 * @param nameEn カテゴリ名(英語)
+	 */
+	public void setNameEn(String nameEn) {
+		this.nameEn = nameEn;
+	}
+
+	/**
+	 * カテゴリ名(スペイン語)の取得
+	 * @return カテゴリ名(スペイン語)
+	 */
+	public String getNameEs() {
+		return nameEs;
+	}
+
+	/**
+	 * カテゴリ名(スペイン語)のセット
+	 * @param nameEs カテゴリ名(スペイン語)
+	 */
+	public void setNameEs(String nameEs) {
+		this.nameEs = nameEs;
+	}
+
+	/**
+	 * カテゴリ名(エスペラント語)の取得
+	 * @return カテゴリ名(エスペラント語)
+	 */
+	public String getNameEo() {
+		return nameEo;
+	}
+
+	/**
+	 * カテゴリ名(エスペラント語)のセット
+	 * @param nameEo カテゴリ名(エスペラント語)
+	 */
+	public void setNameEo(String nameEo) {
+		this.nameEo = nameEo;
 	}
 
 	/**

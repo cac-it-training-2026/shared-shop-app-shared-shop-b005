@@ -1,71 +1,75 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	th:replace="~{common/layout_5block :: layout(~{::title},~{::body/content()})}">
-
 <head>
-	<title th:text="#{order}+#{title.detail}+' | '+ #{shop.title}"> </title>
+	<title th:text="#{order}+#{title.detail}+' | '+ #{shop.title}">注文詳細</title>
 	<meta charset="UTF-8" />
 </head>
-
 <body class="user">
-	<h2 th:class="title" th:text="#{order}+#{title.detail}"></h2>
+	<section class="shop-page order-detail-page">
+		<nav class="breadcrumb" aria-label="breadcrumb">
+			<a th:href="@{/}">トップ</a><span>›</span>
+			<a th:href="@{/client/order/list}" th:text="#{order}+#{title.list}">注文一覧</a><span>›</span>
+			<span th:text="#{order}+#{title.detail}">注文詳細</span>
+		</nav>
+		<h2 class="shop-page-title"><span aria-hidden="true">📋</span><span th:text="#{order}+#{title.detail}">注文詳細</span></h2>
 
-	<div class="info_form_area">
-		<table class="detail_table payment">
-			<tr>
-				<th>[[#{data.client.order.date}]]</th>
-				<td th:text="${order.insertDate}"></td>
-			</tr>
-			<tr>
-				<th>[[#{paymethod.str}]]</th>
-				<td th:switch="${order.payMethod}">
-					<span th:case="1">[[#{paymethod.credit.str}]]</span>
-					<span th:case="2">[[#{paymethod.bank.str}]]</span>
-					<span th:case="3">[[#{paymethod.onarrival.str}]]</span>
-					<span th:case="4">[[#{paymethod.emoney.str}]]</span>
-					<span th:case="5">[[#{paymethod.convenience.str}]]</span>
-				</td>
-			</tr>
-			<tr>
-				<th>[[#{data.address}+#{data.address.postalcode}]]</th>
-				<td th:text="${order.postalCode}"></td>
-			</tr>
-			<tr>
-				<th>[[#{data.address}+#{data.address.address}]]</th>
-				<td th:text="${order.address}"></td>
-			</tr>
-			<tr>
-				<th>[[#{data.address}+#{data.address.name}]]</th>
-				<td th:text="${order.name}"></td>
-			</tr>
-			<tr>
-				<th>[[#{data.address}+#{data.address.phonenumber}]]</th>
-				<td th:text="${order.phoneNumber}"></td>
-			</tr>
-		</table>
-		<table class="list_table detail">
-			<tr>
-				<th>[[#{data.item.name}]]</th>
-				<th>[[#{data.unit.price}]]</th>
-				<th>[[#{data.order.num}]]</th>
-				<th>[[#{data.subtotal}]]</th>
-			</tr>
-			<tr th:each="orderItem: ${orderItemBeans}">
-				<td th:text="${orderItem.name}"></td>
-				<td th:text="${orderItem.price}"></td>
-				<td th:text="${orderItem.orderNum}"></td>
-				<td th:text="${orderItem.subtotal}"></td>
-			</tr>
-			<tr>
-				<td colspan="2"></td>
-				<td class="total">[[#{data.total}]]</td>
-				<td class="total" th:text="${total}"></td>
-			</tr>
-		</table>
-		<form th:action="@{/client/order/list}" method="post" class="detail_button_area">
-			<input type="submit" value="戻る" class="back_button" />
-		</form>
-	</div>
+		<div class="checkout-layout order-detail-layout">
+			<div class="checkout-main">
+				<section class="checkout-card">
+					<div class="checkout-card-title"><span aria-hidden="true">🗓️</span><h3>注文情報</h3></div>
+					<dl class="checkout-info-list">
+						<div><dt th:text="#{data.client.order.date}">注文日</dt><dd th:text="${order.insertDate}">2024/05/15</dd></div>
+						<div><dt th:text="#{paymethod.str}">支払方法</dt><dd th:switch="${order.payMethod}"><span th:case="1">[[#{paymethod.credit.str}]]</span><span th:case="2">[[#{paymethod.bank.str}]]</span><span th:case="3">[[#{paymethod.onarrival.str}]]</span><span th:case="4">[[#{paymethod.emoney.str}]]</span><span th:case="5">[[#{paymethod.convenience.str}]]</span></dd></div>
+						<div><dt>注文番号</dt><dd th:text="${'ORD-' + order.id}">ORD-0001</dd></div>
+					</dl>
+				</section>
+
+				<section class="checkout-card">
+					<div class="checkout-card-title"><span aria-hidden="true">🏠</span><h3>お届け先情報</h3></div>
+					<dl class="checkout-info-list">
+						<div><dt th:text="#{data.address.postalcode}">郵便番号</dt><dd th:text="${order.postalCode}">0000000</dd></div>
+						<div><dt th:text="#{data.address.address}">住所</dt><dd th:text="${order.address}">住所</dd></div>
+						<div><dt th:text="#{data.address.name}">お名前</dt><dd th:text="${order.name}">名前</dd></div>
+						<div><dt th:text="#{data.address.phonenumber}">電話番号</dt><dd th:text="${order.phoneNumber}">電話番号</dd></div>
+					</dl>
+				</section>
+
+				<section class="checkout-card order-items-card">
+					<div class="checkout-card-title"><span aria-hidden="true">🧀</span><h3>ご注文商品</h3></div>
+					<div class="cute-table-wrap compact-table-wrap">
+						<table class="cute-table order-check-table">
+							<thead><tr><th>商品名</th><th>単価（税込）</th><th>数量</th><th>小計（税込）</th></tr></thead>
+							<tbody>
+								<tr th:each="orderItem: ${orderItemBeans}">
+									<td class="basket-product-cell"><span class="basket-product-link no-link"><span th:text="${orderItem.getName(#locale.language)}">商品名</span></span></td>
+									<td th:text="${'¥' + #numbers.formatInteger(orderItem.price, 1, 'COMMA')}">¥0</td>
+									<td th:text="${orderItem.orderNum}">1</td>
+									<td th:text="${'¥' + #numbers.formatInteger(orderItem.subtotal, 1, 'COMMA')}">¥0</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</section>
+			</div>
+
+			<aside class="checkout-summary">
+				<h3><span aria-hidden="true">🧀</span>お支払い情報</h3>
+				<dl>
+					<div><dt th:text="#{data.total}">合計</dt><dd th:text="${'¥' + #numbers.formatInteger(total, 1, 'COMMA')}">¥0</dd></div>
+					<div><dt th:text="#{data.point.used}">利用ポイント</dt><dd class="minus" th:text="${'-' + order.usedPoint + 'ポイント'}">0ポイント</dd></div>
+					<div class="summary-total"><dt th:text="#{data.payment.total}">お支払い合計</dt><dd th:text="${'¥' + #numbers.formatInteger(paymentTotal, 1, 'COMMA')}">¥0</dd></div>
+					<div><dt th:text="#{data.point.earned}">獲得ポイント</dt><dd class="point-earned" th:text="${order.earnedPoint + 'ポイント'}">0ポイント</dd></div>
+					<div><dt th:text="#{data.lottery.result}">くじ結果</dt><dd th:text="${order.lotteryRank == null ? '未実施' : order.lotteryRank}">未実施</dd></div>
+					<div><dt th:text="#{data.lottery.point}">くじ獲得ポイント</dt><dd th:text="${order.lotteryPoint + 'ポイント'}">0ポイント</dd></div>
+				</dl>
+				<img class="checkout-mascot solo" th:src="@{/images/common/mascot_box.png}" alt="" />
+			</aside>
+		</div>
+
+		<div class="detail-action-panel checkout-actions">
+			<a th:href="@{/client/order/list}" class="cute-button blue large" th:text="#{msg.back.to.list}">一覧に戻る</a>
+		</div>
+	</section>
 </body>
-
 </html>
