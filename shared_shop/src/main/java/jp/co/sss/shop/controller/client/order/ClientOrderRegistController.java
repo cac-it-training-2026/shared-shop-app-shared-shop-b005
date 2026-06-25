@@ -94,7 +94,8 @@ public class ClientOrderRegistController {
 		}
 
 		model.addAttribute("orderForm", orderFormObject);
-		model.addAttribute("categories", categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(Constant.NOT_DELETED));
+		model.addAttribute("categories",
+				categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(Constant.NOT_DELETED));
 
 		Object bindingResultObject = session.getAttribute("bindingResult");
 		if (bindingResultObject != null) {
@@ -133,7 +134,8 @@ public class ClientOrderRegistController {
 		}
 		OrderForm orderForm = (OrderForm) orderFormObject;
 		model.addAttribute("payMethod", orderForm.getPayMethod());
-		model.addAttribute("categories", categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(Constant.NOT_DELETED));
+		model.addAttribute("categories",
+				categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(Constant.NOT_DELETED));
 		return "client/order/payment_input";
 	}
 
@@ -175,7 +177,8 @@ public class ClientOrderRegistController {
 			cardBeans.add(bean);
 		}
 		model.addAttribute("creditCards", cardBeans);
-		model.addAttribute("categories", categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(Constant.NOT_DELETED));
+		model.addAttribute("categories",
+				categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(Constant.NOT_DELETED));
 		return "client/order/card_selection";
 	}
 
@@ -204,7 +207,8 @@ public class ClientOrderRegistController {
 		Object orderItemBeansObject = session.getAttribute("orderItemBeans");
 		Object userObject = session.getAttribute("user");
 
-		if (!(orderFormObject instanceof OrderForm) || !(orderItemBeansObject instanceof List<?>) || !(userObject instanceof UserBean)) {
+		if (!(orderFormObject instanceof OrderForm) || !(orderItemBeansObject instanceof List<?>)
+				|| !(userObject instanceof UserBean)) {
 			return "redirect:/syserror";
 		}
 		for (Object item : (List<?>) orderItemBeansObject) {
@@ -360,7 +364,8 @@ public class ClientOrderRegistController {
 		model.addAttribute("usedPoint", usedPoint);
 		model.addAttribute("paymentTotal", paymentTotal);
 		model.addAttribute("earnedPoint", earnedPoint);
-		model.addAttribute("categories", categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(Constant.NOT_DELETED));
+		model.addAttribute("categories",
+				categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(Constant.NOT_DELETED));
 		return "client/order/check";
 	}
 
@@ -444,7 +449,8 @@ public class ClientOrderRegistController {
 			orderItem.setOrder(order);
 			orderItem.setItem(item);
 			int discount = DiscountCalcUtil.calculateDiscount(orderItemBean.getPrice(), orderItemBean.getOrderNum());
-			orderItem.setPrice((orderItemBean.getPrice() * orderItemBean.getOrderNum() - discount) / orderItemBean.getOrderNum());
+			orderItem.setPrice(
+					(orderItemBean.getPrice() * orderItemBean.getOrderNum() - discount) / orderItemBean.getOrderNum());
 			orderItem.setNameEn(orderItemBean.getNameEn());
 			orderItem.setNameEs(orderItemBean.getNameEs());
 			orderItem.setNameEo(orderItemBean.getNameEo());
@@ -514,11 +520,13 @@ public class ClientOrderRegistController {
 				int completeTotal = 0;
 				if (order.getOrderItemsList() != null) {
 					for (OrderItem orderItem : order.getOrderItemsList()) {
-						completeTotal += PointCalcUtil.nvl(orderItem.getPrice()) * PointCalcUtil.nvl(orderItem.getQuantity());
+						completeTotal += PointCalcUtil.nvl(orderItem.getPrice())
+								* PointCalcUtil.nvl(orderItem.getQuantity());
 					}
 				}
 				model.addAttribute("completeTotal", completeTotal);
-				model.addAttribute("completePaymentTotal", PointCalcUtil.calcPaymentTotal(completeTotal, order.getUsedPoint()));
+				model.addAttribute("completePaymentTotal",
+						PointCalcUtil.calcPaymentTotal(completeTotal, order.getUsedPoint()));
 				model.addAttribute("usedPoint", PointCalcUtil.nvl(order.getUsedPoint()));
 				model.addAttribute("earnedPoint", PointCalcUtil.nvl(order.getEarnedPoint()));
 				model.addAttribute("lotteryExecuted", PointCalcUtil.nvl(order.getLotteryExecuted()));
@@ -541,7 +549,8 @@ public class ClientOrderRegistController {
 			model.addAttribute("recommendItems", recommendItems);
 			session.removeAttribute("recommendItems");
 		}
-		model.addAttribute("categories", categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(Constant.NOT_DELETED));
+		model.addAttribute("categories",
+				categoryRepository.findByDeleteFlagOrderByInsertDateDescIdDesc(Constant.NOT_DELETED));
 		return "client/order/complete";
 	}
 
@@ -571,20 +580,37 @@ public class ClientOrderRegistController {
 	}
 
 	private LotteryUtil.LotteryResult applyLotteryToOrder(Order order, Integer userId, HttpSession session) {
-		LotteryUtil.LotteryResult result = LotteryUtil.draw();
+
+		int orderTotal = 0;
+
+		if (order.getOrderItemsList() != null) {
+			for (OrderItem orderItem : order.getOrderItemsList()) {
+				orderTotal += PointCalcUtil.nvl(orderItem.getPrice())
+						* PointCalcUtil.nvl(orderItem.getQuantity());
+			}
+		}
+
+		int paymentTotal = PointCalcUtil.calcPaymentTotal(orderTotal, order.getUsedPoint());
+
+		LotteryUtil.LotteryResult result = LotteryUtil.draw(paymentTotal);
+
 		order.setLotteryExecuted(1);
 		order.setLotteryRank(result.getRank());
 		order.setLotteryPoint(result.getPoint());
 		orderRepository.save(order);
 
 		User user = userRepository.getReferenceById(userId);
+
 		int updatedCurrentPoint = PointCalcUtil.nvl(user.getCurrentPoint()) + result.getPoint();
 		int updatedTotalPoint = PointCalcUtil.nvl(user.getTotalPoint()) + result.getPoint();
+
 		user.setCurrentPoint(updatedCurrentPoint);
 		user.setTotalPoint(updatedTotalPoint);
 		user.setRank(PointCalcUtil.judgeRank(updatedTotalPoint));
+
 		userRepository.save(user);
 		updateSessionUser(user, session);
+
 		return result;
 	}
 

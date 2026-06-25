@@ -12,11 +12,6 @@ public class LotteryUtil {
 	public static final String LOTTERY_THIRD = "3等";
 	public static final String LOTTERY_LOSE = "はずれ";
 
-	public static final int FIRST_POINT = 1000;
-	public static final int SECOND_POINT = 500;
-	public static final int THIRD_POINT = 100;
-	public static final int LOSE_POINT = 0;
-
 	private static final Random RANDOM = new Random();
 
 	private LotteryUtil() {
@@ -24,22 +19,32 @@ public class LotteryUtil {
 
 	/**
 	 * 抽選を実行する。
+	 * 購入金額に応じてポイントを付与する。
+	 * 1等: 購入金額の20%
+	 * 2等: 購入金額の10%
+	 * 3等: 購入金額の5%
+	 * はずれ: 0ポイント
+	 *
+	 * @param paymentTotal ポイント利用後の支払金額
 	 * @return 抽選結果
 	 */
-	public static LotteryResult draw() {
+	public static LotteryResult draw(int paymentTotal) {
 		int value = RANDOM.nextInt(100);
 
-		// 1等: 5%、2等: 10%、3等: 20%、はずれ: 65%
+		if (paymentTotal <= 0) {
+			return new LotteryResult(LOTTERY_LOSE, 0);
+		}
+
 		if (value < 5) {
-			return new LotteryResult(LOTTERY_FIRST, FIRST_POINT);
+			return new LotteryResult(LOTTERY_FIRST, paymentTotal * 20 / 100);
 		}
 		if (value < 15) {
-			return new LotteryResult(LOTTERY_SECOND, SECOND_POINT);
+			return new LotteryResult(LOTTERY_SECOND, paymentTotal * 10 / 100);
 		}
 		if (value < 35) {
-			return new LotteryResult(LOTTERY_THIRD, THIRD_POINT);
+			return new LotteryResult(LOTTERY_THIRD, paymentTotal * 5 / 100);
 		}
-		return new LotteryResult(LOTTERY_LOSE, LOSE_POINT);
+		return new LotteryResult(LOTTERY_LOSE, 0);
 	}
 
 	/**
